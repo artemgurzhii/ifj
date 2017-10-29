@@ -1,5 +1,5 @@
 ## Tools
-(Tools and Frameworks)[https://github.com/aalhour/awesome-compilers#c--c]
+[Tools and Frameworks](https://github.com/aalhour/awesome-compilers#c--c)
 
 ## Books
 [Awesome Compilers books collection](https://github.com/aalhour/awesome-compilers#books)
