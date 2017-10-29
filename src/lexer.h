@@ -8,6 +8,7 @@
 #define IFJ17_LEXER_H
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include "token.h"
