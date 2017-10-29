@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/artemgurzhii/ifj.svg?token=y45aqd5TBgzdoqtyW6ox&branch=master)](https://travis-ci.com/artemgurzhii/ifj)
+
 ## Tools
 [Tools and Frameworks](https://github.com/aalhour/awesome-compilers#c--c)
 
