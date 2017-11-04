@@ -10,13 +10,10 @@
 #include <stdio.h>
 #include <sys/stat.h>
 
-size_t
-file_size(FILE *handle);
+size_t file_size(FILE *handle);
 
-char *
-file_read(const char *filename);
+char *file_read(const char *filename);
 
-char *
-read_until_eof(FILE *stream);
+char *read_until_eof(FILE *stream);
 
 #endif

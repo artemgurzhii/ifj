@@ -33,7 +33,8 @@
  * IFJ17 value types.
  */
 
-typedef enum {
+typedef enum
+{
   IFJ17_TYPE_NULL,
   IFJ17_TYPE_NODE,
   IFJ17_TYPE_BOOL,
@@ -52,7 +53,8 @@ typedef enum {
  * the basis of a IFJ17 values.
  */
 
-struct ifj17_object_struct {
+struct ifj17_object_struct
+{
   ifj17_object type;
   union {
     void *as_pointer;
@@ -63,22 +65,16 @@ struct ifj17_object_struct {
 
 // protos
 
-void
-ifj17_object_inspect(ifj17_object_t *self);
+void ifj17_object_inspect(ifj17_object_t *self);
 
-ifj17_object_t *
-ifj17_int_new(int val);
+ifj17_object_t *ifj17_int_new(int val);
 
-ifj17_object_t *
-ifj17_float_new(float val);
+ifj17_object_t *ifj17_float_new(float val);
 
-ifj17_object_t *
-ifj17_bool_new(bool val);
+ifj17_object_t *ifj17_bool_new(bool val);
 
-ifj17_object_t *
-ifj17_string_new(const char *val);
+ifj17_object_t *ifj17_string_new(const char *val);
 
-void
-ifj17_object_free(ifj17_object_t *self);
+void ifj17_object_free(ifj17_object_t *self);
 
 #endif /* IFJ17_OBJECT_H */

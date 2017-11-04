@@ -22,10 +22,12 @@ void ifj17_dump(ifj17_vm_t *vm) {
   ifj17_instruction_t i;
   int registers[32] = {0};
 
-  for (;;) {
+  for (;;)
+  {
     i = *ip++;
     printf("%10s ", ifj17_op_strings[OP(i)]);
-    switch (OP(i)) {
+    switch (OP(i))
+    {
     // -
     case IFJ17_OP_HALT:
       printf("\n");

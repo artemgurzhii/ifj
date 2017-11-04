@@ -25,7 +25,8 @@
  */
 
 static void emit_op(ifj17_vm_t *vm, ifj17_binary_op_node_t *node, int l, int r) {
-  switch (node->op) {
+  switch (node->op)
+  {
   case IFJ17_TOKEN_OP_PLUS:
     emit(ADD, 0, l, r);
     break;
@@ -137,11 +138,13 @@ static void visit_unary_op(ifj17_visitor_t *self, ifj17_unary_op_node_t *node) {
 
 static void visit_binary_op(ifj17_visitor_t *self, ifj17_binary_op_node_t *node) {
   ifj17_vm_t *vm = (ifj17_vm_t *)self->data;
-  if (IFJ17_NODE_BINARY_OP == node->left->type) {
+  if (IFJ17_NODE_BINARY_OP == node->left->type)
+  {
     visit(node->left);
     int r = CONST(((ifj17_float_node_t *)node->right)->val);
     emit_op(vm, node, 0, r);
-  } else {
+  } else
+  {
     int l = CONST(((ifj17_float_node_t *)node->left)->val);
     int r = CONST(((ifj17_float_node_t *)node->right)->val);
     emit_op(vm, node, l, r);

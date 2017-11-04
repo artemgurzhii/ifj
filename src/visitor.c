@@ -21,7 +21,8 @@
  */
 
 void ifj17_visit(ifj17_visitor_t *self, ifj17_node_t *node) {
-  switch (node->type) {
+  switch (node->type)
+  {
   case IFJ17_NODE_BLOCK:
     VISIT(block);
   case IFJ17_NODE_ID:

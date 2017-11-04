@@ -14,7 +14,8 @@
  */
 
 void ifj17_object_inspect(ifj17_object_t *self) {
-  switch (self->type) {
+  switch (self->type)
+  {
   case IFJ17_TYPE_FLOAT:
     printf("%2f\n", self->value.as_float);
     break;
@@ -93,7 +94,8 @@ ifj17_object_t *ifj17_string_new(const char *val) {
 }
 
 void ifj17_object_free(ifj17_object_t *self) {
-  switch (self->type) {
+  switch (self->type)
+  {
   case IFJ17_TYPE_STRING:
     free(self->value.as_pointer);
     break;

@@ -69,7 +69,7 @@ void ifj17_lexer_init(ifj17_lexer_t *self, char *source, const char *filename) {
 
 /*
  * Convert hex digit `c` to a base 10 int,
- * returning -1 on failure.
+ * return -1 when fails to convert.
  */
 
 static int hex(const char c) {
@@ -91,51 +91,51 @@ static int scan_ident(ifj17_lexer_t *self, int c) {
   char buf[128]; // TODO: ditch these buffers
   token(ID);
 
-  do {
-    buf[len++] = c;
-  } while (isalpha(c = next) || isdigit(c) || '_' == c);
+  do
+  { buf[len++] = c; } while (isalpha(c = next) || isdigit(c) || '_' == c);
   undo;
 
   buf[len++] = 0;
-  switch (len - 1) {
+  switch (len - 1)
+  {
   case 2:
-    if (0 == strcmp("if", buf))
+    if (strcmp("if", buf) == 0)
       return token(IF);
-    if (0 == strcmp("as", buf))
+    if (strcmp("as", buf) == 0)
       return token(AS);
     break;
   case 3:
-    if (0 == strcmp("use", buf))
+    if (strcmp("use", buf) == 0)
       return token(USE);
-    if (0 == strcmp("for", buf))
+    if (strcmp("for", buf) == 0)
       return token(FOR);
-    if (0 == strcmp("def", buf))
+    if (strcmp("def", buf) == 0)
       return token(DEF);
-    if (0 == strcmp("end", buf))
+    if (strcmp("end", buf) == 0)
       return token(END);
-    if (0 == strcmp("let", buf))
+    if (strcmp("let", buf) == 0)
       return token(LET);
-    if (0 == strcmp("and", buf))
+    if (strcmp("and", buf) == 0)
       return token(OP_BIT_AND);
-    if (0 == strcmp("not", buf))
+    if (strcmp("not", buf) == 0)
       return token(OP_LNOT);
     break;
   case 4:
-    if (0 == strcmp("else", buf))
+    if (strcmp("else", buf) == 0)
       return token(ELSE);
-    if (0 == strcmp("type", buf))
+    if (strcmp("type", buf) == 0)
       return token(TYPE);
     break;
   case 5:
-    if (0 == strcmp("while", buf))
+    if (strcmp("while", buf) == 0)
       return token(WHILE);
-    if (0 == strcmp("until", buf))
+    if (strcmp("until", buf) == 0)
       return token(UNTIL);
     break;
   default:
-    if (0 == strcmp("return", buf))
+    if (strcmp("return", buf) == 0)
       return token(RETURN);
-    if (0 == strcmp("unless", buf))
+    if (strcmp("unless", buf) == 0)
       return token(UNLESS);
   }
 
@@ -165,13 +165,16 @@ static int scan_string(ifj17_lexer_t *self, int quote) {
   char buf[128];
   token(STRING);
 
-  while (quote != (c = next)) {
-    switch (c) {
+  while (quote != (c = next))
+  {
+    switch (c)
+    {
     case '\n':
       ++self->lineno;
       break;
     case '\\':
-      switch (c = next) {
+      switch (c = next)
+      {
       case 'a':
         c = '\a';
         break;
@@ -223,7 +226,8 @@ static int scan_number(ifj17_lexer_t *self, int c) {
    */
   token(INT);
 
-  switch (c) {
+  switch (c)
+  {
   case '0':
     goto scan_hex;
   default:
@@ -231,12 +235,15 @@ static int scan_number(ifj17_lexer_t *self, int c) {
   }
 
 scan_hex:
-  switch (c = next) {
+  switch (c = next)
+  {
   case 'x':
-    if (!isxdigit(c = next)) {
+    if (!isxdigit(c = next))
+    {
       error("hex literal expects one or more digits");
       return 0;
-    } else {
+    } else
+    {
       do
         n = n << 4 | hex(c);
       while (isxdigit(c = next));
@@ -253,7 +260,8 @@ scan_hex:
   // [0-9_]+
 
 scan_int:
-  do {
+  do
+  {
     if ('_' == c)
       continue;
     else if ('.' == c)
@@ -268,11 +276,13 @@ scan_int:
 
   // [0-9_]+
 
-scan_float : {
+scan_float:
+{
   e = 1;
   type = 1;
   token(FLOAT);
-  while (isdigit(c = next) || '_' == c || 'e' == c || 'E' == c) {
+  while (isdigit(c = next) || '_' == c || 'e' == c || 'E' == c)
+  {
     if ('_' == c)
       continue;
     else if ('e' == c || 'E' == c)
@@ -287,9 +297,12 @@ scan_float : {
 
   // [\+\-]?[0-9]+
 
-scan_expo : {
-  while (isdigit(c = next) || '+' == c || '-' == c) {
-    if ('-' == c) {
+scan_expo:
+{
+  while (isdigit(c = next) || '+' == c || '-' == c)
+  {
+    if ('-' == c)
+    {
       expo_type = 0;
       continue;
     }
@@ -318,7 +331,8 @@ int ifj17_scan(ifj17_lexer_t *self) {
 
 // scan
 scan:
-  switch (c = next) {
+  switch (c = next)
+  {
   case ' ':
   case '\t':
     goto scan;
@@ -349,7 +363,8 @@ scan:
   case ':':
     return token(COLON);
   case '+':
-    switch (next) {
+    switch (next)
+    {
     case '+':
       return token(OP_INCR);
     case '=':
@@ -358,7 +373,8 @@ scan:
       return undo, token(OP_PLUS);
     }
   case '-':
-    switch (next) {
+    switch (next)
+    {
     case '-':
       return token(OP_DECR);
     case '=':
@@ -367,7 +383,8 @@ scan:
       return undo, token(OP_MINUS);
     }
   case '*':
-    switch (next) {
+    switch (next)
+    {
     case '=':
       return token(OP_MUL_ASSIGN);
     case '*':
@@ -382,21 +399,24 @@ scan:
   case '=':
     return '=' == next ? token(OP_EQ) : (undo, token(OP_ASSIGN));
   case '&':
-    switch (next) {
+    switch (next)
+    {
     case '&':
       return '=' == next ? token(OP_AND_ASSIGN) : (undo, token(OP_AND));
     default:
       return undo, token(OP_FORK);
     }
   case '|':
-    switch (next) {
+    switch (next)
+    {
     case '|':
       return '=' == next ? token(OP_OR_ASSIGN) : (undo, token(OP_OR));
     default:
       return undo, token(OP_BIT_OR);
     }
   case '<':
-    switch (next) {
+    switch (next)
+    {
     case '=':
       return token(OP_LTE);
     case '<':
@@ -405,7 +425,8 @@ scan:
       return undo, token(OP_LT);
     }
   case '>':
-    switch (next) {
+    switch (next)
+    {
     case '=':
       return token(OP_GTE);
     case '>':
@@ -422,7 +443,8 @@ scan:
     return token(SEMICOLON);
   case '\n':
   case '\r':
-    if (need_semi(self->tok.type)) {
+    if (need_semi(self->tok.type))
+    {
       return undo, token(SEMICOLON);
     }
     ++self->lineno;

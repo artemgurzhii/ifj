@@ -69,8 +69,10 @@ void version() {
 void repl() {
   ifj17_set_prettyprint_func(printf);
   char *line;
-  while ((line = linenoise("ifj17> "))) {
-    if ('\0' != line[0]) {
+  while ((line = linenoise("ifj17> ")))
+  {
+    if ('\0' != line[0])
+    {
       // parse the input
       ifj17_lexer_t lex;
       ifj17_lexer_init(&lex, line, "stdin");
@@ -79,7 +81,8 @@ void repl() {
       ifj17_block_node_t *root;
 
       // oh noes!
-      if (!(root = ifj17_parse(&parser))) {
+      if (!(root = ifj17_parse(&parser)))
+      {
         ifj17_report_error(&parser);
         exit(1);
       }
@@ -100,21 +103,25 @@ void repl() {
 const char **parse_args(int *argc, const char **argv) {
   const char *arg, **args = argv;
 
-  for (int i = 0, len = *argc; i < len; ++i) {
+  for (int i = 0, len = *argc; i < len; ++i)
+  {
     arg = args[i];
     if (!strcmp("-h", arg) || !strcmp("--help", arg))
       usage();
     else if (!strcmp("-V", arg) || !strcmp("--version", arg))
       version();
-    else if (!strcmp("-A", arg) || !strcmp("--ast", arg)) {
+    else if (!strcmp("-A", arg) || !strcmp("--ast", arg))
+    {
       ast = 1;
       --*argc;
       ++argv;
-    } else if (!strcmp("-T", arg) || !strcmp("--tokens", arg)) {
+    } else if (!strcmp("-T", arg) || !strcmp("--tokens", arg))
+    {
       tokens = 1;
       --*argc;
       ++argv;
-    } else if ('-' == arg[0]) {
+    } else if ('-' == arg[0])
+    {
       fprintf(stderr, "unknown flag %s\n", arg);
       exit(1);
     }
@@ -137,8 +144,10 @@ int eval(char *source, const char *path) {
   ifj17_block_node_t *root;
 
   // --tokens
-  if (tokens) {
-    while (ifj17_scan(&lex)) {
+  if (tokens)
+  {
+    while (ifj17_scan(&lex))
+    {
       printf("  \e[90m%d : \e[m", lex.lineno);
       ifj17_token_inspect(&lex.tok);
     }
@@ -146,7 +155,8 @@ int eval(char *source, const char *path) {
   }
 
   // oh noes!
-  if (!(root = ifj17_parse(&parser))) {
+  if (!(root = ifj17_parse(&parser)))
+  {
     ifj17_report_error(&parser);
     return 1;
   }
@@ -178,7 +188,8 @@ int main(int argc, const char **argv) {
   argv = parse_args(&argc, argv);
 
   // eval stdin
-  if (1 == argc && !isatty(0)) {
+  if (1 == argc && !isatty(0))
+  {
     source = read_until_eof(stdin);
     return eval(source, "stdin");
   }
@@ -190,9 +201,11 @@ int main(int argc, const char **argv) {
   // eval file
   orig = path = argv[1];
 read:
-  if (!(source = file_read(path))) {
+  if (!(source = file_read(path)))
+  {
     // try with .ifj17 extension
-    if (!tried_ext) {
+    if (!tried_ext)
+    {
       tried_ext = 1;
       char buf[256];
       snprintf(buf, 256, "%s.ifj17", path);

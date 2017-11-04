@@ -11,7 +11,6 @@
 
 // protos
 
-void
-ifj17_report_error(ifj17_parser_t *parser);
+void ifj17_report_error(ifj17_parser_t *parser);
 
 #endif /* IFJ17_ERRORS_H */

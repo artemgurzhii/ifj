@@ -7,8 +7,8 @@
 #ifndef IFJ17_VM_H
 #define IFJ17_VM_H
 
-#include <stdint.h>
 #include "ast.h"
+#include <stdint.h>
 
 /*
  * Instruction.
@@ -20,7 +20,8 @@ typedef uint32_t ifj17_instruction_t;
  * IFJ17 activation record.
  */
 
-typedef struct {
+typedef struct
+{
   ifj17_instruction_t *ip;
   ifj17_instruction_t *code; // TODO: pointer to single malloc()?
   int nconstants;
@@ -31,7 +32,8 @@ typedef struct {
  * IFJ17 VM.
  */
 
-typedef struct {
+typedef struct
+{
   ifj17_activation_t *main;
   ifj17_instruction_t *jump;
 } ifj17_vm_t;
@@ -43,11 +45,7 @@ typedef struct {
  * +----------------+
  */
 
-#define ABC(op, a, b, c) \
-  ( IFJ17_OP_##op << 24 \
-  | (a) << 16 \
-  | (b) << 8 \
-  | (c) )
+#define ABC(op, a, b, c) (IFJ17_OP_##op << 24 | (a) << 16 | (b) << 8 | (c))
 
 /*
  *   8    8    16
@@ -56,10 +54,7 @@ typedef struct {
  * +----------------+
  */
 
-#define AB(op, a, b) \
-  ( IFJ17_OP_##op << 24 \
-  | (a) << 16 \
-  | (b) << 8 )
+#define AB(op, a, b) (IFJ17_OP_##op << 24 | (a) << 16 | (b) << 8)
 
 /*
  * Opcode.
@@ -83,7 +78,7 @@ typedef struct {
  * Operand C.
  */
 
-#define C(i) ((i) & 0xff)
+#define C(i) ((i)&0xff)
 
 /*
  * Register n.
@@ -95,22 +90,19 @@ typedef struct {
  * Constant n.
  */
 
-#define K(n) vm->main->constants[(n) - 32]
+#define K(n) vm->main->constants[(n)-32]
 
 /*
  * Register or constant.
  */
 
 // TODO: MSB
-#define RK(n) \
-   ((n) < 32 ? R(n) : K(n))
+#define RK(n) ((n) < 32 ? R(n) : K(n))
 
 // protoypes
 
-ifj17_object_t *
-ifj17_eval(ifj17_vm_t *vm);
+ifj17_object_t *ifj17_eval(ifj17_vm_t *vm);
 
-void
-ifj17_vm_free(ifj17_vm_t *vm);
+void ifj17_vm_free(ifj17_vm_t *vm);
 
 #endif /* IFJ17_VM_H */

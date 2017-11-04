@@ -14,7 +14,8 @@
 
 void ifj17_token_inspect(ifj17_token_t *tok) {
   printf("\e[90m%s\e[0m", ifj17_token_type_string(tok->type));
-  switch (tok->type) {
+  switch (tok->type)
+  {
   case IFJ17_TOKEN_INT:
     printf(" \e[36m%d\e[0m", tok->value.as_int);
     break;

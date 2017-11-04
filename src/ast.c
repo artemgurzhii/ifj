@@ -15,10 +15,15 @@
 
 ifj17_object_t *ifj17_node(ifj17_node_t *node) {
   ifj17_object_t *self = malloc(sizeof(ifj17_object_t));
+
   if (unlikely(!self))
+  {
     return NULL;
+  }
+
   self->type = IFJ17_TYPE_NODE;
   self->value.as_pointer = node;
+
   return self;
 }
 
@@ -28,11 +33,16 @@ ifj17_object_t *ifj17_node(ifj17_node_t *node) {
 
 ifj17_block_node_t *ifj17_block_node_new(int lineno) {
   ifj17_block_node_t *self = malloc(sizeof(ifj17_block_node_t));
+
   if (unlikely(!self))
+  {
     return NULL;
+  }
+
   self->base.type = IFJ17_NODE_BLOCK;
   self->base.lineno = lineno;
   self->stmts = ifj17_vec_new();
+
   return self;
 }
 
@@ -42,12 +52,17 @@ ifj17_block_node_t *ifj17_block_node_new(int lineno) {
 
 ifj17_args_node_t *ifj17_args_node_new(int lineno) {
   ifj17_args_node_t *self = malloc(sizeof(ifj17_args_node_t));
+
   if (unlikely(!self))
+  {
     return NULL;
+  }
+
   self->base.type = IFJ17_NODE_ARGS;
   self->base.lineno = lineno;
   self->vec = ifj17_vec_new();
   self->hash = ifj17_hash_new();
+
   return self;
 }
 
@@ -57,11 +72,16 @@ ifj17_args_node_t *ifj17_args_node_new(int lineno) {
 
 ifj17_int_node_t *ifj17_int_node_new(int val, int lineno) {
   ifj17_int_node_t *self = malloc(sizeof(ifj17_int_node_t));
+
   if (unlikely(!self))
+  {
     return NULL;
+  }
+
   self->base.type = IFJ17_NODE_INT;
   self->base.lineno = lineno;
   self->val = val;
+
   return self;
 }
 
@@ -71,11 +91,16 @@ ifj17_int_node_t *ifj17_int_node_new(int val, int lineno) {
 
 ifj17_float_node_t *ifj17_float_node_new(float val, int lineno) {
   ifj17_float_node_t *self = malloc(sizeof(ifj17_float_node_t));
+
   if (unlikely(!self))
+  {
     return NULL;
+  }
+
   self->base.type = IFJ17_NODE_FLOAT;
   self->base.lineno = lineno;
   self->val = val;
+
   return self;
 }
 
@@ -85,11 +110,16 @@ ifj17_float_node_t *ifj17_float_node_new(float val, int lineno) {
 
 ifj17_id_node_t *ifj17_id_node_new(const char *val, int lineno) {
   ifj17_id_node_t *self = malloc(sizeof(ifj17_id_node_t));
+
   if (unlikely(!self))
+  {
     return NULL;
+  }
+
   self->base.type = IFJ17_NODE_ID;
   self->base.lineno = lineno;
   self->val = val;
+
   return self;
 }
 
@@ -101,12 +131,17 @@ ifj17_id_node_t *ifj17_id_node_new(const char *val, int lineno) {
 ifj17_decl_node_t *ifj17_decl_node_new(ifj17_vec_t *vec, ifj17_node_t *type,
                                        int lineno) {
   ifj17_decl_node_t *self = malloc(sizeof(ifj17_decl_node_t));
+
   if (unlikely(!self))
+  {
     return NULL;
+  }
+
   self->base.type = IFJ17_NODE_DECL;
   self->base.lineno = lineno;
   self->vec = vec;
   self->type = type;
+
   return self;
 }
 
@@ -117,11 +152,16 @@ ifj17_decl_node_t *ifj17_decl_node_new(ifj17_vec_t *vec, ifj17_node_t *type,
 
 ifj17_let_node_t *ifj17_let_node_new(ifj17_vec_t *vec, int lineno) {
   ifj17_let_node_t *self = malloc(sizeof(ifj17_let_node_t));
+
   if (unlikely(!self))
+  {
     return NULL;
+  }
+
   self->base.type = IFJ17_NODE_LET;
   self->base.lineno = lineno;
   self->vec = vec;
+
   return self;
 }
 
@@ -131,11 +171,16 @@ ifj17_let_node_t *ifj17_let_node_new(ifj17_vec_t *vec, int lineno) {
 
 ifj17_string_node_t *ifj17_string_node_new(const char *val, int lineno) {
   ifj17_string_node_t *self = malloc(sizeof(ifj17_string_node_t));
+
   if (unlikely(!self))
+  {
     return NULL;
+  }
+
   self->base.type = IFJ17_NODE_STRING;
   self->base.lineno = lineno;
   self->val = val;
+
   return self;
 }
 
@@ -145,14 +190,22 @@ ifj17_string_node_t *ifj17_string_node_new(const char *val, int lineno) {
 
 ifj17_call_node_t *ifj17_call_node_new(ifj17_node_t *expr, int lineno) {
   ifj17_call_node_t *self = malloc(sizeof(ifj17_call_node_t));
+
   if (unlikely(!self))
+  {
     return NULL;
+  }
+
   self->base.type = IFJ17_NODE_CALL;
   self->base.lineno = lineno;
   self->expr = expr;
   self->args = ifj17_args_node_new(lineno);
+
   if (unlikely(!self->args))
+  {
     return NULL;
+  }
+
   return self;
 }
 
@@ -163,12 +216,17 @@ ifj17_call_node_t *ifj17_call_node_new(ifj17_node_t *expr, int lineno) {
 ifj17_subscript_node_t *ifj17_subscript_node_new(ifj17_node_t *left,
                                                  ifj17_node_t *right, int lineno) {
   ifj17_subscript_node_t *self = malloc(sizeof(ifj17_subscript_node_t));
+
   if (unlikely(!self))
+  {
     return NULL;
+  }
+
   self->base.type = IFJ17_NODE_SUBSCRIPT;
   self->base.lineno = lineno;
   self->left = left;
   self->right = right;
+
   return self;
 }
 
@@ -179,12 +237,17 @@ ifj17_subscript_node_t *ifj17_subscript_node_new(ifj17_node_t *left,
 ifj17_slot_node_t *ifj17_slot_node_new(ifj17_node_t *left, ifj17_node_t *right,
                                        int lineno) {
   ifj17_slot_node_t *self = malloc(sizeof(ifj17_slot_node_t));
+
   if (unlikely(!self))
+  {
     return NULL;
+  }
+
   self->base.type = IFJ17_NODE_SLOT;
   self->base.lineno = lineno;
   self->left = left;
   self->right = right;
+
   return self;
 }
 
@@ -195,13 +258,18 @@ ifj17_slot_node_t *ifj17_slot_node_new(ifj17_node_t *left, ifj17_node_t *right,
 ifj17_unary_op_node_t *ifj17_unary_op_node_new(ifj17_token op, ifj17_node_t *expr,
                                                int postfix, int lineno) {
   ifj17_unary_op_node_t *self = malloc(sizeof(ifj17_unary_op_node_t));
+
   if (unlikely(!self))
+  {
     return NULL;
+  }
+
   self->base.type = IFJ17_NODE_UNARY_OP;
   self->base.lineno = lineno;
   self->op = op;
   self->expr = expr;
   self->postfix = postfix;
+
   return self;
 }
 
@@ -212,14 +280,19 @@ ifj17_unary_op_node_t *ifj17_unary_op_node_new(ifj17_token op, ifj17_node_t *exp
 ifj17_binary_op_node_t *ifj17_binary_op_node_new(ifj17_token op, ifj17_node_t *left,
                                                  ifj17_node_t *right, int lineno) {
   ifj17_binary_op_node_t *self = malloc(sizeof(ifj17_binary_op_node_t));
+
   if (unlikely(!self))
+  {
     return NULL;
+  }
+
   self->base.type = IFJ17_NODE_BINARY_OP;
   self->base.lineno = lineno;
   self->op = op;
   self->left = left;
   self->right = right;
   self->let = 0;
+
   return self;
 }
 
@@ -258,11 +331,16 @@ ifj17_hash_pair_node_t *ifj17_hash_pair_node_new(int lineno) {
 
 ifj17_hash_node_t *ifj17_hash_node_new(int lineno) {
   ifj17_hash_node_t *self = malloc(sizeof(ifj17_hash_node_t));
+
   if (unlikely(!self))
+  {
     return NULL;
+  }
+
   self->base.type = IFJ17_NODE_HASH;
   self->base.lineno = lineno;
   self->pairs = ifj17_vec_new();
+
   return self;
 }
 
@@ -275,14 +353,19 @@ ifj17_function_node_t *ifj17_function_node_new(const char *name, ifj17_node_t *t
                                                ifj17_block_node_t *block,
                                                ifj17_vec_t *params, int lineno) {
   ifj17_function_node_t *self = malloc(sizeof(ifj17_function_node_t));
+
   if (unlikely(!self))
+  {
     return NULL;
+  }
+
   self->base.type = IFJ17_NODE_FUNCTION;
   self->base.lineno = lineno;
   self->params = params;
   self->block = block;
   self->type = type;
   self->name = name;
+
   return self;
 }
 
@@ -295,16 +378,23 @@ ifj17_function_node_t *ifj17_function_node_new_from_expr(ifj17_node_t *expr,
                                                          ifj17_vec_t *params,
                                                          int lineno) {
   ifj17_function_node_t *self = malloc(sizeof(ifj17_function_node_t));
+
   if (unlikely(!self))
+  {
     return NULL;
+  }
+
   self->base.type = IFJ17_NODE_FUNCTION;
   self->base.lineno = lineno;
   self->params = params;
 
   // block
   self->block = ifj17_block_node_new(lineno);
+
   if (unlikely(!self->block))
+  {
     return NULL;
+  }
 
   // return
   ifj17_return_node_t *ret = ifj17_return_node_new(expr, lineno);
@@ -319,12 +409,17 @@ ifj17_function_node_t *ifj17_function_node_new_from_expr(ifj17_node_t *expr,
 
 ifj17_type_node_t *ifj17_type_node_new(const char *name, int lineno) {
   ifj17_type_node_t *self = malloc(sizeof(ifj17_type_node_t));
+
   if (unlikely(!self))
+  {
     return NULL;
+  }
+
   self->base.type = IFJ17_NODE_TYPE;
   self->base.lineno = lineno;
   self->name = name;
   self->fields = ifj17_vec_new();
+
   return self;
 }
 
@@ -336,8 +431,12 @@ ifj17_type_node_t *ifj17_type_node_new(const char *name, int lineno) {
 ifj17_if_node_t *ifj17_if_node_new(int negate, ifj17_node_t *expr,
                                    ifj17_block_node_t *block, int lineno) {
   ifj17_if_node_t *self = malloc(sizeof(ifj17_if_node_t));
+
   if (unlikely(!self))
+  {
     return NULL;
+  }
+
   self->base.type = IFJ17_NODE_IF;
   self->base.lineno = lineno;
   self->negate = negate;
@@ -345,6 +444,7 @@ ifj17_if_node_t *ifj17_if_node_new(int negate, ifj17_node_t *expr,
   self->block = block;
   self->else_block = NULL;
   self->else_ifs = ifj17_vec_new();
+
   return self;
 }
 
@@ -356,13 +456,18 @@ ifj17_if_node_t *ifj17_if_node_new(int negate, ifj17_node_t *expr,
 ifj17_while_node_t *ifj17_while_node_new(int negate, ifj17_node_t *expr,
                                          ifj17_block_node_t *block, int lineno) {
   ifj17_while_node_t *self = malloc(sizeof(ifj17_while_node_t));
+
   if (unlikely(!self))
+  {
     return NULL;
+  }
+
   self->base.type = IFJ17_NODE_WHILE;
   self->base.lineno = lineno;
   self->negate = negate;
   self->expr = expr;
   self->block = block;
+
   return self;
 }
 
@@ -372,11 +477,16 @@ ifj17_while_node_t *ifj17_while_node_new(int negate, ifj17_node_t *expr,
 
 ifj17_return_node_t *ifj17_return_node_new(ifj17_node_t *expr, int lineno) {
   ifj17_return_node_t *self = malloc(sizeof(ifj17_return_node_t));
+
   if (unlikely(!self))
+  {
     return NULL;
+  }
+
   self->base.type = IFJ17_NODE_RETURN;
   self->base.lineno = lineno;
   self->expr = expr;
+
   return self;
 }
 
@@ -386,11 +496,16 @@ ifj17_return_node_t *ifj17_return_node_new(ifj17_node_t *expr, int lineno) {
 
 ifj17_use_node_t *ifj17_use_node_new(int lineno) {
   ifj17_use_node_t *self = malloc(sizeof(ifj17_use_node_t));
+
   if (unlikely(!self))
+  {
     return NULL;
+  }
+
   self->base.type = IFJ17_NODE_USE;
   self->base.lineno = lineno;
   self->module = NULL;
   self->alias = NULL;
+
   return self;
 }
