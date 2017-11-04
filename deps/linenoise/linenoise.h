@@ -70,6 +70,8 @@ void linenoiseAddCompletion(linenoiseCompletions *, const char *);
  */
 char *linenoise(const char *prompt);
 
+char *strdup(const char *prompt);
+
 /*
  * Adds a copy of the given line of the command history.
  */
