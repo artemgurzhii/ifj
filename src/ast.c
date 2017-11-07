@@ -86,18 +86,18 @@ ifj17_int_node_t *ifj17_int_node_new(int val, int lineno) {
 }
 
 /*
- * Alloc and initialize a new float node with the given `val`.
+ * Alloc and initialize a new double node with the given `val`.
  */
 
-ifj17_float_node_t *ifj17_float_node_new(float val, int lineno) {
-  ifj17_float_node_t *self = malloc(sizeof(ifj17_float_node_t));
+ifj17_double_node_t *ifj17_double_node_new(double val, int lineno) {
+  ifj17_double_node_t *self = malloc(sizeof(ifj17_double_node_t));
 
   if (unlikely(!self))
   {
     return NULL;
   }
 
-  self->base.type = IFJ17_NODE_FLOAT;
+  self->base.type = IFJ17_NODE_DOUBLE;
   self->base.lineno = lineno;
   self->val = val;
 

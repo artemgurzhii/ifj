@@ -296,7 +296,7 @@ scan_int:
     if ('_' == c)
       continue;
     else if ('.' == c)
-      goto scan_float;
+      goto scan_double;
     else if ('e' == c || 'E' == c)
       goto scan_expo;
     n = n * 10 + c - '0';
@@ -307,11 +307,11 @@ scan_int:
 
   // [0-9_]+
 
-scan_float:
+scan_double:
 {
   e = 1;
   type = 1;
-  token(FLOAT);
+  token(DOUBLE);
   while (isdigit(c = next) || '_' == c || 'e' == c || 'E' == c)
   {
     if ('_' == c)
@@ -322,7 +322,7 @@ scan_float:
     e *= 10;
   }
   undo;
-  self->tok.value.as_float = (float)n / e;
+  self->tok.value.as_double = (double)n / e;
   return 1;
 }
 
@@ -346,7 +346,7 @@ scan_expo:
   if (type == 0)
     self->tok.value.as_int = n * pow(10, expo);
   else
-    self->tok.value.as_float = ((float)n / e) * pow(10, expo);
+    self->tok.value.as_double = ((double)n / e) * pow(10, expo);
 }
 
   return 1;

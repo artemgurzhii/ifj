@@ -33,7 +33,7 @@
    n(CALL)               \
    n(ARGS)               \
    n(INT)                \
-   n(FLOAT)              \
+   n(DOUBLE)             \
    n(STRING)             \
    n(ARRAY)              \
    n(HASH_PAIR)          \
@@ -143,14 +143,14 @@ typedef struct
 } ifj17_int_node_t;
 
 /*
- * IFJ17 float node.
+ * IFJ17 double node.
  */
 
 typedef struct
 {
   ifj17_node_t base;
-  float val;
-} ifj17_float_node_t;
+  double val;
+} ifj17_double_node_t;
 
 /*
  * IFJ17 id node.
@@ -342,7 +342,7 @@ ifj17_let_node_t *ifj17_let_node_new(ifj17_vec_t *vec, int lineno);
 
 ifj17_int_node_t *ifj17_int_node_new(int val, int lineno);
 
-ifj17_float_node_t *ifj17_float_node_new(float val, int lineno);
+ifj17_double_node_t *ifj17_double_node_new(double val, int lineno);
 
 ifj17_array_node_t *ifj17_array_node_new(int lineno);
 

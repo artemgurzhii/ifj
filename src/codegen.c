@@ -86,10 +86,10 @@ static void visit_int(ifj17_visitor_t *self, ifj17_int_node_t *node) {
 }
 
 /*
- * Visit float `node`.
+ * Visit double `node`.
  */
 
-static void visit_float(ifj17_visitor_t *self, ifj17_float_node_t *node) {
+static void visit_double(ifj17_visitor_t *self, ifj17_double_node_t *node) {
   ifj17_vm_t *vm = (ifj17_vm_t *)self->data;
 }
 
@@ -138,12 +138,12 @@ static void visit_binary_op(ifj17_visitor_t *self, ifj17_binary_op_node_t *node)
   if (IFJ17_NODE_BINARY_OP == node->left->type)
   {
     visit(node->left);
-    int r = CONST(((ifj17_float_node_t *)node->right)->val);
+    int r = CONST(((ifj17_double_node_t *)node->right)->val);
     emit_op(vm, node, 0, r);
   } else
   {
-    int l = CONST(((ifj17_float_node_t *)node->left)->val);
-    int r = CONST(((ifj17_float_node_t *)node->right)->val);
+    int l = CONST(((ifj17_double_node_t *)node->left)->val);
+    int r = CONST(((ifj17_double_node_t *)node->right)->val);
     emit_op(vm, node, l, r);
   }
 }
@@ -356,7 +356,7 @@ ifj17_vm_t *ifj17_gen(ifj17_node_t *node) {
                              .visit_while = visit_while,
                              .visit_block = visit_block,
                              .visit_decl = visit_decl,
-                             .visit_float = visit_float,
+                             .visit_double = visit_double,
                              .visit_string = visit_string,
                              .visit_return = visit_return,
                              .visit_function = visit_function,

@@ -120,11 +120,11 @@ static void visit_int(ifj17_visitor_t *self, ifj17_int_node_t *node) {
 }
 
 /*
- * Visit float `node`.
+ * Visit double `node`.
  */
 
-static void visit_float(ifj17_visitor_t *self, ifj17_float_node_t *node) {
-  print_func("(float %f)", node->val);
+static void visit_double(ifj17_visitor_t *self, ifj17_double_node_t *node) {
+  print_func("(double %f)", node->val);
 }
 
 /*
@@ -471,7 +471,7 @@ void ifj17_prettyprint(ifj17_node_t *node) {
                              .visit_block = visit_block,
                              .visit_decl = visit_decl,
                              .visit_let = visit_let,
-                             .visit_float = visit_float,
+                             .visit_double = visit_double,
                              .visit_string = visit_string,
                              .visit_return = visit_return,
                              .visit_function = visit_function,

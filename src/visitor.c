@@ -33,8 +33,8 @@ void ifj17_visit(ifj17_visitor_t *self, ifj17_node_t *node) {
     VISIT(let);
   case IFJ17_NODE_INT:
     VISIT(int);
-  case IFJ17_NODE_FLOAT:
-    VISIT(float);
+  case IFJ17_NODE_DOUBLE:
+    VISIT(double);
   case IFJ17_NODE_STRING:
     VISIT(string);
   case IFJ17_NODE_SUBSCRIPT:

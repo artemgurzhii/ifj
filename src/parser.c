@@ -264,7 +264,7 @@ static ifj17_node_t *decl_expr(ifj17_parser_t *self, bool need_type) {
 /*
  *   id
  * | int
- * | float
+ * | double
  * | string
  * | array
  * | hash
@@ -283,8 +283,8 @@ static ifj17_node_t *primary_expr(ifj17_parser_t *self) {
   case IFJ17_TOKEN_INT:
     ret = (ifj17_node_t *)ifj17_int_node_new(tok->value.as_int, lineno);
     break;
-  case IFJ17_TOKEN_FLOAT:
-    ret = (ifj17_node_t *)ifj17_float_node_new(tok->value.as_float, lineno);
+  case IFJ17_TOKEN_DOUBLE:
+    ret = (ifj17_node_t *)ifj17_doubl_node_new(tok->value.as_double, lineno);
     break;
   case IFJ17_TOKEN_STRING:
     ret = (ifj17_node_t *)ifj17_string_node_new(tok->value.as_string, lineno);

@@ -16,8 +16,8 @@
 void ifj17_object_inspect(ifj17_object_t *self) {
   switch (self->type)
   {
-  case IFJ17_TYPE_FLOAT:
-    printf("%2f\n", self->value.as_float);
+  case IFJ17_TYPE_DOUBLE:
+    printf("%2f\n", self->value.as_double);
     break;
   case IFJ17_TYPE_INT:
     printf("%d\n", self->value.as_int);
@@ -58,14 +58,14 @@ ifj17_object_t *ifj17_int_new(int val) {
 }
 
 /*
- * Allocate a new float object with the given `val`.
+ * Allocate a new double object with the given `val`.
  */
 
-ifj17_object_t *ifj17_float_new(float val) {
-  ifj17_object_t *self = alloc_object(IFJ17_TYPE_FLOAT);
+ifj17_object_t *ifj17_double_new(double val) {
+  ifj17_object_t *self = alloc_object(IFJ17_TYPE_DOUBLE);
   if (unlikely(!self))
     return NULL;
-  self->value.as_float = val;
+  self->value.as_double = val;
   return self;
 }
 

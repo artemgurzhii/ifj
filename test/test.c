@@ -414,7 +414,7 @@ int main(int argc, const char **argv) {
 
   printf("\n");
   printf("  \e[90mcompleted in \e[32m%.5fs\e[0m\n",
-         (float)(clock() - start) / CLOCKS_PER_SEC);
+         (double)(clock() - start) / CLOCKS_PER_SEC);
   printf("\n");
   return 0;
 }
