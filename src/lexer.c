@@ -52,8 +52,8 @@
  */
 
 #define need_semi(t)                                                                \
-  (t == IFJ17_TOKEN_ID || t == IFJ17_TOKEN_FLOAT || t == IFJ17_TOKEN_INT ||         \
-   t == IFJ17_TOKEN_STRING || t == IFJ17_TOKEN_RETURN)
+  (t == IFJ17_TOKEN_ID || t == IFJ17_TOKEN_DOUBLE || t == IFJ17_TOKEN_INTEGER ||    \
+   t == IFJ17_TOKEN_STRING || t == IFJ17_TOKEN_RETURN) // ????
 
 /*
  * Initialize lexer with the given `source` and `filename`.
@@ -103,40 +103,71 @@ static int scan_ident(ifj17_lexer_t *self, int c) {
       return token(IF);
     if (strcmp("as", buf) == 0)
       return token(AS);
+    if (strcmp("do", buf) == 0)
+      return token(DO);
+    if (strcmp("or", buf) == 0)
+      return token(OR);
     break;
   case 3:
-    if (strcmp("use", buf) == 0)
-      return token(USE);
-    if (strcmp("for", buf) == 0)
-      return token(FOR);
-    if (strcmp("def", buf) == 0)
-      return token(DEF);
+    if (strcmp("asc", buf) == 0)
+      return token(ASC);
     if (strcmp("end", buf) == 0)
       return token(END);
-    if (strcmp("let", buf) == 0)
-      return token(LET);
+    if (strcmp("for", buf) == 0)
+      return token(FOR);
     if (strcmp("and", buf) == 0)
-      return token(OP_BIT_AND);
+      return token(AND);
     if (strcmp("not", buf) == 0)
       return token(OP_LNOT);
     break;
   case 4:
     if (strcmp("else", buf) == 0)
       return token(ELSE);
-    if (strcmp("type", buf) == 0)
-      return token(TYPE);
+    if (strcmp("loop", buf) == 0)
+      return token(LOOP);
+    if (strcmp("exit", buf) == 0)
+      return token(EXIT);
+    if (strcmp("next", buf) == 0)
+      return token(NEXT);
+    if (strcmp("true", buf) == 0)
+      return token(TRUE);
     break;
   case 5:
     if (strcmp("while", buf) == 0)
       return token(WHILE);
-    if (strcmp("until", buf) == 0)
-      return token(UNTIL);
+    if (strcmp("print", buf) == 0)
+      return token(PRINT);
+    if (strcmp("scope", buf) == 0)
+      return token(SCOPE);
+    if (strcmp("false", buf) == 0)
+      return token(FALSE);
     break;
-  default:
+  case 6:
+    if (strcmp("length", buf) == 0)
+      return token(LENGTH);
+    if (strcmp("substr", buf) == 0)
+      return token(SUBSTR);
+    if (strcmp("elseif", buf) == 0)
+      return token(ELSEIF);
+    if (strcmp("shared", buf) == 0)
+      return token(SHARED);
+    if (strcmp("static", buf) == 0)
+      return token(STATIC);
     if (strcmp("return", buf) == 0)
       return token(RETURN);
-    if (strcmp("unless", buf) == 0)
-      return token(UNLESS);
+    break;
+  case 7:
+    if (strcmp("then", buf) == 0)
+      return token(THEN);
+    break;
+  case 8:
+    if (strcmp("function", buf) == 0)
+      return token(FUNCTION);
+    if (strcmp("continue", buf) == 0)
+      return token(CONTINUE);
+    break;
+  default:
+    break;
   }
 
   self->tok.value.as_string = strdup(buf);
@@ -159,10 +190,10 @@ static int hex_literal(ifj17_lexer_t *self) {
 /*
  * Scan string.
  */
-
+// TODO delete quote arg
 static int scan_string(ifj17_lexer_t *self, int quote) {
   int c, len = 0;
-  char buf[128];
+  char buf[128]; // TODO: change to realloc
   token(STRING);
 
   while (quote != (c = next))
@@ -224,7 +255,7 @@ static int scan_number(ifj17_lexer_t *self, int c) {
    * 1 -> '+'(default)
    * 0 -> '-'
    */
-  token(INT);
+  token(INTEGER);
 
   switch (c)
   {
@@ -340,87 +371,31 @@ scan:
     return token(LPAREN);
   case ')':
     return token(RPAREN);
-  case '{':
-    return token(LBRACE);
-  case '}':
-    return token(RBRACE);
-  case '[':
-    return token(LBRACK);
-  case ']':
-    return token(RBRACK);
   case ',':
     return token(COMMA);
   case '.':
     return token(OP_DOT);
-  case '%':
-    return token(OP_MOD);
-  case '^':
-    return token(OP_BIT_XOR);
-  case '~':
-    return token(OP_BIT_NOT);
-  case '?':
-    return token(QMARK);
-  case ':':
-    return token(COLON);
   case '+':
-    switch (next)
-    {
-    case '+':
-      return token(OP_INCR);
-    case '=':
-      return token(OP_PLUS_ASSIGN);
-    default:
-      return undo, token(OP_PLUS);
-    }
+    return token(OP_PLUS);
   case '-':
-    switch (next)
-    {
-    case '-':
-      return token(OP_DECR);
-    case '=':
-      return token(OP_MINUS_ASSIGN);
-    default:
-      return undo, token(OP_MINUS);
-    }
+    return token(OP_MINUS);
   case '*':
-    switch (next)
-    {
-    case '=':
-      return token(OP_MUL_ASSIGN);
-    case '*':
-      return token(OP_POW);
-    default:
-      return undo, token(OP_MUL);
-    }
+    return token(OP_MUL);
   case '/':
-    return '=' == next ? token(OP_DIV_ASSIGN) : (undo, token(OP_DIV));
+    return token(OP_DIV_DOUBLE);
+  case '\\':
+    return token(OP_DIV_INTEGER);
   case '!':
-    return '=' == next ? token(OP_NEQ) : (undo, token(OP_NOT));
+    return '"' == next ? scan_string(self, c) : token(ILLEGAL);
   case '=':
-    return '=' == next ? token(OP_EQ) : (undo, token(OP_ASSIGN));
-  case '&':
-    switch (next)
-    {
-    case '&':
-      return '=' == next ? token(OP_AND_ASSIGN) : (undo, token(OP_AND));
-    default:
-      return undo, token(OP_FORK);
-    }
-  case '|':
-    switch (next)
-    {
-    case '|':
-      return '=' == next ? token(OP_OR_ASSIGN) : (undo, token(OP_OR));
-    default:
-      return undo, token(OP_BIT_OR);
-    }
+    return token(OP_ASSIGN);
   case '<':
     switch (next)
     {
     case '=':
       return token(OP_LTE);
-    case '<':
-      return token(OP_BIT_SHL);
+    case '>':
+      return token(OP_NOT_EQ);
     default:
       return undo, token(OP_LT);
     }
@@ -429,16 +404,9 @@ scan:
     {
     case '=':
       return token(OP_GTE);
-    case '>':
-      return token(OP_BIT_SHR);
     default:
       return undo, token(OP_GT);
     }
-  case '#':
-    while ((c = next) != '\n' && c)
-      ;
-    undo;
-    goto scan;
   case ';':
     return token(SEMICOLON);
   case '\n':
@@ -448,10 +416,7 @@ scan:
       return undo, token(SEMICOLON);
     }
     ++self->lineno;
-    goto scan;
-  case '"':
-  case '\'':
-    return scan_string(self, c);
+    goto scan; // TODO: Check if need_semi is needed
   case 0:
     token(EOS);
     return 0;
