@@ -33,9 +33,9 @@ static void emit_op(ifj17_vm_t *vm, ifj17_binary_op_node_t *node, int l, int r) 
   case IFJ17_TOKEN_OP_MINUS:
     emit(SUB, 0, l, r);
     break;
-  case IFJ17_TOKEN_OP_DIV:
-    emit(DIV, 0, l, r);
-    break;
+  // case IFJ17_TOKEN_OP_DIV:
+  //   emit(DIV, 0, l, r);
+  //   break;
   case IFJ17_TOKEN_OP_MUL:
     emit(MUL, 0, l, r);
     break;
