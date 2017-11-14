@@ -25,7 +25,7 @@ typedef struct ifj17_visitor
   void (*visit_block)(struct ifj17_visitor *self, ifj17_block_node_t *node);
   void (*visit_id)(struct ifj17_visitor *self, ifj17_id_node_t *node);
   void (*visit_int)(struct ifj17_visitor *self, ifj17_int_node_t *node);
-  void (*visit_float)(struct ifj17_visitor *self, ifj17_float_node_t *node);
+  void (*visit_double)(struct ifj17_visitor *self, ifj17_double_node_t *node);
   void (*visit_string)(struct ifj17_visitor *self, ifj17_string_node_t *node);
   void (*visit_slot)(struct ifj17_visitor *self, ifj17_slot_node_t *node);
   void (*visit_call)(struct ifj17_visitor *self, ifj17_call_node_t *node);
