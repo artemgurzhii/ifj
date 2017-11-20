@@ -114,6 +114,12 @@ static ifj17_node_t *type_expr(ifj17_parser_t *self) {
     return NULL;
   }
 
+  next;
+
+  if (is(AS) == false) {
+    return NULL;
+  }
+
   ifj17_node_t *ret =
       (ifj17_node_t *)ifj17_id_node_new(self->tok->value.as_string, lineno);
   next;
@@ -158,6 +164,7 @@ static ifj17_node_t *decl_expr(ifj17_parser_t *self, bool need_type) {
 
   next;
 
+  // type
   ifj17_node_t *type = type_expr(self);
   if (type == false) {
     return error("expecting type");
@@ -392,22 +399,8 @@ static ifj17_vec_t *function_params(ifj17_parser_t *self) {
 
     context("function param");
 
-    // ('=' expr)?
     ifj17_object_t *param;
-    if (accept(OP_ASSIGN)) {
-      ifj17_node_t *val = expr(self);
-      if (val == false) {
-        return NULL;
-      }
-      param = ifj17_node((ifj17_node_t *)ifj17_binary_op_node_new(
-          IFJ17_TOKEN_OP_ASSIGN, decl, val, line));
-    } else {
-      // if there isn't a value we need a type
-      if (decl->type == false) {
-        return error("expecting type");
-      }
-      param = ifj17_node((ifj17_node_t *)decl);
-    }
+    param = ifj17_node((ifj17_node_t *)decl);
 
     ifj17_vec_push(params, param);
   } while (accept(COMMA));
@@ -529,6 +522,66 @@ static ifj17_node_t *expr(ifj17_parser_t *self) {
     return NULL;
   }
   return node;
+}
+
+/*
+ *  Declare function
+ */
+
+static ifj17_node_t *func_proto_stmt(ifj17_parser_t *self){
+  debug("decl_expr");
+  context("declaration");
+
+  ifj17_node_t *type = NULL;
+  ifj17_vec_t *vec = ifj17_vec_new();
+  int decl_line = lineno;
+  ifj17_vec_t *params;
+
+  //Declare
+  if (!accept(DECLARE))
+    return error("expecting declaration");
+
+  next;
+
+  // 'function'
+  if (accept(FUNCTION) == false) {
+    return NULL;
+  }
+
+  // id
+  if (is(ID) == false) {
+    return error("missing function name");
+  }
+
+  const char *name = self->tok->value.as_string;
+  next;
+
+  // '('
+  if (accept(LPAREN)) {
+    // params?
+    if ((params = function_params(self)) == false) {
+      return NULL;
+    }
+    // ')'
+    context("function");
+    if (accept(RPAREN) == false) {
+      return error("missing closing ')'");
+    }
+  } else {
+    params = ifj17_vec_new();
+  }
+
+  context("function");
+
+  // ('AS' type_expr)?
+  if (accept(AS) == false) {
+    type = type_expr(self);
+    if (type == false) {
+      return error("missing type");
+    }
+  }
+
+  return (ifj17_node_t *)ifj17_decl_node_new(vec, type, decl_line);
 }
 
 /*
