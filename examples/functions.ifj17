@@ -1,0 +1,23 @@
+def greet
+  return "hello"
+end
+
+def greet()
+  return "hello"
+end
+
+def greet():  string
+  return "hello"
+end
+
+def greet(name:string)
+  return "hello " + name
+end
+
+def greet(first:string, last:string)
+  return "hello " + first + " " + last
+end
+
+def greet(first:string, last:string):string
+  return "hello " + first + " " + last
+end

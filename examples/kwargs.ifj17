@@ -1,0 +1,6 @@
+rm('Makefile')
+rm('Makefile', true)
+rm('Makefile', verbose: true)
+rm('Makefile', verbose: true, foo: 'bar')
+rm(path: 'Makefile', verbose: true)
+rm(verbose: true, path: 'Makefile')
