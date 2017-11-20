@@ -42,8 +42,8 @@ typedef enum
   IFJ17_TYPE_DOUBLE,
   IFJ17_TYPE_STRING,
   IFJ17_TYPE_OBJECT,
-  IFJ17_TYPE_ARRAY,
-  IFJ17_TYPE_LIST
+  IFJ17_TYPE_ARRAY, // delete
+  IFJ17_TYPE_LIST // delete
 } ifj17_object;
 
 /*
