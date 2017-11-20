@@ -161,34 +161,6 @@ static void visit_decl(ifj17_visitor_t *self, ifj17_decl_node_t *node) {
 }
 
 /*
- * Visit let `node`.
- */
-
-static void visit_let(ifj17_visitor_t *self, ifj17_let_node_t *node) {
-  print_func("(let");
-  indents++;
-
-  ifj17_vec_each(node->vec, {
-    ifj17_binary_op_node_t *bin = (ifj17_binary_op_node_t *)val->value.as_pointer;
-
-    print_func("\n");
-    INDENT;
-    visit(bin->left);
-
-    if (bin->right)
-    {
-      print_func("\n");
-      INDENT;
-      print_func(" = ");
-      visit(bin->right);
-    }
-  });
-
-  print_func(")");
-  indents--;
-}
-
-/*
  * Visit string `node`.
  */
 
@@ -229,57 +201,6 @@ static void visit_binary_op(ifj17_visitor_t *self, ifj17_binary_op_node_t *node)
   visit(node->left);
   print_func(" ");
   visit(node->right);
-  print_func(")");
-}
-
-/*
- * Visit array `node`.
- */
-
-static void visit_array(ifj17_visitor_t *self, ifj17_array_node_t *node) {
-  print_func("(array\n");
-  ++indents;
-  ifj17_vec_each(node->vals, {
-    INDENT;
-    visit((ifj17_node_t *)val->value.as_pointer);
-    if (i != len - 1)
-      print_func("\n");
-  });
-  --indents;
-  print_func(")");
-}
-
-/*
- * Visit hash `node`.
- */
-
-static void visit_hash(ifj17_visitor_t *self, ifj17_hash_node_t *node) {
-  print_func("(hash\n");
-  ++indents;
-  ifj17_vec_each(node->pairs, {
-    INDENT;
-    visit(((ifj17_hash_pair_node_t *)val->value.as_pointer)->key);
-    print_func(": ");
-    visit(((ifj17_hash_pair_node_t *)val->value.as_pointer)->val);
-    print_func("\n");
-  });
-  --indents;
-  print_func(")");
-}
-
-/*
- * Visit subscript `node`.
- */
-
-static void visit_subscript(ifj17_visitor_t *self, ifj17_subscript_node_t *node) {
-  print_func("(subscript\n");
-  ++indents;
-  INDENT;
-  visit(node->left);
-  print_func("\n");
-  INDENT;
-  visit(node->right);
-  --indents;
   print_func(")");
 }
 
@@ -443,19 +364,6 @@ static void visit_if(ifj17_visitor_t *self, ifj17_if_node_t *node) {
 }
 
 /*
- * Visit use `node`.
- */
-
-static void visit_use(ifj17_visitor_t *self, ifj17_use_node_t *node) {
-  print_func("(use \'%s\'", node->module);
-  if (node->alias)
-  {
-    print_func(" as %s", node->alias);
-  }
-  print_func(")");
-}
-
-/*
  * Pretty-print the given `node` to stdout.
  */
 
@@ -463,23 +371,17 @@ void ifj17_prettyprint(ifj17_node_t *node) {
   ifj17_visitor_t visitor = {.visit_if = visit_if,
                              .visit_id = visit_id,
                              .visit_int = visit_int,
-                             .visit_slot = visit_slot,
                              .visit_call = visit_call,
-                             .visit_hash = visit_hash,
-                             .visit_array = visit_array,
                              .visit_while = visit_while,
                              .visit_block = visit_block,
                              .visit_decl = visit_decl,
-                             .visit_let = visit_let,
                              .visit_double = visit_double,
                              .visit_string = visit_string,
                              .visit_return = visit_return,
                              .visit_function = visit_function,
                              .visit_unary_op = visit_unary_op,
                              .visit_binary_op = visit_binary_op,
-                             .visit_subscript = visit_subscript,
-                             .visit_type = visit_type,
-                             .visit_use = visit_use};
+                             .visit_type = visit_type};
 
   ifj17_visit(&visitor, node);
 
