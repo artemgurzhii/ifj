@@ -29,18 +29,12 @@ void ifj17_visit(ifj17_visitor_t *self, ifj17_node_t *node) {
     VISIT(id);
   case IFJ17_NODE_DECL:
     VISIT(decl);
-  case IFJ17_NODE_LET:
-    VISIT(let);
   case IFJ17_NODE_INT:
     VISIT(int);
   case IFJ17_NODE_DOUBLE:
     VISIT(double);
   case IFJ17_NODE_STRING:
     VISIT(string);
-  case IFJ17_NODE_SUBSCRIPT:
-    VISIT(subscript);
-  case IFJ17_NODE_SLOT:
-    VISIT(slot);
   case IFJ17_NODE_CALL:
     VISIT(call);
   case IFJ17_NODE_IF:
@@ -55,13 +49,7 @@ void ifj17_visit(ifj17_visitor_t *self, ifj17_node_t *node) {
     VISIT(function);
   case IFJ17_NODE_TYPE:
     VISIT(type);
-  case IFJ17_NODE_ARRAY:
-    VISIT(array);
-  case IFJ17_NODE_HASH:
-    VISIT(hash);
   case IFJ17_NODE_RETURN:
     VISIT(return );
-  case IFJ17_NODE_USE:
-    VISIT(use);
   }
 }
