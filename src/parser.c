@@ -92,110 +92,16 @@ void ifj17_parser_init(ifj17_parser_t *self, ifj17_lexer_t *lex) {
 static ifj17_node_t *paren_expr(ifj17_parser_t *self) {
   ifj17_node_t *node;
   debug("paren_expr");
-  if (!accept(LPAREN))
+  if (accept(LPAREN) == false){
     return NULL;
-  if (!(node = expr(self)))
-    return NULL;
-  if (!accept(RPAREN))
-    return error("expression missing closing ')'");
-  return node;
-}
-
-/*
- *   expr ','?
- * | expr ',' arg_list
- */
-
-int arg_list(ifj17_parser_t *self, ifj17_array_node_t *arr, ifj17_token delim) {
-  // trailing ','
-  if (delim == self->tok->type)
-    return 1;
-
-  // expr
-  ifj17_node_t *val;
-  if (!(val = expr(self)))
-    return 0;
-
-  ifj17_vec_push(arr->vals, ifj17_node(val));
-
-  // ',' arg_list
-  if (accept(COMMA))
-  {
-    if (!arg_list(self, arr, delim))
-      return 0;
   }
-
-  return 1;
-}
-
-/*
- * '[' arg_list? ']'
- */
-
-static ifj17_node_t *array_expr(ifj17_parser_t *self) {
-  ifj17_array_node_t *node = ifj17_array_node_new(lineno);
-  debug("array_expr");
-
-  // if (!accept(LBRACK))
-  //   return NULL;
-  // context("array");
-  // if (!arg_list(self, node, IFJ17_TOKEN_RBRACK))
-  //   return NULL;
-  // if (!accept(RBRACK))
-  //   return error("array missing closing ']'");
-  return (ifj17_node_t *)node;
-}
-
-/*
- *   id ':' expr
- * | id ':' expr ',' hash_pairs
- */
-
-int hash_pairs(ifj17_parser_t *self, ifj17_hash_node_t *hash, ifj17_token delim) {
-  // trailing ','
-  if (delim == self->tok->type)
-    return 1;
-
-  ifj17_hash_pair_node_t *pair = ifj17_hash_pair_node_new(lineno);
-  if (!(pair->key = expr(self)))
-    return 0;
-
-  // // :
-  // if (!accept(COLON))
-  //   return error("hash pair ':' missing"), 0;
-  //
-  // // expr
-  // if (!(pair->val = expr(self)))
-  //   return 0;
-  //
-  // ifj17_vec_push(hash->pairs, ifj17_node((ifj17_node_t *)pair));
-  //
-  // // ',' hash_pairs
-  // if (accept(COMMA))
-  // {
-  //   if (!hash_pairs(self, hash, delim))
-  //     return 0;
-  // }
-
-  return 1;
-}
-
-/*
- * '{' hash_pairs? '}'
- */
-
-static ifj17_node_t *hash_expr(ifj17_parser_t *self) {
-  ifj17_hash_node_t *node = ifj17_hash_node_new(lineno);
-  debug("hash_expr");
-
-  // if (!accept(LBRACE))
-  //   return NULL;
-  // context("hash");
-  // if (!hash_pairs(self, node, IFJ17_TOKEN_RBRACE))
-  //   return NULL;
-  // if (!accept(RBRACE))
-  //   return error("hash missing closing '}'");
-  return (ifj17_node_t *)node;
+  if ((node = expr(self)) == false) {
+    return NULL;
+  }
+  if (accept(RPAREN) == false) {
+    return error("expression missing closing ')'");
+  }
+  return node;
 }
 
 /*
@@ -204,8 +110,9 @@ static ifj17_node_t *hash_expr(ifj17_parser_t *self) {
 
 static ifj17_node_t *type_expr(ifj17_parser_t *self) {
   debug("type_expr");
-  if (!is(ID))
+  if (is(ID) == false) {
     return NULL;
+  }
 
   ifj17_node_t *ret =
       (ifj17_node_t *)ifj17_id_node_new(self->tok->value.as_string, lineno);
@@ -215,46 +122,44 @@ static ifj17_node_t *type_expr(ifj17_parser_t *self) {
 }
 
 /*
- * id (',' id)* ':' type_expr
+ * Dim id as type_expr
  */
+// TODO: remove need_type, var decl in ifj17 always requires type (compare with luna)
+// TODO: not shure if works as required, need to be tested
 
 static ifj17_node_t *decl_expr(ifj17_parser_t *self, bool need_type) {
   debug("decl_expr");
   context("declaration");
 
-  if (!is(ID))
-    return NULL;
-
   ifj17_vec_t *vec = ifj17_vec_new();
   int decl_line = lineno;
-  while (is(ID))
-  {
-    // id
-    ifj17_node_t *id =
-        (ifj17_node_t *)ifj17_id_node_new(self->tok->value.as_string, lineno);
-    ifj17_vec_push(vec, ifj17_node(id));
-    next;
 
-    // ','
-    if (!accept(COMMA))
-    {
-      break;
-    }
+  // 'dim'
+  if (accept(DIM) == false) {
+    return error("expecting dim");
   }
 
-  // ':'
-  // if (!accept(COLON))
-  // {
-  //   if (need_type)
-  //   {
-  //     return error("expecting type");
-  //   } else
-  //   { return (ifj17_node_t *)ifj17_decl_node_new(vec, NULL, decl_line); }
-  // }
+  next;
+
+  if (is(ID) == false) {
+    return error("expecting id");
+  }
+
+  // id
+  ifj17_node_t *id =
+      (ifj17_node_t *)ifj17_id_node_new(self->tok->value.as_string, lineno);
+  ifj17_vec_push(vec, ifj17_node(id));
+  next;
+
+  // 'as'
+  if (accept(AS) == false) {
+    return error("expecting as");
+  }
+
+  next;
 
   ifj17_node_t *type = type_expr(self);
-  if (!type)
-  {
+  if (type == false) {
     return error("expecting type");
   }
 
@@ -266,8 +171,6 @@ static ifj17_node_t *decl_expr(ifj17_parser_t *self, bool need_type) {
  * | int
  * | double
  * | string
- * | array
- * | hash
  * | paren_expr
  */
 
@@ -275,27 +178,21 @@ static ifj17_node_t *primary_expr(ifj17_parser_t *self) {
   debug("primary_expr");
   ifj17_node_t *ret = NULL;
   ifj17_token_t *tok = self->tok;
-  switch (tok->type)
-  {
+  switch (tok->type) {
   case IFJ17_TOKEN_ID:
     ret = (ifj17_node_t *)ifj17_id_node_new(tok->value.as_string, lineno);
     break;
-  // case IFJ17_TOKEN_INTEGER:
-  //   ret = (ifj17_node_t *)ifj17_int_node_new(tok->value.as_int, lineno);
-  //   break;
-  // case IFJ17_TOKEN_DOUBLE:
-  //   ret = (ifj17_node_t *)ifj17_doubl_node_new(tok->value.as_double, lineno);
-  //   break;
+  case IFJ17_TOKEN_INTEGER:
+    ret = (ifj17_node_t *)ifj17_int_node_new(tok->value.as_int, lineno);
+    break;
+  case IFJ17_TOKEN_DOUBLE:
+    ret = (ifj17_node_t *)ifj17_doubl_node_new(tok->value.as_double, lineno);
+    break;
   case IFJ17_TOKEN_STRING:
     ret = (ifj17_node_t *)ifj17_string_node_new(tok->value.as_string, lineno);
     break;
-  // case IFJ17_TOKEN_LBRACK:
-  //   return array_expr(self);
-  // case IFJ17_TOKEN_LBRACE:
-  //   return hash_expr(self);
   }
-  if (ret)
-  {
+  if (ret) {
     next;
     return ret;
   }
@@ -303,74 +200,25 @@ static ifj17_node_t *primary_expr(ifj17_parser_t *self) {
 }
 
 /*
- *   call_expr
- * | call_expr '**' call_expr
- */
-
-static ifj17_node_t *pow_expr(ifj17_parser_t *self) {
-  ifj17_node_t *node, *right;
-  int line = lineno;
-
-  debug("pow_expr");
-  if (!(node = call_expr(self, NULL)))
-    return NULL;
-  // if (accept(OP_POW))
-  // {
-  //   context("** operation");
-  //   if (right = call_expr(self, NULL))
-  //   {
-  //     return (ifj17_node_t *)ifj17_binary_op_node_new(IFJ17_TOKEN_OP_POW, node,
-  //                                                     right, line);
-  //   } else
-  //   { return error("missing right-hand expression"); }
-  // }
-  return node;
-}
-
-/*
- *   pow_expr
- * | pow_expr '++'
- * | pow_expr '--'
- */
-
-static ifj17_node_t *postfix_expr(ifj17_parser_t *self) {
-  ifj17_node_t *node;
-  int line = lineno;
-  debug("postfix_expr");
-  // if (!(node = pow_expr(self)))
-  //   return NULL;
-  // if (is(OP_INCR) || is(OP_DECR))
-  // {
-  //   node = (ifj17_node_t *)ifj17_unary_op_node_new(self->tok->type, node, 1, line);
-  //   next;
-  // }
-  return node;
-}
-
-/*
- *   '++' unary_expr
- * | '--' unary_expr
- * | '~' unary_expr
  * | '+' unary_expr
  * | '-' unary_expr
  * | '!' unary_expr
  * | primary_expr
- */
+ */ // TODO: there are 3 unary ops in ifj17 - +,-,'not'. Need to make it work with 'not'
 
 static ifj17_node_t *unary_expr(ifj17_parser_t *self) {
   debug("unary_expr");
+  ifj17_node_t *node;
   int line = lineno;
-  if (is(OP_PLUS) || is(OP_MINUS))
-  {
-    int op = self->tok->type;
+  if (is(OP_PLUS) || is(OP_MINUS)) {
+    node = (ifj17_node_t *)ifj17_unary_op_node_new(self->tok->type, unary_expr(self), 0, line);
     next;
-    return (ifj17_node_t *)ifj17_unary_op_node_new(op, unary_expr(self), 0, line);
   }
-  return postfix_expr(self);
+  return node;
 }
 
 /*
- * unary_expr (('* | '/' | '%') unary_expr)*
+ * unary_expr (('* | '/' | '\') unary_expr)*
  */
 
 static ifj17_node_t *multiplicative_expr(ifj17_parser_t *self) {
@@ -378,18 +226,18 @@ static ifj17_node_t *multiplicative_expr(ifj17_parser_t *self) {
   ifj17_node_t *node, *right;
   int line = lineno;
   debug("multiplicative_expr");
-  if (!(node = unary_expr(self)))
+  if ((node = unary_expr(self)) == false) {
     return NULL;
-  while (is(OP_MUL) || is(OP_DIV_DOUBLE) || is(OP_DIV_INTEGER))
-  {
+  }
+  while (is(OP_MUL) || is(OP_DIV_DOUBLE) || is(OP_DIV_INTEGER)) {
     op = self->tok->type;
     next;
     context("multiplicative operation");
-    if (right = unary_expr(self))
-    {
+    if (right = unary_expr(self)) {
       node = (ifj17_node_t *)ifj17_binary_op_node_new(op, node, right, line);
-    } else
-    { return error("missing right-hand expression"); }
+    } else {
+      return error("missing right-hand expression");
+    }
   }
   return node;
 }
@@ -403,49 +251,24 @@ static ifj17_node_t *additive_expr(ifj17_parser_t *self) {
   ifj17_node_t *node, *right;
   int line = lineno;
   debug("additive_expr");
-  if (!(node = multiplicative_expr(self)))
+  if ((node = multiplicative_expr(self)) == false) {
     return NULL;
-  while (is(OP_PLUS) || is(OP_MINUS))
-  {
+  }
+  while (is(OP_PLUS) || is(OP_MINUS)) {
     op = self->tok->type;
     next;
     context("additive operation");
-    if (right = multiplicative_expr(self))
-    {
+    if (right = multiplicative_expr(self)) {
       node = (ifj17_node_t *)ifj17_binary_op_node_new(op, node, right, line);
-    } else
-    { return error("missing right-hand expression"); }
+    } else {
+      return error("missing right-hand expression");
+    }
   }
   return node;
 }
 
 /*
- * additive_expr (('<<' | '>>') additive_expr)*
- */
-
-static ifj17_node_t *shift_expr(ifj17_parser_t *self) {
-  ifj17_token op;
-  ifj17_node_t *node, *right;
-  int line = lineno;
-  debug("shift_expr");
-  if (!(node = additive_expr(self)))
-    return NULL;
-  // while (is(OP_BIT_SHL) || is(OP_BIT_SHR))
-  // {
-  //   op = self->tok->type;
-  //   next;
-  //   context("shift operation");
-  //   if (right = additive_expr(self))
-  //   {
-  //     node = (ifj17_node_t *)ifj17_binary_op_node_new(op, node, right, line);
-  //   } else
-  //   { return error("missing right-hand expression"); }
-  // }
-  return node;
-}
-
-/*
- * shift_expr (('<' | '<=' | '>' | '>=') shift_expr)*
+ * additive_expr (('<' | '<=' | '>' | '>=') additive_expr)*
  */
 
 static ifj17_node_t *relational_expr(ifj17_parser_t *self) {
@@ -453,136 +276,69 @@ static ifj17_node_t *relational_expr(ifj17_parser_t *self) {
   ifj17_node_t *node, *right;
   int line = lineno;
   debug("relational_expr");
-  if (!(node = shift_expr(self)))
+  if ((node = additive_expr(self)) == false) {
     return NULL;
-  while (is(OP_LT) || is(OP_LTE) || is(OP_GT) || is(OP_GTE))
-  {
+  }
+  while (is(OP_LT) || is(OP_LTE) || is(OP_GT) || is(OP_GTE)) {
     op = self->tok->type;
     next;
     context("relational operation");
-    if (right = shift_expr(self))
-    {
+    if (right = additive_expr(self)) {
       node = (ifj17_node_t *)ifj17_binary_op_node_new(op, node, right, line);
-    } else
-    { return error("missing right-hand expression"); }
+    } else {
+      return error("missing right-hand expression");
+    }
   }
   return node;
 }
 
 /*
- * relational_expr (('==' | '!=') relational_expr)*
+ * relational_expr (('==' | '<>') relational_expr)*
  */
+ // TODO: ifj17 doesn't have '==' - lol, but let it be here for now
 
 static ifj17_node_t *equality_expr(ifj17_parser_t *self) {
   ifj17_token op;
   ifj17_node_t *node, *right;
   int line = lineno;
   debug("equality_expr");
-  if (!(node = relational_expr(self)))
+  if ((node = relational_expr(self)) == false) {
     return NULL;
-  // while (is(OP_EQ) || is(OP_NEQ))
-  // {
-  //   op = self->tok->type;
-  //   next;
-  //   context("equality operation");
-  //   if (right = relational_expr(self))
-  //   {
-  //     node = (ifj17_node_t *)ifj17_binary_op_node_new(op, node, right, line);
-  //   } else
-  //   { return error("missing right-hand expression"); }
-  // }
+  }
+  while (is(OP_NOT_EQ)) {
+    op = self->tok->type;
+    next;
+    context("equality operation");
+    if (right = relational_expr(self)) {
+      node = (ifj17_node_t *)ifj17_binary_op_node_new(op, node, right, line);
+    } else {
+      return error("missing right-hand expression");
+    }
+  }
   return node;
 }
 
-/*
- * equality_expr ('and' equality_expr)*
- */
-
-static ifj17_node_t *bitwise_and_expr(ifj17_parser_t *self) {
-  ifj17_node_t *node, *right;
-  debug("bitwise_and_expr");
-  int line = lineno;
-  if (!(node = equality_expr(self)))
-    return NULL;
-  // while (accept(OP_BIT_AND))
-  // {
-  //   context("& operation");
-  //   if (right = equality_expr(self))
-  //   {
-  //     node = (ifj17_node_t *)ifj17_binary_op_node_new(IFJ17_TOKEN_OP_BIT_AND, node,
-  //                                                     right, line);
-  //   } else
-  //   { return error("missing right-hand expression"); }
-  // }
-  return node;
-}
 
 /*
- * bitwise_and_expr ('^' bitwise_and_expr)*
- */
-
-static ifj17_node_t *bitwise_xor_expr(ifj17_parser_t *self) {
-  ifj17_node_t *node, *right;
-  debug("bitwise_xor_expr");
-  int line = lineno;
-  if (!(node = bitwise_and_expr(self)))
-    return NULL;
-  // while (accept(OP_BIT_XOR))
-  // {
-  //   context("^ operation");
-  //   if (right = bitwise_and_expr(self))
-  //   {
-  //     node = (ifj17_node_t *)ifj17_binary_op_node_new(IFJ17_TOKEN_OP_BIT_XOR, node,
-  //                                                     right, line);
-  //   } else
-  //   { return error("missing right-hand expression"); }
-  // }
-  return node;
-}
-
-/*
- * bitwise_xor_expr ('|' bitwise_xor_expr)*
- */
-
-static ifj17_node_t *bitswise_or_expr(ifj17_parser_t *self) {
-  ifj17_node_t *node, *right;
-  debug("bitswise_or_expr");
-  int line = lineno;
-  if (!(node = bitwise_xor_expr(self)))
-    return NULL;
-  // while (accept(OP_BIT_OR))
-  // {
-  //   context("| operation");
-  //   if (right = bitwise_xor_expr(self))
-  //   {
-  //     node = (ifj17_node_t *)ifj17_binary_op_node_new(IFJ17_TOKEN_OP_BIT_OR, node,
-  //                                                     right, line);
-  //   } else
-  //   { return error("missing right-hand expression"); }
-  // }
-  return node;
-}
-
-/*
- * bitswise_or_expr ('&&' bitswise_or_expr)*
+ * equality_expr ('&&' equality_expr)*
  */
 
 static ifj17_node_t *logical_and_expr(ifj17_parser_t *self) {
   ifj17_node_t *node, *right;
   debug("logical_and_expr");
   int line = lineno;
-  if (!(node = bitswise_or_expr(self)))
+  if ((node = equality_expr(self)) == false) {
     return NULL;
-  // while (accept(OP_AND))
-  // {
-  //   context("&& operation");
-  //   if (right = bitswise_or_expr(self))
-  //   {
-  //     node = (ifj17_node_t *)ifj17_binary_op_node_new(IFJ17_TOKEN_OP_AND, node,
-  //                                                     right, line);
-  //   } else
-  //   { return error("missing right-hand expression"); }
-  // }
+  }
+  while (accept(AND)) {
+    context("&& operation");
+    if (right = equality_expr(self)) {
+      node = (ifj17_node_t *)ifj17_binary_op_node_new(IFJ17_TOKEN_AND, node,
+                                                      right, line);
+    } else {
+      return error("missing right-hand expression");
+    }
+  }
   return node;
 }
 
@@ -594,29 +350,21 @@ static ifj17_node_t *logical_or_expr(ifj17_parser_t *self) {
   ifj17_node_t *node, *right;
   int line = lineno;
   debug("logical_or_expr");
-  if (!(node = logical_and_expr(self)))
+  if ((node = logical_and_expr(self)) == false) {
     return NULL;
+  }
 
-  // // '||'
-  // while (accept(OP_OR))
-  // {
-  //   context("|| operation");
-  //   if (right = logical_and_expr(self))
-  //   {
-  //     node = (ifj17_node_t *)ifj17_binary_op_node_new(IFJ17_TOKEN_OP_OR, node, right,
-  //                                                     line);
-  //   } else
-  //   { return error("missing right-hand expression"); }
-  //}
-
-  // '&'
-  // if (accept(OP_FORK))
-  // {
-  //   ifj17_id_node_t *id = ifj17_id_node_new("fork", line);
-  //   ifj17_call_node_t *call = ifj17_call_node_new((ifj17_node_t *)id, line);
-  //   ifj17_vec_push(call->args->vec, ifj17_node(node));
-  //   node = (ifj17_node_t *)call;
-  // }
+  // '||'
+  while (accept(OR)) {
+    context("|| operation");
+    if (right = logical_and_expr(self))
+    {
+      node = (ifj17_node_t *)ifj17_binary_op_node_new(IFJ17_TOKEN_OR, node, right,
+                                                      line);
+    } else {
+      return error("missing right-hand expression");
+    }
+  }
 
   return node;
 }
@@ -624,38 +372,38 @@ static ifj17_node_t *logical_or_expr(ifj17_parser_t *self) {
 /*
  * (decl_expr ('=' expr)? (',' decl_expr ('=' expr)?)*)
  */
+ // TODO: Check if feature is needed
 
 static ifj17_vec_t *function_params(ifj17_parser_t *self) {
   ifj17_vec_t *params = ifj17_vec_new();
   debug("params");
   context("function params");
 
-  if (!is(ID))
+  if (is(ID) == false) {
     return params;
+  }
 
-  do
-  {
+  do {
     int line = lineno;
     ifj17_node_t *decl = decl_expr(self, false);
-    if (!decl)
+    if (decl == false) {
       return NULL;
+    }
 
     context("function param");
 
     // ('=' expr)?
     ifj17_object_t *param;
-    if (accept(OP_ASSIGN))
-    {
+    if (accept(OP_ASSIGN)) {
       ifj17_node_t *val = expr(self);
-      if (!val)
+      if (val == false) {
         return NULL;
+      }
       param = ifj17_node((ifj17_node_t *)ifj17_binary_op_node_new(
           IFJ17_TOKEN_OP_ASSIGN, decl, val, line));
-    } else
-    {
+    } else {
       // if there isn't a value we need a type
-      if (!decl->type)
-      {
+      if (decl->type == false) {
         return error("expecting type");
       }
       param = ifj17_node((ifj17_node_t *)decl);
@@ -668,7 +416,7 @@ static ifj17_vec_t *function_params(ifj17_parser_t *self) {
 }
 
 /*
- * ':' params? block
+ *  params? block
  */
 
 static ifj17_node_t *function_expr(ifj17_parser_t *self) {
@@ -676,109 +424,20 @@ static ifj17_node_t *function_expr(ifj17_parser_t *self) {
   ifj17_vec_t *params;
   debug("function_expr");
 
-  // ':'
-  // if (accept(COLON))
-  // {
-  //   // params?
-  //   if (!(params = function_params(self)))
-  //     return NULL;
-  //   context("function");
-  //
-  //   // block
-  //   if (body = block(self))
-  //   {
-  //     // return (ifj17_node_t *) ifj17_function_node_new(body, params);
-  //   }
-  // }
+  // params?
+  if ((params = function_params(self)) == false) {
+    return NULL;
+  }
+
+  context("function");
+
+  // block
+  if (body = block(self)) {
+    // return (ifj17_node_t *) ifj17_function_node_new(body, params);
+    // TODO: line 457, see how it works and why commented in luna
+  }
 
   return NULL;
-}
-
-/*
- *   primary_expr
- * | primary_expr '[' expr ']'
- * | primary_expr '.' id
- * | primary_expr '.' call_expr
- */
-
-static ifj17_node_t *slot_access_expr(ifj17_parser_t *self, ifj17_node_t *left) {
-  int line = lineno;
-  debug("slot_access_expr");
-
-  // primary_expr
-  if (!left)
-  {
-    if (!(left = primary_expr(self)))
-      return NULL;
-  }
-
-  // subscript
-  // if (accept(LBRACK))
-  // {
-  //   ifj17_node_t *right;
-  //
-  //   if (!(right = expr(self)))
-  //   {
-  //     return error("missing index in subscript");
-  //   }
-  //   context("subscript");
-  //   if (!accept(RBRACK))
-  //     return error("missing closing ']'");
-  //   left = (ifj17_node_t *)ifj17_subscript_node_new(left, right, line);
-  //   return call_expr(self, left);
-  // }
-
-  // slot
-  while (accept(OP_DOT))
-  {
-    context("slot access");
-    if (!is(ID))
-      return error("expecting identifier");
-    ifj17_node_t *id =
-        (ifj17_node_t *)ifj17_id_node_new(self->tok->value.as_string, lineno);
-    next;
-
-    if (is(LPAREN))
-    {
-      ifj17_call_node_t *call;
-      ifj17_vec_t *args_vec;
-      ifj17_object_t *prev = NULL;
-
-      call = (ifj17_call_node_t *)call_expr(self, id);
-      if (ifj17_vec_length(call->args->vec) > 0)
-      {
-
-        // re-organize call arguments (issue #47)
-        args_vec = ifj17_vec_new();
-        ifj17_vec_each(call->args->vec, {
-          if (i == 0)
-          {
-            ifj17_vec_push(args_vec, ifj17_node(left));
-          } else
-          { ifj17_vec_push(args_vec, prev); }
-
-          prev = val;
-        });
-      } else
-      {
-        prev = ifj17_node(left);
-        args_vec = call->args->vec;
-      }
-
-      // add last argument
-      ifj17_vec_push(args_vec, prev);
-
-      // TODO: free the old arguments vector
-      call->args->vec = args_vec;
-      left = (ifj17_node_t *)call;
-
-    } else
-    { left = (ifj17_node_t *)ifj17_slot_node_new(left, id, line); }
-
-    left = call_expr(self, left);
-  }
-
-  return left;
 }
 
 /*
@@ -792,117 +451,16 @@ ifj17_args_node_t *call_args(ifj17_parser_t *self) {
   self->in_args++;
 
   debug("args");
-  do
-  {
-    if (node = expr(self))
-    {
-      // if (accept(COLON))
-      // {
-      //   context("keyword argument");
-      //
-      //   if (node->type != IFJ17_NODE_STRING && node->type != IFJ17_NODE_ID)
-      //   {
-      //     return error("expecting string or identifier as key");
-      //   }
-      //
-      //   ifj17_node_t *val = expr(self);
-      //   const char *str = ((ifj17_id_node_t *)node)->val;
-      //   ifj17_hash_set(args->hash, (char *)str, ifj17_node(val));
-      // } else
-      // { ifj17_vec_push(args->vec, ifj17_node(node)); }
-    } else
-    { return NULL; }
+  do {
+    if ((node = expr(self)) == false) {
+      return NULL;
+    }
+    ifj17_vec_push(args->vec, ifj17_node(node));
   } while (accept(COMMA));
 
   self->in_args--;
 
   return args;
-}
-
-/*
- *   slot_access_expr '(' args? ')'
- * | slot_access_expr
- */
-
-static ifj17_node_t *call_expr(ifj17_parser_t *self, ifj17_node_t *left) {
-  ifj17_node_t *right;
-  ifj17_node_t *prev = left;
-  ifj17_call_node_t *call = NULL;
-  int line = lineno;
-  debug("call_expr");
-
-  // slot_access_expr
-  if (!left)
-  {
-    if (!(left = slot_access_expr(self, NULL)))
-      return NULL;
-  }
-
-  // '('
-  if (accept(LPAREN))
-  {
-    context("function call");
-    call = ifj17_call_node_new(left, line);
-
-    // args? ')'
-    if (!is(RPAREN))
-    {
-      call->args = call_args(self);
-      if (!is(RPAREN))
-        return error("missing closing ')'");
-    }
-    next;
-    left = (ifj17_node_t *)call;
-  }
-
-  if (is(OP_DOT) && prev)
-  {
-    // stop here if the there was a previous left-hand expression
-    // and the current token is '.' because we're
-    // probably inside the loop in slot_access_expr
-    return left;
-  } else if (is(LPAREN))
-  {
-    return call_expr(self, left);
-  } else
-  { return slot_access_expr(self, left); }
-}
-
-/*
- * 'let' decl_expr ('=' expr)? (',' decl_expr ('=' expr)?)*
- */
-
-static ifj17_node_t *let_expr(ifj17_parser_t *self) {
-  // let already consumed
-  ifj17_vec_t *vec = ifj17_vec_new();
-  int let_line = lineno;
-
-  do
-  {
-    int line = lineno;
-    ifj17_node_t *decl = decl_expr(self, false);
-    ifj17_node_t *val = NULL;
-
-    context("let expression");
-    if (!decl)
-    {
-      return error("expecting declaration");
-    }
-
-    // '='
-    if (accept(OP_ASSIGN))
-    {
-      val = expr(self);
-      if (!val)
-        return error("expecting declaration initializer");
-    }
-
-    ifj17_node_t *bin = (ifj17_node_t *)ifj17_binary_op_node_new(
-        IFJ17_TOKEN_OP_ASSIGN, decl, val, line);
-    ifj17_vec_push(vec, ifj17_node(bin));
-  } while (accept(COMMA));
-
-  return (ifj17_node_t *)ifj17_let_node_new(vec, let_line);
 }
 
 /*
@@ -921,37 +479,22 @@ static ifj17_node_t *assignment_expr(ifj17_parser_t *self) {
   ifj17_node_t *node, *right;
   int line = lineno;
 
-  // let?
-  // if (accept(LET))
-  //   return let_expr(self);
-
   debug("assignment_expr");
-  if (!(node = logical_or_expr(self)))
+  if ((node = logical_or_expr(self)) == false) {
     return NULL;
+  }
 
   // =
-  if (is(OP_ASSIGN))
-  {
+  if (is(OP_ASSIGN)) {
     op = self->tok->type;
     next;
     context("assignment");
-    if (!(right = not_expr(self)))
+    if ((right = not_expr(self)) == false) {
       return NULL;
+    }
     ifj17_binary_op_node_t *ret = ifj17_binary_op_node_new(op, node, right, line);
     return (ifj17_node_t *)ret;
   }
-
-  // compound
-  // if (is(OP_PLUS_ASSIGN) || is(OP_MINUS_ASSIGN) || is(OP_DIV_ASSIGN) ||
-  //     is(OP_MUL_ASSIGN) || is(OP_OR_ASSIGN) || is(OP_AND_ASSIGN))
-  // {
-  //   op = self->tok->type;
-  //   next;
-  //   context("compound assignment");
-  //   if (!(right = not_expr(self)))
-  //     return NULL;
-  //   return (ifj17_node_t *)ifj17_binary_op_node_new(op, node, right, line);
-  // }
 
   return node;
 }
@@ -964,14 +507,14 @@ static ifj17_node_t *assignment_expr(ifj17_parser_t *self) {
 static ifj17_node_t *not_expr(ifj17_parser_t *self) {
   int line = lineno;
   debug("not_expr");
-  // if (accept(OP_LNOT))
-  // {
-  //   ifj17_node_t *expr;
-  //   if (!(expr = not_expr(self)))
-  //     return NULL;
-  //   return (ifj17_node_t *)ifj17_unary_op_node_new(IFJ17_TOKEN_OP_LNOT, expr, 0,
-  //                                                  line);
-  // }
+  if (accept(OP_LNOT)) {
+    ifj17_node_t *expr;
+    if ((expr = not_expr(self)) == false) {
+      return NULL;
+    }
+    return (ifj17_node_t *)ifj17_unary_op_node_new(IFJ17_TOKEN_OP_LNOT, expr, 0,
+                                                   line);
+  }
   return assignment_expr(self);
 }
 
@@ -982,53 +525,14 @@ static ifj17_node_t *not_expr(ifj17_parser_t *self) {
 static ifj17_node_t *expr(ifj17_parser_t *self) {
   ifj17_node_t *node;
   debug("expr");
-  if (!(node = not_expr(self)))
+  if ((node = not_expr(self)) == false) {
     return NULL;
+  }
   return node;
 }
 
 /*
- * 'type' id decl_expr* end
- */
-
-static ifj17_node_t *type_stmt(ifj17_parser_t *self) {
-  debug("type_stmt");
-  context("type statement");
-  ifj17_type_node_t *type;
-  int line = lineno;
-
-  // 'type'
-  // if (!accept(TYPE))
-  //   return NULL;
-
-  // id
-  if (!is(ID))
-    return error("missing type name");
-  const char *name = self->tok->value.as_string;
-  type = ifj17_type_node_new(name, line);
-  next;
-
-  // semicolon might have been inserted here
-  accept(SEMICOLON);
-
-  // type fields
-  do
-  {
-    ifj17_node_t *decl = decl_expr(self, true);
-    if (!decl)
-      return error("expecting field");
-
-    // semicolon might have been inserted here
-    accept(SEMICOLON);
-
-    ifj17_vec_push(type->fields, ifj17_node(decl));
-  } while (!accept(END));
-
-  return (ifj17_node_t *)type;
-}
-
-/*
- * 'def' id '(' args? ')' (':' type_expr)? block
+ * 'function' id '(' args? ')' ('as' type_expr)? block
  */
 
 static ifj17_node_t *function_stmt(ifj17_parser_t *self) {
@@ -1039,46 +543,46 @@ static ifj17_node_t *function_stmt(ifj17_parser_t *self) {
   debug("function_stmt");
   context("function statement");
 
-  // 'def'
-  // if (!accept(DEF))
-  //   return NULL;
+  // 'function'
+  if (accept(FUNCTION) == false) {
+    return NULL;
+  }
 
   // id
-  if (!is(ID))
+  if (is(ID) == false) {
     return error("missing function name");
+  }
+
   const char *name = self->tok->value.as_string;
   next;
 
   // '('
-  if (accept(LPAREN))
-  {
+  if (accept(LPAREN)) {
     // params?
-    if (!(params = function_params(self)))
+    if ((params = function_params(self)) == false) {
       return NULL;
-
+    }
     // ')'
     context("function");
-    if (!accept(RPAREN))
+    if (accept(RPAREN) == false) {
       return error("missing closing ')'");
-  } else
-  { params = ifj17_vec_new(); }
+    }
+  } else {
+    params = ifj17_vec_new();
+  }
 
   context("function");
 
-  // (':' type_expr)?
-  // if (accept(COLON))
-  // {
-  //   type = type_expr(self);
-  //   if (!type)
-  //     return error("missing type after ':'");
-  // }
-
-  // semicolon might have been inserted here
-  accept(SEMICOLON);
+  // ('AS' type_expr)?
+  if (accept(AS) == false) {
+    type = type_expr(self);
+    if (type == false) {
+      return error("missing type after ':'");
+    }
+  }
 
   // block
-  if (body = block(self))
-  {
+  if (body = block(self)) {
     return (ifj17_node_t *)ifj17_function_node_new(name, type, body, params, line);
   }
 
@@ -1086,110 +590,105 @@ static ifj17_node_t *function_stmt(ifj17_parser_t *self) {
 }
 
 /*
- *  ('if' | 'unless') expr block
+ *  'if' expr block
  *  ('else' 'if' block)*
  *  ('else' block)?
  */
-
+// TODO: remove negate, fix ELSEIF
 static ifj17_node_t *if_stmt(ifj17_parser_t *self) {
   ifj17_node_t *cond;
   ifj17_block_node_t *body;
   int line = lineno;
   debug("if_stmt");
 
-  // ('if' | 'unless')
-  // if (!(is(IF) || is(UNLESS)))
-  //   return NULL;
-  // int negate = IFJ17_TOKEN_UNLESS == self->tok->type;
- next;
+  // if
+  if (is(IF) == false) {
+    return NULL;
+  }
+  int negate = 0;
+  next;
 
   // expr
   context("if statement condition");
-  if (!(cond = expr(self)))
-  {
+  if ((cond = expr(self)) == false) {
     return NULL;
   }
 
-  // semicolon might have been inserted here
-  accept(SEMICOLON);
+  accept(THEN);
 
   // block
   context("if statement");
-  if (!(body = block(self)))
-  {
+  if ((body = block(self)) == false) {
     return NULL;
   }
 
-  // ifj17_if_node_t *node = ifj17_if_node_new(negate, cond, body, line);
+  ifj17_if_node_t *node = ifj17_if_node_new(negate, cond, body, line);
 
 // 'else'
 loop:
-  if (accept(ELSE))
-  {
+  if (accept(ELSE)) {
     ifj17_block_node_t *body;
 
     // ('else' 'if' block)*
-    if (accept(IF))
-    {
+    if (accept(IF)) {
       int line = lineno;
       context("else if statement condition");
-      if (!(cond = expr(self)))
+      if ((cond = expr(self)) == false) {
         return NULL;
-
+      }
       // semicolon might have been inserted here
       accept(SEMICOLON);
 
       context("else if statement");
-      if (!(body = block(self)))
+      if ((body = block(self)) == false) {
         return NULL;
-      // ifj17_vec_push(node->else_ifs, ifj17_node((ifj17_node_t *)ifj17_if_node_new(
-      //                                    0, cond, body, line)));
+      }
+      ifj17_vec_push(node->else_ifs, ifj17_node((ifj17_node_t *)ifj17_if_node_new(
+                                         0, cond, body, line)));
       goto loop;
       // 'else'
-    } else
-    {
+    } else {
       context("else statement");
-      if (!(body = block(self)))
+      if ((body = block(self)) == false) {
         return NULL;
-      // node->else_block = body;
+      }
+      node->else_block = body;
     }
   }
 
-  // return (ifj17_node_t *)node;
-  return NULL;
+  return (ifj17_node_t *)node;
 }
 
 /*
- * ('while' | 'until') expr block
+ * 'while' expr block
  */
-
+// TODO: remove negate
 static ifj17_node_t *while_stmt(ifj17_parser_t *self) {
   ifj17_node_t *cond;
   ifj17_block_node_t *body;
   int line = lineno;
   debug("while_stmt");
 
-  // ('until' | 'while')
-  // if (!(is(UNTIL) || is(WHILE)))
-  //   return NULL;
-  // int negate = IFJ17_TOKEN_UNTIL == self->tok->type;
-  // context("while statement condition");
+  // ('while')
+  if (is(WHILE) == false) {
+    return NULL;
+  }
+  int negate = 0;
+  context("while statement condition");
   next;
 
   // expr
-  if (!(cond = expr(self)))
+  if ((cond = expr(self)) == false) {
     return NULL;
+  }
   context("while statement");
 
-  // semicolon might have been inserted here
-  accept(SEMICOLON);
-
   // block
-  if (!(body = block(self)))
+  if ((body = block(self)) == false) {
     return NULL;
+  }
 
-  // return (ifj17_node_t *)ifj17_while_node_new(negate, cond, body, line);
-  return NULL;
+  return (ifj17_node_t *)ifj17_while_node_new(negate, cond, body, line);
 }
 
 /*
@@ -1203,59 +702,18 @@ static ifj17_node_t *return_stmt(ifj17_parser_t *self) {
   context("return statement");
 
   // 'return'
-  if (!accept(RETURN))
+  if (accept(RETURN) == false) {
     return NULL;
-
+  }
   // 'return' expr
   ifj17_node_t *node = NULL;
 
-  if (!accept(SEMICOLON))
-  {
-    if (!(node = expr(self)))
+  if (accept(SEMICOLON) == false) {
+    if ((node = expr(self)) == false) {
       return NULL;
+    }
   }
   return (ifj17_node_t *)ifj17_return_node_new(node, line);
-}
-
-/*
- * 'use' string ('as' id)?
- */
-
-static ifj17_node_t *use_stmt(ifj17_parser_t *self) {
-  // puts("asçkdhakjshd");
-
-  int line = lineno;
-  debug("use");
-  context("use statement");
-
-  // 'use'
-  // if (!accept(USE))
-  //   return NULL;
-  // ifj17_use_node_t *node = ifj17_use_node_new(line);
-
-  // string
-  if (!is(STRING))
-  {
-    return error("missing module name");
-  }
-  // node->module = self->tok->value.as_string;
-  next;
-
-  // 'as'
-  if (accept(AS))
-  {
-
-    // id
-    if (!is(ID))
-    {
-      return error("missing alias name");
-    }
-    // node->alias = self->tok->value.as_string;
-    next;
-  }
-
-  // return (ifj17_node_t *)node;
-  return NULL;
 }
 
 /*
@@ -1263,48 +721,49 @@ static ifj17_node_t *use_stmt(ifj17_parser_t *self) {
  * | while_stmt
  * | return_stmt
  * | function_stmt
- * | type_stmt
  * | expr
  */
 
 static ifj17_node_t *stmt(ifj17_parser_t *self) {
   debug("stmt");
   context("statement");
-  // if (is(IF) || is(UNLESS))
-  //   return if_stmt(self);
-  // if (is(WHILE) || is(UNTIL))
-  //   return while_stmt(self);
-  // if (is(RETURN))
-  //   return return_stmt(self);
-  // if (is(DEF))
-  //   return function_stmt(self);
-  // if (is(TYPE))
-  //   return type_stmt(self);
-  // if (is(USE))
-  //   return use_stmt(self);
+  if (is(IF)) {
+    return if_stmt(self);
+  }
+  if (is(WHILE)) {
+    return while_stmt(self);
+  }
+  if (is(RETURN)) {
+    return return_stmt(self);
+  }
+  if (is(FUNCTION)) {
+    return function_stmt(self);
+  }
   return expr(self);
 }
 
 /*
  * stmt* 'end'
  */
-
+// TODO: add fuction end, scope end, etc.
 static ifj17_block_node_t *block(ifj17_parser_t *self) {
   debug("block");
   ifj17_node_t *node;
   ifj17_block_node_t *block = ifj17_block_node_new(lineno);
 
-  if (accept(END))
+  if (accept(END)) {
     return block;
+  }
 
-  do
-  {
-    if (!(node = stmt(self)))
+  do {
+    if ((node = stmt(self)) == false) {
       return NULL;
+    }
+
     accept(SEMICOLON);
 
     ifj17_vec_push(block->stmts, ifj17_node(node));
-  } while (!accept(END) && !is(ELSE));
+  } while ((accept(END) == false) && (is(ELSE) == false));
 
   return block;
 }
@@ -1319,14 +778,13 @@ static ifj17_block_node_t *program(ifj17_parser_t *self) {
   ifj17_block_node_t *block = ifj17_block_node_new(lineno);
 
   next;
-  while (!is(EOS))
-  {
-    if (node = stmt(self))
-    {
+  while (!is(EOS)) {
+    if (node = stmt(self)) {
       accept(SEMICOLON);
       ifj17_vec_push(block->stmts, ifj17_node(node));
-    } else
-    { return NULL; }
+    } else {
+      return NULL;
+    }
   }
 
   return block;
