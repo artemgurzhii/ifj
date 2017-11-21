@@ -10,7 +10,7 @@
 #include "ast.h"
 #include "vm.h"
 
-// protos
+// prototypes
 
 ifj17_vm_t *
 ifj17_gen(ifj17_node_t *node);

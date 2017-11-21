@@ -283,7 +283,7 @@ typedef struct {
   char *alias;
 } ifj17_use_node_t;
 
-// protos
+// prototypes
 
 ifj17_object_t *
 ifj17_node(ifj17_node_t *node);

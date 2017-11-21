@@ -45,7 +45,7 @@ typedef struct ifj17_visitor {
   void (* visit_use)(struct ifj17_visitor *self, ifj17_use_node_t *node);
 } ifj17_visitor_t;
 
-// protos
+// prototypes
 
 void
 ifj17_visit(ifj17_visitor_t *self, ifj17_node_t *node);

@@ -26,7 +26,7 @@ typedef struct {
   khash_t(str) *strs;
 } ifj17_state_t;
 
-// protos
+// prototypes
 
 void
 ifj17_state_init(ifj17_state_t *self);

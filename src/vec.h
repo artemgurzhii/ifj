@@ -8,7 +8,7 @@
 #define IFJ17_VEC_H
 
 #include "object.h"
-#include "kvec.h"
+#include "../deps/kvec.h"
 
 /*
  * IFJ17 array.
@@ -66,7 +66,7 @@ typedef kvec_t(ifj17_object_t *) ifj17_vec_t;
     } \
   }
 
-// protos
+// prototypes
 
 ifj17_vec_t *
 ifj17_vec_new();
