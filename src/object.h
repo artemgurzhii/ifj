@@ -33,8 +33,7 @@
  * IFJ17 value types.
  */
 
-typedef enum
-{
+typedef enum {
   IFJ17_TYPE_NULL,
   IFJ17_TYPE_NODE,
   IFJ17_TYPE_BOOL,
@@ -43,7 +42,7 @@ typedef enum
   IFJ17_TYPE_STRING,
   IFJ17_TYPE_OBJECT,
   IFJ17_TYPE_ARRAY, // delete
-  IFJ17_TYPE_LIST // delete
+  IFJ17_TYPE_LIST   // delete
 } ifj17_object;
 
 /*
@@ -53,8 +52,7 @@ typedef enum
  * the basis of a IFJ17 values.
  */
 
-struct ifj17_object_struct
-{
+struct ifj17_object_struct {
   ifj17_object type;
   union {
     void *as_pointer;

@@ -92,7 +92,7 @@ void ifj17_parser_init(ifj17_parser_t *self, ifj17_lexer_t *lex) {
 static ifj17_node_t *paren_expr(ifj17_parser_t *self) {
   ifj17_node_t *node;
   debug("paren_expr");
-  if (accept(LPAREN) == false){
+  if (accept(LPAREN) == false) {
     return NULL;
   }
   if ((node = expr(self)) == false) {
@@ -211,7 +211,8 @@ static ifj17_node_t *unary_expr(ifj17_parser_t *self) {
   ifj17_node_t *node;
   int line = lineno;
   if (is(OP_PLUS) || is(OP_MINUS)) {
-    node = (ifj17_node_t *)ifj17_unary_op_node_new(self->tok->type, unary_expr(self), 0, line);
+    node = (ifj17_node_t *)ifj17_unary_op_node_new(self->tok->type, unary_expr(self),
+                                                   0, line);
     next;
   }
   return node;
@@ -295,7 +296,7 @@ static ifj17_node_t *relational_expr(ifj17_parser_t *self) {
 /*
  * relational_expr (('==' | '<>') relational_expr)*
  */
- // TODO: ifj17 doesn't have '==' - lol, but let it be here for now
+// TODO: ifj17 doesn't have '==' - lol, but let it be here for now
 
 static ifj17_node_t *equality_expr(ifj17_parser_t *self) {
   ifj17_token op;
@@ -318,7 +319,6 @@ static ifj17_node_t *equality_expr(ifj17_parser_t *self) {
   return node;
 }
 
-
 /*
  * equality_expr ('&&' equality_expr)*
  */
@@ -333,8 +333,8 @@ static ifj17_node_t *logical_and_expr(ifj17_parser_t *self) {
   while (accept(AND)) {
     context("&& operation");
     if (right = equality_expr(self)) {
-      node = (ifj17_node_t *)ifj17_binary_op_node_new(IFJ17_TOKEN_AND, node,
-                                                      right, line);
+      node = (ifj17_node_t *)ifj17_binary_op_node_new(IFJ17_TOKEN_AND, node, right,
+                                                      line);
     } else {
       return error("missing right-hand expression");
     }
@@ -357,8 +357,7 @@ static ifj17_node_t *logical_or_expr(ifj17_parser_t *self) {
   // '||'
   while (accept(OR)) {
     context("|| operation");
-    if (right = logical_and_expr(self))
-    {
+    if (right = logical_and_expr(self)) {
       node = (ifj17_node_t *)ifj17_binary_op_node_new(IFJ17_TOKEN_OR, node, right,
                                                       line);
     } else {
@@ -372,7 +371,7 @@ static ifj17_node_t *logical_or_expr(ifj17_parser_t *self) {
 /*
  * (decl_expr ('=' expr)? (',' decl_expr ('=' expr)?)*)
  */
- // TODO: Check if feature is needed
+// TODO: Check if feature is needed
 
 static ifj17_vec_t *function_params(ifj17_parser_t *self) {
   ifj17_vec_t *params = ifj17_vec_new();

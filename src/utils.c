@@ -32,8 +32,10 @@ char *file_read(const char *filename) {
   size_t len = file_size(fh);
 
   char *buf = malloc(len + 1);
-  if (!buf)
+
+  if (!buf) {
     return NULL;
+  }
 
   size_t read = fread(buf, sizeof(char), len, fh);
 
@@ -54,8 +56,7 @@ char *read_until_eof(FILE *stream) {
   assert(str);
 
   // read
-  while (!feof(stream) && !ferror(stream))
-  {
+  while (!feof(stream) && !ferror(stream)) {
     size_t n = fread(buf, 1, 1024, stream);
     len += strlen(buf);
     str = realloc(str, len);

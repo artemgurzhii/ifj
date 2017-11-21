@@ -17,10 +17,8 @@ ifj17_object_t *ifj17_eval(ifj17_vm_t *vm) {
   ifj17_instruction_t i;
   int registers[32] = {0};
 
-  for (;;)
-  {
-    switch (OP(i = *ip++))
-    {
+  for (;;) {
+    switch (OP(i = *ip++)) {
     // LOADK
     case IFJ17_OP_LOADK:
       printf("loadk %d\n", K(B(i)));

@@ -14,8 +14,7 @@
  * Parser struct.
  */
 
-typedef struct
-{
+typedef struct {
   char *ctx;
   char *err;
   int in_args;

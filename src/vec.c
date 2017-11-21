@@ -13,8 +13,12 @@
 
 ifj17_vec_t *ifj17_vec_new() {
   ifj17_vec_t *self = malloc(sizeof(ifj17_vec_t));
-  if (unlikely(!self))
+
+  if (unlikely(!self)) {
     return NULL;
+  }
+
   ifj17_vec_init(self);
+
   return self;
 }

@@ -20,8 +20,7 @@
 /*
  * Lexer struct.
  */
-typedef struct
-{
+typedef struct {
   char *error;
   int stash;
   int lineno;

@@ -90,13 +90,13 @@ static int scan_ident(ifj17_lexer_t *self, int c) {
   char buf[128]; // TODO: ditch these buffers
   token(ID);
 
-  do
-  { buf[len++] = c; } while (isalpha(c = next) || isdigit(c) || '_' == c);
+  do {
+    buf[len++] = c;
+  } while (isalpha(c = next) || isdigit(c) || '_' == c);
   undo;
 
   buf[len++] = 0;
-  switch (len - 1)
-  {
+  switch (len - 1) {
   case 2:
     if (strcmp("if", buf) == 0)
       return token(IF);
@@ -195,16 +195,13 @@ static int scan_string(ifj17_lexer_t *self, int quote) {
   char buf[128]; // TODO: change to realloc
   token(STRING);
 
-  while (quote != (c = next))
-  {
-    switch (c)
-    {
+  while (quote != (c = next)) {
+    switch (c) {
     case '\n':
       ++self->lineno;
       break;
     case '\\':
-      switch (c = next)
-      {
+      switch (c = next) {
       case 'a':
         c = '\a';
         break;
@@ -256,8 +253,7 @@ static int scan_number(ifj17_lexer_t *self, int c) {
    */
   token(INTEGER);
 
-  switch (c)
-  {
+  switch (c) {
   case '0':
     goto scan_hex;
   default:
@@ -265,15 +261,12 @@ static int scan_number(ifj17_lexer_t *self, int c) {
   }
 
 scan_hex:
-  switch (c = next)
-  {
+  switch (c = next) {
   case 'x':
-    if (!isxdigit(c = next))
-    {
+    if (!isxdigit(c = next)) {
       error("hex literal expects one or more digits");
       return 0;
-    } else
-    {
+    } else {
       do
         n = n << 4 | hex(c);
       while (isxdigit(c = next));
@@ -290,8 +283,7 @@ scan_hex:
   // [0-9_]+
 
 scan_int:
-  do
-  {
+  do {
     if ('_' == c)
       continue;
     else if ('.' == c)
@@ -306,13 +298,11 @@ scan_int:
 
   // [0-9_]+
 
-scan_double:
-{
+scan_double : {
   e = 1;
   type = 1;
   token(DOUBLE);
-  while (isdigit(c = next) || '_' == c || 'e' == c || 'E' == c)
-  {
+  while (isdigit(c = next) || '_' == c || 'e' == c || 'E' == c) {
     if ('_' == c)
       continue;
     else if ('e' == c || 'E' == c)
@@ -327,12 +317,9 @@ scan_double:
 
   // [\+\-]?[0-9]+
 
-scan_expo:
-{
-  while (isdigit(c = next) || '+' == c || '-' == c)
-  {
-    if ('-' == c)
-    {
+scan_expo : {
+  while (isdigit(c = next) || '+' == c || '-' == c) {
+    if ('-' == c) {
       expo_type = 0;
       continue;
     }
@@ -361,8 +348,7 @@ int ifj17_scan(ifj17_lexer_t *self) {
 
 // scan
 scan:
-  switch (c = next)
-  {
+  switch (c = next) {
   case ' ':
   case '\t':
     goto scan;
@@ -389,8 +375,7 @@ scan:
   case '=':
     return token(OP_ASSIGN);
   case '<':
-    switch (next)
-    {
+    switch (next) {
     case '=':
       return token(OP_LTE);
     case '>':
@@ -399,8 +384,7 @@ scan:
       return undo, token(OP_LT);
     }
   case '>':
-    switch (next)
-    {
+    switch (next) {
     case '=':
       return token(OP_GTE);
     default:
@@ -410,8 +394,7 @@ scan:
     return token(SEMICOLON);
   case '\n':
   case '\r':
-    if (need_semi(self->tok.type))
-    {
+    if (need_semi(self->tok.type)) {
       return undo, token(SEMICOLON);
     }
     ++self->lineno;

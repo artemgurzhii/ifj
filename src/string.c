@@ -19,16 +19,18 @@ ifj17_string_t *ifj17_string(ifj17_state_t *state, char *val) {
 
   // exists
   int exists = kh_size(state->strs) && kh_exist(state->strs, k);
-  if (exists)
+  if (exists) {
     return kh_value(state->strs, k);
+  }
 
   // alloc
   int ret;
   ifj17_string_t *self = calloc(1, sizeof(ifj17_string_t));
   self->len = strlen(val);
   self->val = malloc(self->len + 1);
-  if (!self->val)
+  if (!self->val) {
     return NULL;
+  }
   memcpy(self->val, val, self->len);
   self->val[self->len] = 0;
   k = kh_put(str, state->strs, val, &ret);

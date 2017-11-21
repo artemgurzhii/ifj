@@ -55,8 +55,7 @@ typedef kvec_t(ifj17_object_t *) ifj17_vec_t;
   {                                                                                 \
     ifj17_object_t *val;                                                            \
     int len = ifj17_vec_length(self);                                               \
-    for (int i = 0; i < len; ++i)                                                   \
-    {                                                                               \
+    for (int i = 0; i < len; ++i) {                                                 \
       val = ifj17_vec_at(self, i);                                                  \
       block;                                                                        \
     }                                                                               \

@@ -11,8 +11,7 @@
 
 // TODO: move
 
-typedef struct
-{
+typedef struct {
   int len;
   char *val;
 } ifj17_string_t;
@@ -23,8 +22,7 @@ KHASH_MAP_INIT_STR(str, ifj17_string_t *);
  * IFJ17 state.
  */
 
-typedef struct
-{
+typedef struct {
   khash_t(str) * strs;
 } ifj17_state_t;
 

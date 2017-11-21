@@ -20,8 +20,7 @@ typedef uint32_t ifj17_instruction_t;
  * IFJ17 activation record.
  */
 
-typedef struct
-{
+typedef struct {
   ifj17_instruction_t *ip;
   ifj17_instruction_t *code; // TODO: pointer to single malloc()?
   int nconstants;
@@ -32,8 +31,7 @@ typedef struct
  * IFJ17 VM.
  */
 
-typedef struct
-{
+typedef struct {
   ifj17_activation_t *main;
   ifj17_instruction_t *jump;
 } ifj17_vm_t;
