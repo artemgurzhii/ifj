@@ -8,7 +8,6 @@
 #include <ctype.h>
 #include <math.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
 /*
@@ -228,7 +227,7 @@ static int scan_string(ifj17_lexer_t *self, int quote) {
         c = '\v';
         break;
       case 'x':
-        if (-1 == (c = hex_literal(self)))
+        if ((c = hex_literal(self)) == -1)
           return 0;
       }
       break;

@@ -52,16 +52,16 @@ static void test_array_length() {
   ifj17_object_t two = {.type = IFJ17_TYPE_INT, .value.as_int = 2};
   ifj17_object_t three = {.type = IFJ17_TYPE_INT, .value.as_int = 3};
 
-  assert(0 == ifj17_vec_length(&arr));
+  assert(ifj17_vec_length(&arr) == 0);
 
   ifj17_vec_push(&arr, &one);
-  assert(1 == ifj17_vec_length(&arr));
+  assert(ifj17_vec_length(&arr) == 1);
 
   ifj17_vec_push(&arr, &two);
-  assert(2 == ifj17_vec_length(&arr));
+  assert(ifj17_vec_length(&arr) == 2);
 
   ifj17_vec_push(&arr, &three);
-  assert(3 == ifj17_vec_length(&arr));
+  assert(ifj17_vec_length(&arr) == 3);
 }
 
 /*
@@ -76,28 +76,28 @@ static void test_array_push() {
   ifj17_object_t two = {.type = IFJ17_TYPE_INT, .value.as_int = 2};
   ifj17_object_t three = {.type = IFJ17_TYPE_INT, .value.as_int = 3};
 
-  assert(0 == ifj17_vec_length(&arr));
+  assert(ifj17_vec_length(&arr) == 0);
 
   ifj17_vec_push(&arr, &one);
-  assert(1 == ifj17_vec_pop(&arr)->value.as_int);
+  assert(ifj17_vec_pop(&arr)->value.as_int == 1);
 
   ifj17_vec_push(&arr, &one);
   ifj17_vec_push(&arr, &one);
-  assert(1 == ifj17_vec_pop(&arr)->value.as_int);
-  assert(1 == ifj17_vec_pop(&arr)->value.as_int);
+  assert(ifj17_vec_pop(&arr)->value.as_int == 1);
+  assert(ifj17_vec_pop(&arr)->value.as_int == 1);
 
   ifj17_vec_push(&arr, &one);
   ifj17_vec_push(&arr, &two);
   ifj17_vec_push(&arr, &three);
-  assert(3 == ifj17_vec_pop(&arr)->value.as_int);
-  assert(2 == ifj17_vec_pop(&arr)->value.as_int);
-  assert(1 == ifj17_vec_pop(&arr)->value.as_int);
+  assert(ifj17_vec_pop(&arr)->value.as_int == 3);
+  assert(ifj17_vec_pop(&arr)->value.as_int == 2);
+  assert(ifj17_vec_pop(&arr)->value.as_int == 1);
 
-  assert(NULL == ifj17_vec_pop(&arr));
-  assert(NULL == ifj17_vec_pop(&arr));
-  assert(NULL == ifj17_vec_pop(&arr));
+  assert(ifj17_vec_pop(&arr) == NULL);
+  assert(ifj17_vec_pop(&arr) == NULL);
+  assert(ifj17_vec_pop(&arr) == NULL);
   ifj17_vec_push(&arr, &one);
-  assert(1 == ifj17_vec_pop(&arr)->value.as_int);
+  assert(ifj17_vec_pop(&arr)->value.as_int == 1);
 }
 
 /*
@@ -116,13 +116,13 @@ static void test_array_at() {
   ifj17_vec_push(&arr, &two);
   ifj17_vec_push(&arr, &three);
 
-  assert(1 == ifj17_vec_at(&arr, 0)->value.as_int);
-  assert(2 == ifj17_vec_at(&arr, 1)->value.as_int);
-  assert(3 == ifj17_vec_at(&arr, 2)->value.as_int);
+  assert(ifj17_vec_at(&arr, 0)->value.as_int == 1);
+  assert(ifj17_vec_at(&arr, 1)->value.as_int == 2);
+  assert(ifj17_vec_at(&arr, 2)->value.as_int == 3);
 
-  assert(NULL == ifj17_vec_at(&arr, -1123));
-  assert(NULL == ifj17_vec_at(&arr, 5));
-  assert(NULL == ifj17_vec_at(&arr, 1231231));
+  assert(ifj17_vec_at(&arr, -1123) == NULL);
+  assert(ifj17_vec_at(&arr, 5) == NULL);
+  assert(ifj17_vec_at(&arr, 1231231) == NULL);
 }
 
 /*
@@ -145,9 +145,9 @@ static void test_array_iteration() {
   int k = 0;
 
   ifj17_vec_each(&arr, { vals[k++] = val->value.as_int; });
-  assert(1 == vals[0]);
-  assert(2 == vals[1]);
-  assert(3 == vals[2]);
+  assert(vals[0] == 1);
+  assert(vals[1] == 2);
+  assert(vals[2] == 3);
 }
 
 /*
@@ -161,21 +161,21 @@ static void test_hash_set() {
 
   ifj17_hash_t *obj = ifj17_hash_new();
 
-  assert(0 == ifj17_hash_size(obj));
+  assert(ifj17_hash_size(obj) == 0);
 
   ifj17_hash_set(obj, "one", &one);
-  assert(1 == ifj17_hash_size(obj));
+  assert(ifj17_hash_size(obj) == 1);
 
   ifj17_hash_set(obj, "two", &two);
-  assert(2 == ifj17_hash_size(obj));
+  assert(ifj17_hash_size(obj) == 2);
 
   ifj17_hash_set(obj, "three", &three);
-  assert(3 == ifj17_hash_size(obj));
+  assert(ifj17_hash_size(obj) == 3);
 
-  assert(&one == ifj17_hash_get(obj, "one"));
-  assert(&two == ifj17_hash_get(obj, "two"));
-  assert(&three == ifj17_hash_get(obj, "three"));
-  assert(NULL == ifj17_hash_get(obj, "four"));
+  assert(ifj17_hash_get(obj, "one") == &one);
+  assert(ifj17_hash_get(obj, "two") == &two);
+  assert(ifj17_hash_get(obj, "three") == &three);
+  assert(ifj17_hash_get(obj, "four") == NULL);
 
   ifj17_hash_destroy(obj);
 }
@@ -226,9 +226,9 @@ static void test_hash_remove() {
  */
 
 static int valid_slot(const char *slot) {
-  return 0 == strcmp("one", slot) || 0 == strcmp("two", slot) ||
-         0 == strcmp("three", slot) || 0 == strcmp("four", slot) ||
-         0 == strcmp("five", slot);
+  return strcmp("one", slot) == 0 || strcmp("two", slot) == 0 ||
+         strcmp("three", slot) == 0 || strcmp("four", slot) == 0 ||
+         strcmp("five", slot) == 0;
 }
 
 /*
@@ -290,16 +290,16 @@ static void test_string() {
   ifj17_state_init(&state);
 
   ifj17_string_t *str = ifj17_string(&state, "foo bar baz");
-  assert(0 == strcmp("foo bar baz", str->val));
+  assert(strcmp("foo bar baz", str->val) == 0);
 
   str = ifj17_string(&state, "foo bar baz");
-  assert(0 == strcmp("foo bar baz", str->val));
+  assert(strcmp("foo bar baz", str->val) == 0);
 
   for (int i = 0; i < 200; ++i)
     str = ifj17_string(&state, "foo");
-  assert(0 == strcmp("foo", str->val));
+  assert(strcmp("foo", str->val) == 0);
 
-  assert(2 == kh_size(state.strs));
+  assert(kh_size(state.strs) == 2);
 }
 
 /*
