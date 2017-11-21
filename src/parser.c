@@ -90,17 +90,21 @@ void ifj17_parser_init(ifj17_parser_t *self, ifj17_lexer_t *lex) {
  */
 
 static ifj17_node_t *paren_expr(ifj17_parser_t *self) {
-  ifj17_node_t *node;
   debug("paren_expr");
+
   if (accept(LPAREN) == false) {
     return NULL;
   }
-  if ((node = expr(self)) == false) {
+
+  ifj17_node_t *node = expr(self);
+  if (node == false) {
     return NULL;
   }
+
   if (accept(RPAREN) == false) {
     return error("expression missing closing ')'");
   }
+
   return node;
 }
 
@@ -110,6 +114,7 @@ static ifj17_node_t *paren_expr(ifj17_parser_t *self) {
 
 static ifj17_node_t *type_expr(ifj17_parser_t *self) {
   debug("type_expr");
+
   if (is(ID) == false) {
     return NULL;
   }
@@ -128,6 +133,7 @@ static ifj17_node_t *type_expr(ifj17_parser_t *self) {
 // TODO: not shure if works as required, need to be tested
 
 static ifj17_node_t *decl_expr(ifj17_parser_t *self, bool need_type) {
+  printf("hello word\n");
   debug("decl_expr");
   context("declaration");
 
@@ -135,6 +141,7 @@ static ifj17_node_t *decl_expr(ifj17_parser_t *self, bool need_type) {
   int decl_line = lineno;
 
   // 'dim'
+  // TODO: This is never executed
   if (accept(DIM) == false) {
     return error("expecting dim");
   }
@@ -227,20 +234,26 @@ static ifj17_node_t *multiplicative_expr(ifj17_parser_t *self) {
   ifj17_token op;
   ifj17_node_t *node, *right;
   int line = lineno;
+
   debug("multiplicative_expr");
+
   if ((node = unary_expr(self)) == false) {
     return NULL;
   }
+
   while (is(OP_MUL) || is(OP_DIV_DOUBLE) || is(OP_DIV_INTEGER)) {
     op = self->tok->type;
     next;
+
     context("multiplicative operation");
+
     if (right = unary_expr(self)) {
       node = (ifj17_node_t *)ifj17_binary_op_node_new(op, node, right, line);
     } else {
       return error("missing right-hand expression");
     }
   }
+
   return node;
 }
 
