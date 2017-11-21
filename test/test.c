@@ -306,55 +306,55 @@ static void test_string() {
  * Test parser.
  */
 
-static void _test_parser(const char *source_path, const char *out_path) {
-  ifj17_lexer_t lexer;
-  ifj17_parser_t parser;
-  ifj17_block_node_t *root;
-
-  char *source = file_read(source_path);
-  assert(source != NULL);
-  char *expected = file_read(out_path);
-  assert(expected != NULL);
-
-  ifj17_lexer_init(&lexer, source, source_path);
-  ifj17_parser_init(&parser, &lexer);
-
-  if (!(root = ifj17_parse(&parser))) {
-    ifj17_report_error(&parser);
-    exit(1);
-  }
-
-  char buf[1024] = {0};
-  print_buf = buf;
-  ifj17_set_prettyprint_func(bprintf);
-  ifj17_prettyprint((ifj17_node_t *)root);
-
-  assert(strcmp(expected, print_buf) == 0);
-}
-
-static void test_assign() {
-  _test_parser("test/parser/assign.ifj17", "test/parser/assign.out");
-}
-
-static void test_assign_chain() {
-  _test_parser("test/parser/assign.chain.ifj17", "test/parser/assign.chain.out");
-}
-
-static void test_subscript() {
-  _test_parser("test/parser/subscript.ifj17", "test/parser/subscript.out");
-}
-
-static void test_declaration() {
-  _test_parser("test/parser/declaration.ifj17", "test/parser/declaration.out");
-}
-
-static void test_return() {
-  _test_parser("test/parser/return.ifj17", "test/parser/return.out");
-}
-
-static void test_use() {
-  _test_parser("test/parser/use.ifj17", "test/parser/use.out");
-}
+// static void _test_parser(const char *source_path, const char *out_path) {
+//   ifj17_lexer_t lexer;
+//   ifj17_parser_t parser;
+//   ifj17_block_node_t *root;
+//
+//   char *source = file_read(source_path);
+//   assert(source != NULL);
+//   char *expected = file_read(out_path);
+//   assert(expected != NULL);
+//
+//   ifj17_lexer_init(&lexer, source, source_path);
+//   ifj17_parser_init(&parser, &lexer);
+//
+//   if (!(root = ifj17_parse(&parser))) {
+//     ifj17_report_error(&parser);
+//     exit(1);
+//   }
+//
+//   char buf[1024] = {0};
+//   print_buf = buf;
+//   ifj17_set_prettyprint_func(bprintf);
+//   ifj17_prettyprint((ifj17_node_t *)root);
+//
+//   assert(strcmp(expected, print_buf) == 0);
+// }
+//
+// static void test_assign() {
+//   _test_parser("test/parser/assign.ifj17", "test/parser/assign.out");
+// }
+//
+// static void test_assign_chain() {
+//   _test_parser("test/parser/assign.chain.ifj17", "test/parser/assign.chain.out");
+// }
+//
+// static void test_subscript() {
+//   _test_parser("test/parser/subscript.ifj17", "test/parser/subscript.out");
+// }
+//
+// static void test_declaration() {
+//   _test_parser("test/parser/declaration.ifj17", "test/parser/declaration.out");
+// }
+//
+// static void test_return() {
+//   _test_parser("test/parser/return.ifj17", "test/parser/return.out");
+// }
+//
+// static void test_use() {
+//   _test_parser("test/parser/use.ifj17", "test/parser/use.out");
+// }
 
 /*
  * Test the given `fn`.
@@ -404,17 +404,17 @@ int main(int argc, const char **argv) {
   suite("string");
   test(string);
 
-  suite("parser");
-  test(assign);
-  test(assign_chain);
-  test(subscript);
-  test(declaration);
-  test(return );
-  test(use);
+  // suite("parser");
+  // test(assign);
+  // test(assign_chain);
+  // test(subscript);
+  // test(declaration);
+  // test(return );
+  // test(use);
 
   printf("\n");
   printf("  \e[90mcompleted in \e[32m%.5fs\e[0m\n",
-         (float)(clock() - start) / CLOCKS_PER_SEC);
+         (double)(clock() - start) / CLOCKS_PER_SEC);
   printf("\n");
   return 0;
 }

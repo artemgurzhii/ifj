@@ -46,55 +46,60 @@ typedef khash_t(value) ifj17_hash_t;
  * `slot` and `val`.
  */
 
-#define ifj17_hash_each(self, block) { \
-   const char *slot; \
-   ifj17_object_t *val; \
-    for (khiter_t k = kh_begin(self); k < kh_end(self); ++k) { \
-      if (!kh_exist(self, k)) continue; \
-      slot = kh_key(self, k); \
-      val = kh_value(self, k); \
-      block; \
-    } \
+#define ifj17_hash_each(self, block)                                                \
+  {                                                                                 \
+    const char *slot;                                                               \
+    ifj17_object_t *val;                                                            \
+    for (khiter_t k = kh_begin(self); k < kh_end(self); ++k)                        \
+    {                                                                               \
+      if (!kh_exist(self, k))                                                       \
+        continue;                                                                   \
+      slot = kh_key(self, k);                                                       \
+      val = kh_value(self, k);                                                      \
+      block;                                                                        \
+    }                                                                               \
   }
 
 /*
  * Iterate hash slots, populating `slot`.
  */
 
-#define ifj17_hash_each_slot(self, block) { \
-    const char *slot; \
-    for (khiter_t k = kh_begin(self); k < kh_end(self); ++k) { \
-      if (!kh_exist(self, k)) continue; \
-      slot = kh_key(self, k); \
-      block; \
-    } \
+#define ifj17_hash_each_slot(self, block)                                           \
+  {                                                                                 \
+    const char *slot;                                                               \
+    for (khiter_t k = kh_begin(self); k < kh_end(self); ++k)                        \
+    {                                                                               \
+      if (!kh_exist(self, k))                                                       \
+        continue;                                                                   \
+      slot = kh_key(self, k);                                                       \
+      block;                                                                        \
+    }                                                                               \
   }
 
 /*
  * Iterate hash values, populating `val`.
  */
 
-#define ifj17_hash_each_val(self, block) { \
-    ifj17_object_t *val; \
-    for (khiter_t k = kh_begin(self); k < kh_end(self); ++k) { \
-      if (!kh_exist(self, k)) continue; \
-      val = kh_value(self, k); \
-      block; \
-    } \
+#define ifj17_hash_each_val(self, block)                                            \
+  {                                                                                 \
+    ifj17_object_t *val;                                                            \
+    for (khiter_t k = kh_begin(self); k < kh_end(self); ++k)                        \
+    {                                                                               \
+      if (!kh_exist(self, k))                                                       \
+        continue;                                                                   \
+      val = kh_value(self, k);                                                      \
+      block;                                                                        \
+    }                                                                               \
   }
 
 // prototypes
 
-void
-ifj17_hash_set(khash_t(value) *self, char *key, ifj17_object_t *val);
+void ifj17_hash_set(khash_t(value) * self, char *key, ifj17_object_t *val);
 
-ifj17_object_t *
-ifj17_hash_get(khash_t(value) *self, char *key);
+ifj17_object_t *ifj17_hash_get(khash_t(value) * self, char *key);
 
-int
-ifj17_hash_has(khash_t(value) *self, char *key);
+int ifj17_hash_has(khash_t(value) * self, char *key);
 
-void
-ifj17_hash_remove(khash_t(value) *self, char *key);
+void ifj17_hash_remove(khash_t(value) * self, char *key);
 
 #endif /* IFJ17_HASH_H */
