@@ -186,7 +186,7 @@ static ifj17_node_t *primary_expr(ifj17_parser_t *self) {
     ret = (ifj17_node_t *)ifj17_int_node_new(tok->value.as_int, lineno);
     break;
   case IFJ17_TOKEN_DOUBLE:
-    ret = (ifj17_node_t *)ifj17_doubl_node_new(tok->value.as_double, lineno);
+    ret = (ifj17_node_t *)ifj17_double_node_new(tok->value.as_double, lineno);
     break;
   case IFJ17_TOKEN_STRING:
     ret = (ifj17_node_t *)ifj17_string_node_new(tok->value.as_string, lineno);
@@ -204,7 +204,8 @@ static ifj17_node_t *primary_expr(ifj17_parser_t *self) {
  * | '-' unary_expr
  * | '!' unary_expr
  * | primary_expr
- */ // TODO: there are 3 unary ops in ifj17 - +,-,'not'. Need to make it work with 'not'
+ */ // TODO: there are 3 unary ops in ifj17 - +,-,'not'. Need to make it work with
+    // 'not'
 
 static ifj17_node_t *unary_expr(ifj17_parser_t *self) {
   debug("unary_expr");
