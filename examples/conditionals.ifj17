@@ -2,7 +2,3 @@
 if foo
   print('hello')
 end
-
-unless foo
-  print('world')
-end
