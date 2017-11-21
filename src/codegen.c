@@ -4,8 +4,8 @@
 // Copyright (c) 2017 Hurzhii Artem, Demicev Alexandr, Denisov Artem, Chufarov Evgeny
 //
 
-#include "codegen.h"
 #include "ast.h"
+#include "codegen.h"
 #include "internal.h"
 #include "opcodes.h"
 #include "visitor.h"
@@ -252,8 +252,8 @@ static void visit_function(ifj17_visitor_t *self, ifj17_function_node_t *node) {
  */
 
 static void visit_while(ifj17_visitor_t *self, ifj17_while_node_t *node) {
-  // // while | until
-  // printf("(%s ", node->negate ? "until" : "while");
+  // // while
+  // printf("(while ");
   // visit((ifj17_node_t *) node->expr);
   // ++indents;
   // printf("\n");
@@ -284,7 +284,7 @@ static void visit_return(ifj17_visitor_t *self, ifj17_return_node_t *node) {
 
 static void visit_if(ifj17_visitor_t *self, ifj17_if_node_t *node) {
   // // if
-  // printf("(%s ", node->negate ? "unless" : "if");
+  // printf("(if ");
   // visit((ifj17_node_t *) node->expr);
   // ++indents;
   // printf("\n");
