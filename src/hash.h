@@ -92,7 +92,7 @@ typedef khash_t(value) ifj17_hash_t;
     }                                                                               \
   }
 
-// protos
+// prototypes
 
 void ifj17_hash_set(khash_t(value) * self, char *key, ifj17_object_t *val);
 

@@ -116,7 +116,7 @@ static inline const char *ifj17_token_type_string(ifj17_token type) {
   return ifj17_token_strings[type];
 }
 
-// protos
+// prototypes
 void ifj17_token_inspect(ifj17_token_t *tok);
 
 #endif /* IFJ17_TOKEN_H */

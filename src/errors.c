@@ -16,17 +16,14 @@ void ifj17_report_error(ifj17_parser_t *parser) {
   ifj17_lexer_t *lex = parser->lex;
 
   // error message
-  if (parser->err)
-  {
+  if (parser->err) {
     err = parser->err;
     // lexer
-  } else if (lex->error)
-  {
+  } else if (lex->error) {
     err = lex->error;
     type = "syntax";
     // generate
-  } else
-  {
+  } else {
     char buf[64];
     snprintf(buf, 64, "unexpected token '%s'",
              ifj17_token_type_string(lex->tok.type));

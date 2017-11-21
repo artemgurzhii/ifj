@@ -14,8 +14,7 @@
  * Parser struct.
  */
 
-typedef struct
-{
+typedef struct {
   char *ctx;
   char *err;
   int in_args;
@@ -23,7 +22,7 @@ typedef struct
   ifj17_lexer_t *lex;
 } ifj17_parser_t;
 
-// protos
+// prototypes
 
 void ifj17_parser_init(ifj17_parser_t *self, ifj17_lexer_t *lex);
 

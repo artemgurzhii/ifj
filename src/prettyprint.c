@@ -41,10 +41,8 @@ static char escapes[] = {'a', 'b', 't', 'n', 'v', 'f', 'r'};
 
 static int inspect_length(const char *str) {
   int len = 0;
-  for (int i = 0; str[i]; ++i)
-  {
-    switch (str[i])
-    {
+  for (int i = 0; str[i]; ++i) {
+    switch (str[i]) {
     case '\a':
     case '\b':
     case '\e':
@@ -70,10 +68,8 @@ static const char *inspect(const char *str) {
   int j = 0;
   int len = inspect_length(str);
   char *buf = malloc(len);
-  for (int i = 0; str[i]; ++i)
-  {
-    switch (str[i])
-    {
+  for (int i = 0; str[i]; ++i) {
+    switch (str[i]) {
     case '\a':
     case '\b':
     case '\f':
@@ -148,8 +144,7 @@ static void visit_decl(ifj17_visitor_t *self, ifj17_decl_node_t *node) {
     visit((ifj17_node_t *)val->value.as_pointer);
   });
 
-  if (node->type)
-  {
+  if (node->type) {
     print_func("\n");
     INDENT;
     print_func(": ");
@@ -175,12 +170,10 @@ static void visit_string(ifj17_visitor_t *self, ifj17_string_node_t *node) {
 static void visit_unary_op(ifj17_visitor_t *self, ifj17_unary_op_node_t *node) {
   print_func("(");
 
-  if (node->postfix)
-  {
+  if (node->postfix) {
     visit(node->expr);
     print_func(" %s", ifj17_token_type_string(node->op));
-  } else
-  {
+  } else {
     print_func("%s ", ifj17_token_type_string(node->op));
     visit(node->expr);
   }
@@ -193,11 +186,11 @@ static void visit_unary_op(ifj17_visitor_t *self, ifj17_unary_op_node_t *node) {
  */
 
 static void visit_binary_op(ifj17_visitor_t *self, ifj17_binary_op_node_t *node) {
-  if (node->let)
-  {
+  if (node->let) {
     print_func("(let %s ", ifj17_token_type_string(node->op));
-  } else
-  { print_func("(%s ", ifj17_token_type_string(node->op)); }
+  } else {
+    print_func("(%s ", ifj17_token_type_string(node->op));
+  }
   visit(node->left);
   print_func(" ");
   visit(node->right);
@@ -229,8 +222,7 @@ static void visit_call(ifj17_visitor_t *self, ifj17_call_node_t *node) {
   ++indents;
   INDENT;
   visit((ifj17_node_t *)node->expr);
-  if (ifj17_vec_length(node->args->vec))
-  {
+  if (ifj17_vec_length(node->args->vec)) {
     print_func("\n");
     INDENT;
     ifj17_vec_each(node->args->vec, {
@@ -256,8 +248,7 @@ static void visit_function(ifj17_visitor_t *self, ifj17_function_node_t *node) {
   print_func("(function %s -> ", node->name);
   ++indents;
 
-  if (node->type)
-  {
+  if (node->type) {
     visit(node->type);
   }
 
@@ -311,8 +302,7 @@ static void visit_while(ifj17_visitor_t *self, ifj17_while_node_t *node) {
 
 static void visit_return(ifj17_visitor_t *self, ifj17_return_node_t *node) {
   print_func("(return");
-  if (node->expr)
-  {
+  if (node->expr) {
     ++indents;
     print_func("\n");
     INDENT;
@@ -351,8 +341,7 @@ static void visit_if(ifj17_visitor_t *self, ifj17_if_node_t *node) {
   });
 
   // else
-  if (node->else_block)
-  {
+  if (node->else_block) {
     print_func("\n");
     INDENT;
     print_func("(else\n");

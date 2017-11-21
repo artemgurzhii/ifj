@@ -20,8 +20,7 @@
 /*
  * Lexer struct.
  */
-typedef struct
-{
+typedef struct {
   char *error;
   int stash;
   int lineno;
@@ -32,7 +31,7 @@ typedef struct
   char buf[IFJ17_BUF_SIZE];
 } ifj17_lexer_t;
 
-// protos
+// prototypes
 
 int ifj17_scan(ifj17_lexer_t *self);
 

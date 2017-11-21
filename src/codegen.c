@@ -25,8 +25,7 @@
  */
 
 static void emit_op(ifj17_vm_t *vm, ifj17_binary_op_node_t *node, int l, int r) {
-  switch (node->op)
-  {
+  switch (node->op) {
   case IFJ17_TOKEN_OP_PLUS:
     emit(ADD, 0, l, r);
     break;
@@ -135,13 +134,11 @@ static void visit_unary_op(ifj17_visitor_t *self, ifj17_unary_op_node_t *node) {
 
 static void visit_binary_op(ifj17_visitor_t *self, ifj17_binary_op_node_t *node) {
   ifj17_vm_t *vm = (ifj17_vm_t *)self->data;
-  if (IFJ17_NODE_BINARY_OP == node->left->type)
-  {
+  if (IFJ17_NODE_BINARY_OP == node->left->type) {
     visit(node->left);
     int r = CONST(((ifj17_double_node_t *)node->right)->val);
     emit_op(vm, node, 0, r);
-  } else
-  {
+  } else {
     int l = CONST(((ifj17_double_node_t *)node->left)->val);
     int r = CONST(((ifj17_double_node_t *)node->right)->val);
     emit_op(vm, node, l, r);
@@ -153,15 +150,15 @@ static void visit_binary_op(ifj17_visitor_t *self, ifj17_binary_op_node_t *node)
  */
 
 // static void visit_array(ifj17_visitor_t *self, ifj17_array_node_t *node) {
-  // printf("(array\n");
-  // ++indents;
-  // ifj17_vec_each(node->vals, {
-  //   INDENT;
-  //   visit((ifj17_node_t *) val->value.as_pointer);
-  //   if (i != len - 1) printf("\n");
-  // });
-  // --indents;
-  // printf(")");
+// printf("(array\n");
+// ++indents;
+// ifj17_vec_each(node->vals, {
+//   INDENT;
+//   visit((ifj17_node_t *) val->value.as_pointer);
+//   if (i != len - 1) printf("\n");
+// });
+// --indents;
+// printf(")");
 // }
 
 /*
@@ -169,23 +166,24 @@ static void visit_binary_op(ifj17_visitor_t *self, ifj17_binary_op_node_t *node)
  */
 
 // static void visit_hash(ifj17_visitor_t *self, ifj17_hash_node_t *node) {
-  // printf("(hash\n");
-  // ++indents;
-  // ifj17_hash_each(node->vals, {
-  //   INDENT;
-  //   printf("%s: ", slot);
-  //   visit((ifj17_node_t *) val->value.as_pointer);
-  //   printf("\n");
-  // });
-  // --indents;
-  // printf(")");
+// printf("(hash\n");
+// ++indents;
+// ifj17_hash_each(node->vals, {
+//   INDENT;
+//   printf("%s: ", slot);
+//   visit((ifj17_node_t *) val->value.as_pointer);
+//   printf("\n");
+// });
+// --indents;
+// printf(")");
 // }
 
 /*
  * Visit subscript `node`.
  */
 
-// static void visit_subscript(ifj17_visitor_t *self, ifj17_subscript_node_t *node) {}
+// static void visit_subscript(ifj17_visitor_t *self, ifj17_subscript_node_t *node)
+// {}
 
 /*
  * Visit slot `node`.
@@ -349,10 +347,10 @@ ifj17_vm_t *ifj17_gen(ifj17_node_t *node) {
                              .visit_if = visit_if,
                              .visit_id = visit_id,
                              .visit_int = visit_int,
-                            //  .visit_slot = visit_slot,
+                             //  .visit_slot = visit_slot,
                              .visit_call = visit_call,
-                            //  .visit_hash = visit_hash,
-                            //  .visit_array = visit_array,
+                             //  .visit_hash = visit_hash,
+                             //  .visit_array = visit_array,
                              .visit_while = visit_while,
                              .visit_block = visit_block,
                              .visit_decl = visit_decl,
@@ -362,7 +360,7 @@ ifj17_vm_t *ifj17_gen(ifj17_node_t *node) {
                              .visit_function = visit_function,
                              .visit_unary_op = visit_unary_op,
                              .visit_binary_op = visit_binary_op,
-                            //  .visit_subscript = visit_subscript,
+                             //  .visit_subscript = visit_subscript,
                              .visit_type = visit_type};
 
   ifj17_visit(&visitor, node);
