@@ -110,6 +110,8 @@ static int scan_ident(ifj17_lexer_t *self, int c) {
   case 3:
     if (strcmp("asc", buf) == 0)
       return token(ASC);
+    if (strcmp("dim", buf) == 0)
+      return token(DIM);
     if (strcmp("end", buf) == 0)
       return token(END);
     if (strcmp("for", buf) == 0)
@@ -280,7 +282,7 @@ scan_hex:
     goto scan_int;
   }
 
-  // [0-9_]+
+// [0-9_]+
 
 scan_int:
   do {
@@ -296,7 +298,7 @@ scan_int:
   self->tok.value.as_int = n;
   return 1;
 
-  // [0-9_]+
+// [0-9_]+
 
 scan_double : {
   e = 1;
@@ -315,7 +317,7 @@ scan_double : {
   return 1;
 }
 
-  // [\+\-]?[0-9]+
+// [\+\-]?[0-9]+
 
 scan_expo : {
   while (isdigit(c = next) || '+' == c || '-' == c) {

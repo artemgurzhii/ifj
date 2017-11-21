@@ -30,6 +30,7 @@ typedef struct ifj17_visitor {
   void (*visit_call)(struct ifj17_visitor *self, ifj17_call_node_t *node);
   void (*visit_while)(struct ifj17_visitor *self, ifj17_while_node_t *node);
   void (*visit_unary_op)(struct ifj17_visitor *self, ifj17_unary_op_node_t *node);
+  void (*visit_dim)(struct ifj17_visitor *self, ifj17_dim_node_t *node);
   void (*visit_binary_op)(struct ifj17_visitor *self, ifj17_binary_op_node_t *node);
   void (*visit_function)(struct ifj17_visitor *self, ifj17_function_node_t *node);
   // void (*visit_array)(struct ifj17_visitor *self, ifj17_array_node_t *node);

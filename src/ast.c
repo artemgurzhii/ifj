@@ -122,6 +122,25 @@ ifj17_id_node_t *ifj17_id_node_new(const char *val, int lineno) {
  * given `name`, `type`, and `val`.
  */
 
+ifj17_dim_node_t *ifj17_dim_node_new(ifj17_vec_t *vec, int lineno) {
+  ifj17_dim_node_t *self = malloc(sizeof(ifj17_dim_node_t));
+
+  if (unlikely(!self)) {
+    return NULL;
+  }
+
+  self->base.type = IFJ17_NODE_DIM;
+  self->base.lineno = lineno;
+  self->vec = vec;
+
+  return self;
+}
+
+/*
+ * Alloc and initialize a new declaration node with the
+ * given `name`, `type`, and `val`.
+ */
+
 ifj17_decl_node_t *ifj17_decl_node_new(ifj17_vec_t *vec, ifj17_node_t *type,
                                        int lineno) {
   ifj17_decl_node_t *self = malloc(sizeof(ifj17_decl_node_t));

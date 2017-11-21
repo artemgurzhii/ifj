@@ -73,50 +73,48 @@
  * Tokens enum.
  */
 
-typedef enum
-{
-#define t(tok, str) IFJ17_TOKEN_##tok,
-  IFJ17_TOKEN_LIST
-#undef t
-} ifj17_token;
+ typedef enum {
+ #define t(tok, str) IFJ17_TOKEN_##tok,
+   IFJ17_TOKEN_LIST
+ #undef t
+ } ifj17_token;
 
-/*
- * Token strings.
- */
+ /*
+  * Token strings.
+  */
 
-static char *ifj17_token_strings[] = {
-#define t(tok, str) str,
-        IFJ17_TOKEN_LIST
-#undef t
-};
+ static char *ifj17_token_strings[] = {
+ #define t(tok, str) str,
+     IFJ17_TOKEN_LIST
+ #undef t
+ };
 
-/*
- * Token struct.
- */
+ /*
+  * Token struct.
+  */
 
-typedef struct
-{
-  int len;
-  ifj17_token type;
-  struct
-  {
-    char *as_string;
-    double as_double;
-    int as_int;
-  } value;
-} ifj17_token_t;
+ typedef struct {
+   int len;
+   ifj17_token type;
+   struct {
+     char *as_string;
+     double as_double;
+     int as_int;
+   } value;
+ } ifj17_token_t;
 
-/*
- * Return the string associated with the
- * given token `type`.
- */
+ /*
+  * Return the string associated with the
+  * given token `type`.
+  */
 
-static inline const char *ifj17_token_type_string(ifj17_token type) {
-  assert(type <= IFJ17_TOKEN_OP_LTE);
-  return ifj17_token_strings[type];
-}
+ static inline const char *ifj17_token_type_string(ifj17_token type) {
+   assert(type <= IFJ17_TOKEN_OP_LTE);
 
-// prototypes
-void ifj17_token_inspect(ifj17_token_t *tok);
+   return ifj17_token_strings[type];
+ }
 
-#endif /* IFJ17_TOKEN_H */
+ // prototypes
+ void ifj17_token_inspect(ifj17_token_t *tok);
+
+ #endif /* IFJ17_TOKEN_H */

@@ -4,8 +4,8 @@
 // Copyright (c) 2017 Hurzhii Artem, Demicev Alexandr, Denisov Artem, Chufarov Evgeny
 //
 
-#include "codegen.h"
 #include "ast.h"
+#include "codegen.h"
 #include "internal.h"
 #include "opcodes.h"
 #include "visitor.h"
@@ -226,6 +226,12 @@ static void visit_call(ifj17_visitor_t *self, ifj17_call_node_t *node) {
   // --indents;
   // printf(")");
 }
+
+/*
+ * Visit function `node`.
+ */
+
+static void visit_dim(ifj17_visitor_t *self, ifj17_dim_node_t *node) {}
 
 /*
  * Visit function `node`.
