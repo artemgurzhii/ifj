@@ -113,7 +113,7 @@ static ifj17_node_t *type_expr(ifj17_parser_t *self) {
   if (is(ID) == false) {
     return NULL;
   }
-
+  
   next;
 
   if (is(AS) == false) {
@@ -165,6 +165,7 @@ static ifj17_node_t *decl_expr(ifj17_parser_t *self, bool need_type) {
   next;
 
   // type
+  
   ifj17_node_t *type = type_expr(self);
   if (type == false) {
     return error("expecting type");
@@ -402,6 +403,23 @@ static ifj17_vec_t *function_params(ifj17_parser_t *self) {
     ifj17_object_t *param;
     param = ifj17_node((ifj17_node_t *)decl);
 
+    // ('=' expr)?
+    ifj17_object_t *param;
+    if (accept(OP_ASSIGN)) {
+      ifj17_node_t *val = expr(self);
+      if (val == false) {
+        return NULL;
+      }
+      param = ifj17_node((ifj17_node_t *)ifj17_binary_op_node_new(
+          IFJ17_TOKEN_OP_ASSIGN, decl, val, line));
+    } else {
+      // if there isn't a value we need a type
+      if (decl->type == false) {
+        return error("expecting type");
+      }
+      param = ifj17_node((ifj17_node_t *)decl);
+    }
+
     ifj17_vec_push(params, param);
   } while (accept(COMMA));
 
@@ -525,7 +543,7 @@ static ifj17_node_t *expr(ifj17_parser_t *self) {
 }
 
 /*
- *  Declare function
+ *  Declare function id (args) as type_expr
  */
 
 static ifj17_node_t *func_proto_stmt(ifj17_parser_t *self){
