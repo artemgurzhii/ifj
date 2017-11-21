@@ -188,14 +188,13 @@ int main(int argc, const char **argv) {
   argv = parse_args(&argc, argv);
 
   // eval stdin
-  if (1 == argc && !isatty(0))
-  {
+  if (argc == 1 && isatty(0) == false) {
     source = read_until_eof(stdin);
     return eval(source, "stdin");
   }
 
   // REPL
-  if (1 == argc)
+  if (argc == 1)
     repl();
 
   // eval file

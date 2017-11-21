@@ -62,7 +62,7 @@ typedef kvec_t(ifj17_object_t *) ifj17_vec_t;
     }                                                                               \
   }
 
-// protos
+// prototypes
 
 ifj17_vec_t *ifj17_vec_new();
 

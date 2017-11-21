@@ -244,7 +244,7 @@ typedef struct
   ifj17_node_t *expr;
 } ifj17_return_node_t;
 
-// protos
+// prototypes
 
 ifj17_object_t *ifj17_node(ifj17_node_t *node);
 

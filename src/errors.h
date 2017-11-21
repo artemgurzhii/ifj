@@ -9,7 +9,7 @@
 
 #include "parser.h"
 
-// protos
+// prototypes
 
 void ifj17_report_error(ifj17_parser_t *parser);
 

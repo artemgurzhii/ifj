@@ -63,7 +63,7 @@ struct ifj17_object_struct
   } value;
 };
 
-// protos
+// prototypes
 
 void ifj17_object_inspect(ifj17_object_t *self);
 
