@@ -479,23 +479,22 @@ static ifj17_node_t *dim_expr(ifj17_parser_t *self) {
 
   context("dim expression");
 
-  do {
-    if (!decl) {
-      return error("expecting declaration");
-    }
+  if (!decl) {
+    return error("expecting declaration");
+  }
 
-    // '='
-    if (accept(OP_ASSIGN)) {
-      val = expr(self);
-      if (!val) {
-        return error("expecting declaration initializer");
-      }
-    }
+  // '='
+  if (accept(OP_ASSIGN)) {
+    val = expr(self);
 
-    ifj17_node_t *bin = (ifj17_node_t *)ifj17_binary_op_node_new(
-        IFJ17_TOKEN_OP_ASSIGN, decl, val, line);
-    ifj17_vec_push(vec, ifj17_node(bin));
-  } while (accept(COMMA) == true);
+    if (val == NULL) {
+      return error("expecting declaration initializer");
+    }
+  }
+
+  ifj17_node_t *bin = (ifj17_node_t *)ifj17_binary_op_node_new(IFJ17_TOKEN_OP_ASSIGN,
+                                                               decl, val, line);
+  ifj17_vec_push(vec, ifj17_node(bin));
 
   return (ifj17_node_t *)ifj17_dim_node_new(vec, line);
 }
@@ -526,7 +525,7 @@ static ifj17_node_t *assignment_expr(ifj17_parser_t *self) {
   }
 
   // =
-  if (is(OP_ASSIGN)) {
+  if (is(OP_ASSIGN) == true) {
     op = self->tok->type;
     next;
     context("assignment");

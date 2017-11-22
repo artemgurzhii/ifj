@@ -380,6 +380,7 @@ scan:
     return token(OP_ASSIGN);
   case '<':
     switch (next) {
+    // TODO: Do we have `<=` operator?
     case '=':
       return token(OP_LTE);
     case '>':
@@ -389,6 +390,7 @@ scan:
     }
   case '>':
     switch (next) {
+    // TODO: Do we have `>=` operator?
     case '=':
       return token(OP_GTE);
     default:
@@ -411,8 +413,10 @@ scan:
       return scan_ident(self, c);
     if (isdigit(c) || '.' == c)
       return scan_number(self, c);
+
     token(ILLEGAL);
     error("illegal character");
+
     return 0;
   }
 }

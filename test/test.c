@@ -417,7 +417,7 @@ int main(int argc, const char **argv) {
 
   suite("parser");
   test(declaration);
-  // test(declaration_and_assignment);
+  test(declaration_and_assignment);
 
   // test(assign);
   // test(assign_chain);
