@@ -4,8 +4,8 @@
 // Copyright (c) 2017 Hurzhii Artem, Demicev Alexandr, Denisov Artem, Chufarov Evgeny
 //
 
-#include "codegen.h"
 #include "ast.h"
+#include "codegen.h"
 #include "internal.h"
 #include "opcodes.h"
 #include "visitor.h"
@@ -254,8 +254,8 @@ static void visit_function(ifj17_visitor_t *self, ifj17_function_node_t *node) {
  */
 
 static void visit_while(ifj17_visitor_t *self, ifj17_while_node_t *node) {
-  // // while | until
-  // printf("(%s ", node->negate ? "until" : "while");
+  // // while
+  // printf("(while ");
   // visit((ifj17_node_t *) node->expr);
   // ++indents;
   // printf("\n");
@@ -286,7 +286,7 @@ static void visit_return(ifj17_visitor_t *self, ifj17_return_node_t *node) {
 
 static void visit_if(ifj17_visitor_t *self, ifj17_if_node_t *node) {
   // // if
-  // printf("(%s ", node->negate ? "unless" : "if");
+  // printf("(if ");
   // visit((ifj17_node_t *) node->expr);
   // ++indents;
   // printf("\n");
@@ -327,12 +327,6 @@ static void visit_if(ifj17_visitor_t *self, ifj17_if_node_t *node) {
 static void visit_type(ifj17_visitor_t *self, ifj17_type_node_t *node) {}
 
 /*
- * Visit use `node`.
- */
-
-static void visit_use(ifj17_visitor_t *self, ifj17_use_node_t *node) {}
-
-/*
  * Generate code for the given `node`.
  */
 
@@ -363,8 +357,7 @@ ifj17_vm_t *ifj17_gen(ifj17_node_t *node) {
                              .visit_unary_op = visit_unary_op,
                              .visit_binary_op = visit_binary_op,
                              .visit_subscript = visit_subscript,
-                             .visit_type = visit_type,
-                             .visit_use = visit_use};
+                             .visit_type = visit_type};
 
   ifj17_visit(&visitor, node);
   emit(HALT, 0, 0, 0);
