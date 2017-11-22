@@ -137,15 +137,6 @@ static ifj17_node_t *decl_expr(ifj17_parser_t *self) {
   ifj17_vec_t *vec = ifj17_vec_new();
   int decl_line = lineno;
 
-  printf("%s\n", self->tok->value.as_string);
-
-  // 'dim'
-  if (accept(DIM) == false) {
-    return error("expecting dim");
-  }
-
-  next;
-
   if (is(ID) == false) {
     return error("expecting id");
   }
@@ -157,7 +148,7 @@ static ifj17_node_t *decl_expr(ifj17_parser_t *self) {
   next;
 
   // 'as'
-  if (accept(AS) == false) {
+  if (is(AS) == false) {
     return error("expecting as");
   }
 
@@ -488,21 +479,23 @@ static ifj17_node_t *dim_expr(ifj17_parser_t *self) {
 
   context("dim expression");
 
-  if (!decl) {
-    return error("expecting declaration");
-  }
-
-  // '='
-  if (accept(OP_ASSIGN)) {
-    val = expr(self);
-    if (!val) {
-      return error("expecting declaration initializer");
+  do {
+    if (!decl) {
+      return error("expecting declaration");
     }
-  }
 
-  ifj17_node_t *bin = (ifj17_node_t *)ifj17_binary_op_node_new(IFJ17_TOKEN_OP_ASSIGN,
-                                                               decl, val, line);
-  ifj17_vec_push(vec, ifj17_node(bin));
+    // '='
+    if (accept(OP_ASSIGN)) {
+      val = expr(self);
+      if (!val) {
+        return error("expecting declaration initializer");
+      }
+    }
+
+    ifj17_node_t *bin = (ifj17_node_t *)ifj17_binary_op_node_new(
+        IFJ17_TOKEN_OP_ASSIGN, decl, val, line);
+    ifj17_vec_push(vec, ifj17_node(bin));
+  } while (accept(COMMA) == true);
 
   return (ifj17_node_t *)ifj17_dim_node_new(vec, line);
 }
@@ -523,8 +516,7 @@ static ifj17_node_t *assignment_expr(ifj17_parser_t *self) {
   ifj17_node_t *node, *right;
   int line = lineno;
 
-  // dim?
-  if (accept(DIM)) {
+  if (accept(DIM) == true) {
     return dim_expr(self);
   }
 

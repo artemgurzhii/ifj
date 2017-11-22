@@ -118,8 +118,8 @@ ifj17_id_node_t *ifj17_id_node_new(const char *val, int lineno) {
 }
 
 /*
- * Alloc and initialize a new declaration node with the
- * given `name`, `type`, and `val`.
+ * Alloc and initialize a new dim node with the
+ * given `decl` and `val`.
  */
 
 ifj17_dim_node_t *ifj17_dim_node_new(ifj17_vec_t *vec, int lineno) {
