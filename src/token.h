@@ -27,7 +27,7 @@
   t(IF, "if") \
   t(ELSE, "else") \
   t(FOR, "for") \
-  t(LET, "let") \
+  t(DIM, "dim") \
   t(END, "end") \
   t(RETURN, "return") \
   t(LBRACE, "{") \

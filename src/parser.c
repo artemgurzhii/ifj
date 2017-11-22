@@ -213,33 +213,27 @@ static ifj17_node_t *type_expr(ifj17_parser_t *self) {
 }
 
 /*
- * id (',' id)* ':' type_expr
+ * id 'as' type_expr
  */
 
 static ifj17_node_t *decl_expr(ifj17_parser_t *self, bool need_type) {
   debug("decl_expr");
   context("declaration");
 
-  if (!is(ID))
+  if (is(ID) == false) {
     return NULL;
+  }
 
   ifj17_vec_t *vec = ifj17_vec_new();
   int decl_line = lineno;
-  while (is(ID)) {
-    // id
-    ifj17_node_t *id =
-        (ifj17_node_t *)ifj17_id_node_new(self->tok->value.as_string, lineno);
-    ifj17_vec_push(vec, ifj17_node(id));
-    next;
+  ifj17_node_t *id =
+      (ifj17_node_t *)ifj17_id_node_new(self->tok->value.as_string, lineno);
+  ifj17_vec_push(vec, ifj17_node(id));
 
-    // ','
-    if (!accept(COMMA)) {
-      break;
-    }
-  }
+  next;
 
-  // ':'
-  if (!accept(COLON)) {
+  // 'as'
+  if (accept(AS) == false) {
     if (need_type) {
       return error("expecting type");
     } else {
@@ -830,11 +824,11 @@ static ifj17_node_t *call_expr(ifj17_parser_t *self, ifj17_node_t *left) {
 }
 
 /*
- * 'let' decl_expr ('=' expr)? (',' decl_expr ('=' expr)?)*
+ * 'dim' decl_expr ('=' expr)? (',' decl_expr ('=' expr)?)*
  */
 
-static ifj17_node_t *let_expr(ifj17_parser_t *self) {
-  // let already consumed
+static ifj17_node_t *dim_expr(ifj17_parser_t *self) {
+  // dim already consumed
   ifj17_vec_t *vec = ifj17_vec_new();
   int let_line = lineno;
 
@@ -843,7 +837,7 @@ static ifj17_node_t *let_expr(ifj17_parser_t *self) {
     ifj17_node_t *decl = decl_expr(self, false);
     ifj17_node_t *val = NULL;
 
-    context("let expression");
+    context("dim expression");
     if (!decl) {
       return error("expecting declaration");
     }
@@ -860,12 +854,12 @@ static ifj17_node_t *let_expr(ifj17_parser_t *self) {
     ifj17_vec_push(vec, ifj17_node(bin));
   } while (accept(COMMA));
 
-  return (ifj17_node_t *)ifj17_let_node_new(vec, let_line);
+  return (ifj17_node_t *)ifj17_dim_node_new(vec, let_line);
 }
 
 /*
  *   logical_or_expr
- * | let_expr
+ * | dim_expr
  * | call_expr '=' not_expr
  * | call_expr '+=' not_expr
  * | call_expr '-=' not_expr
@@ -879,9 +873,10 @@ static ifj17_node_t *assignment_expr(ifj17_parser_t *self) {
   ifj17_node_t *node, *right;
   int line = lineno;
 
-  // let?
-  if (accept(LET))
-    return let_expr(self);
+  // dim?
+  if (accept(DIM)) {
+    return dim_expr(self);
+  }
 
   debug("assignment_expr");
   if (!(node = logical_or_expr(self)))

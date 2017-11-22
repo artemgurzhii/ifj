@@ -4,9 +4,9 @@
 // Copyright (c) 2017 Hurzhii Artem, Demicev Alexandr, Denisov Artem, Chufarov Evgeny
 //
 
-#include "ifj17.h"
 #include "codegen.h"
 #include "errors.h"
+#include "ifj17.h"
 #include "lexer.h"
 #include "linenoise.h"
 #include "parser.h"
@@ -66,6 +66,8 @@ void version() {
  * Line-noise REPL.
  */
 
+// TODO: Delete this(WHEN ALL IS FINISHED!) with `linenoise` as this is not required
+// By our task
 void repl() {
   ifj17_set_prettyprint_func(printf);
   char *line;

@@ -28,8 +28,8 @@ void ifj17_visit(ifj17_visitor_t *self, ifj17_node_t *node) {
     VISIT(id);
   case IFJ17_NODE_DECL:
     VISIT(decl);
-  case IFJ17_NODE_LET:
-    VISIT(let);
+  case IFJ17_NODE_DIM:
+    VISIT(dim);
   case IFJ17_NODE_INT:
     VISIT(int);
   case IFJ17_NODE_DOUBLE:

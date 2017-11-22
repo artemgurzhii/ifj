@@ -1,4 +1,0 @@
-(dim
-  (decl
-    (id foo)
-    : (id string)))

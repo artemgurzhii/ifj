@@ -156,11 +156,11 @@ static void visit_decl(ifj17_visitor_t *self, ifj17_decl_node_t *node) {
 }
 
 /*
- * Visit let `node`.
+ * Visit dim `node`.
  */
 
-static void visit_let(ifj17_visitor_t *self, ifj17_let_node_t *node) {
-  print_func("(let");
+static void visit_dim(ifj17_visitor_t *self, ifj17_dim_node_t *node) {
+  print_func("(dim");
   indents++;
 
   ifj17_vec_each(node->vec, {
@@ -445,7 +445,7 @@ void ifj17_prettyprint(ifj17_node_t *node) {
                              .visit_while = visit_while,
                              .visit_block = visit_block,
                              .visit_decl = visit_decl,
-                             .visit_let = visit_let,
+                             .visit_dim = visit_dim,
                              .visit_double = visit_double,
                              .visit_string = visit_string,
                              .visit_return = visit_return,

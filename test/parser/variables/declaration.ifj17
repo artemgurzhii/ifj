@@ -1,0 +1,7 @@
+dim foo as string
+
+dim
+bar as
+integer
+
+dim  baz  as  string

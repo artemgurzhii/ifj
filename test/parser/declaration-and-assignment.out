@@ -1,5 +1,0 @@
-(dim
-  (decl
-    (id bar)
-    : (id string))
-   = (string 'baz'))
