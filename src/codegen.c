@@ -325,12 +325,6 @@ static void visit_if(ifj17_visitor_t *self, ifj17_if_node_t *node) {
 static void visit_type(ifj17_visitor_t *self, ifj17_type_node_t *node) {}
 
 /*
- * Visit use `node`.
- */
-
-// static void visit_use(ifj17_visitor_t *self, ifj17_use_node_t *node) {}
-
-/*
  * Generate code for the given `node`.
  */
 
