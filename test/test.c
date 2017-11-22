@@ -331,14 +331,24 @@ static void _test_parser(const char *source_path, const char *out_path) {
   ifj17_set_prettyprint_func(bprintf);
   ifj17_prettyprint((ifj17_node_t *)root);
 
-  printf("%s\n", expected);
-  printf("%s\n", print_buf);
+  size_t ln = strlen(print_buf) - 1;
+  if (*print_buf && print_buf[ln] == '\n') {
+    strcat(expected, "\n");
+  }
 
   assert(strcmp(expected, print_buf) == 0);
 }
 
+// NOTE: REAL WORLD TESTS
+// Testing variable declaration
 static void test_declaration() {
   _test_parser("test/parser/declaration.ifj17", "test/parser/declaration.out");
+}
+
+// Testing variable declaration and value assignment
+static void test_declaration_and_assignment() {
+  _test_parser("test/parser/declaration-and-assignment.ifj17",
+               "test/parser/declaration-and-assignment.out");
 }
 
 // static void test_assign() {
@@ -407,6 +417,7 @@ int main(int argc, const char **argv) {
 
   suite("parser");
   test(declaration);
+  // test(declaration_and_assignment);
 
   // test(assign);
   // test(assign_chain);

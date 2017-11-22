@@ -1,4 +1,1 @@
-
 dim foo as string
-
-dim bar as string = "baz"
