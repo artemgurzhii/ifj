@@ -1,3 +1,4 @@
-let a, b: int
-let a = 5
-let a: string = "foo"
+
+dim foo as string
+
+dim bar as string = "baz"

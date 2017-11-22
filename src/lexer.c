@@ -124,6 +124,8 @@ static int scan_ident(ifj17_lexer_t *self, int c) {
   case 4:
     if (strcmp("else", buf) == 0)
       return token(ELSE);
+    if (strcmp("type", buf) == 0)
+      return token(TYPE);
     if (strcmp("loop", buf) == 0)
       return token(LOOP);
     if (strcmp("exit", buf) == 0)

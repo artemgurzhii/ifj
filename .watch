@@ -7,4 +7,4 @@
 #   test - *.{c,h,ifj17}
 # And then run test script
 
-fswatch -o {test,src}/*.{c,h,ifj17} | xargs -n1 ./.test
+fswatch -o {test,test/parser,src}/*.* | xargs -n1 ./.test
