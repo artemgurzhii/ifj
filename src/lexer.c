@@ -52,7 +52,7 @@
  */
 
 #define need_semi(t)                                                                \
-  (t == IFJ17_TOKEN_ID || t == IFJ17_TOKEN_DOUBLE || t == IFJ17_TOKEN_INT ||         \
+  (t == IFJ17_TOKEN_ID || t == IFJ17_TOKEN_DOUBLE || t == IFJ17_TOKEN_INT ||        \
    t == IFJ17_TOKEN_STRING || t == IFJ17_TOKEN_RETURN)
 
 /*
@@ -99,43 +99,43 @@ static int scan_ident(ifj17_lexer_t *self, int c) {
   buf[len++] = 0;
   switch (len - 1) {
   case 2:
-    if (0 == strcmp("if", buf))
+    if (strcmp("if", buf) == 0)
       return token(IF);
-    if (0 == strcmp("as", buf))
+    if (strcmp("as", buf) == 0)
       return token(AS);
     break;
   case 3:
-    if (0 == strcmp("use", buf))
+    if (strcmp("use", buf) == 0)
       return token(USE);
-    if (0 == strcmp("for", buf))
+    if (strcmp("for", buf) == 0)
       return token(FOR);
-    if (0 == strcmp("def", buf))
+    if (strcmp("def", buf) == 0)
       return token(DEF);
-    if (0 == strcmp("end", buf))
+    if (strcmp("end", buf) == 0)
       return token(END);
-    if (0 == strcmp("let", buf))
-      return token(LET);
-    if (0 == strcmp("and", buf))
+    if (strcmp("dim", buf) == 0)
+      return token(DIM);
+    if (strcmp("and", buf) == 0)
       return token(OP_BIT_AND);
-    if (0 == strcmp("not", buf))
+    if (strcmp("not", buf) == 0)
       return token(OP_LNOT);
     break;
   case 4:
-    if (0 == strcmp("else", buf))
+    if (strcmp("else", buf) == 0)
       return token(ELSE);
-    if (0 == strcmp("type", buf))
+    if (strcmp("type", buf) == 0)
       return token(TYPE);
     break;
   case 5:
-    if (0 == strcmp("while", buf))
+    if (strcmp("while", buf) == 0)
       return token(WHILE);
-    if (0 == strcmp("until", buf))
+    if (strcmp("until", buf) == 0)
       return token(UNTIL);
     break;
   default:
-    if (0 == strcmp("return", buf))
+    if (strcmp("return", buf) == 0)
       return token(RETURN);
-    if (0 == strcmp("unless", buf))
+    if (strcmp("unless", buf) == 0)
       return token(UNLESS);
   }
 
@@ -250,7 +250,7 @@ scan_hex:
     goto scan_int;
   }
 
-  // [0-9_]+
+// [0-9_]+
 
 scan_int:
   do {
@@ -266,7 +266,7 @@ scan_int:
   self->tok.value.as_int = n;
   return 1;
 
-  // [0-9_]+
+// [0-9_]+
 
 scan_double : {
   e = 1;
@@ -285,7 +285,7 @@ scan_double : {
   return 1;
 }
 
-  // [\+\-]?[0-9]+
+// [\+\-]?[0-9]+
 
 scan_expo : {
   while (isdigit(c = next) || '+' == c || '-' == c) {

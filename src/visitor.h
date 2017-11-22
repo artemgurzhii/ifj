@@ -41,7 +41,7 @@ typedef struct ifj17_visitor {
   // TODO: discover why the program crashes if i put this somewhere else
   void (* visit_subscript)(struct ifj17_visitor *self, ifj17_subscript_node_t *node);
   void (* visit_type)(struct ifj17_visitor *self, ifj17_type_node_t *node);
-  void (* visit_let)(struct ifj17_visitor *self, ifj17_let_node_t *node);
+  void (* visit_dim)(struct ifj17_visitor *self, ifj17_dim_node_t *node);
   void (* visit_use)(struct ifj17_visitor *self, ifj17_use_node_t *node);
 } ifj17_visitor_t;
 

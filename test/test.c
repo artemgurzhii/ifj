@@ -337,8 +337,14 @@ static void _test_parser(const char *source_path, const char *out_path) {
   assert(strcmp(expected, print_buf) == 0);
 }
 
-static void test_declaration() {
-  _test_parser("test/parser/declaration.ifj17", "test/parser/declaration.out");
+static void test_variable_declaration() {
+  _test_parser("test/parser/variables/declaration.ifj17",
+               "test/parser/variables/declaration.out");
+}
+
+static void test_variable_declaration_and_assignment() {
+  _test_parser("test/parser/variables/declaration-and-assignment.ifj17",
+               "test/parser/variables/declaration-and-assignment.out");
 }
 
 // static void test_assign() {
@@ -406,7 +412,9 @@ int main(int argc, const char **argv) {
   test(string);
 
   suite("parser");
-  test(declaration);
+  test(variable_declaration);
+  test(variable_declaration_and_assignment);
+
   // test(assign);
   // test(assign_chain);
   // test(subscript);

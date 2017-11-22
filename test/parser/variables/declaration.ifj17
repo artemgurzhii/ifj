@@ -1,0 +1,3 @@
+dim foo as string
+
+dim bar as integer
