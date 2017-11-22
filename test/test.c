@@ -337,8 +337,8 @@ static void _test_parser(const char *source_path, const char *out_path) {
   assert(strcmp(expected, print_buf) == 0);
 }
 
-static void test_dim() {
-  _test_parser("test/parser/dim.ifj17", "test/parser/dim.out");
+static void test_declaration() {
+  _test_parser("test/parser/declaration.ifj17", "test/parser/declaration.out");
 }
 
 // static void test_assign() {
@@ -351,10 +351,6 @@ static void test_dim() {
 //
 // static void test_subscript() {
 //   _test_parser("test/parser/subscript.ifj17", "test/parser/subscript.out");
-// }
-//
-// static void test_declaration() {
-//   _test_parser("test/parser/declaration.ifj17", "test/parser/declaration.out");
 // }
 //
 // static void test_return() {
@@ -410,12 +406,11 @@ int main(int argc, const char **argv) {
   test(string);
 
   suite("parser");
-  test(dim);
+  test(declaration);
 
   // test(assign);
   // test(assign_chain);
   // test(subscript);
-  // test(declaration);
   // test(return );
 
   printf("\n");

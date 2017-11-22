@@ -43,7 +43,6 @@ typedef struct ifj17_visitor {
   // void (*visit_subscript)(struct ifj17_visitor *self, ifj17_subscript_node_t
   // *node);
   void (*visit_type)(struct ifj17_visitor *self, ifj17_type_node_t *node);
-  // void (*visit_let)(struct ifj17_visitor *self, ifj17_let_node_t *node);
 } ifj17_visitor_t;
 
 // prototypes

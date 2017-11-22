@@ -132,6 +132,33 @@ static void visit_id(ifj17_visitor_t *self, ifj17_id_node_t *node) {
 }
 
 /*
+ * Visit dim `node`.
+ */
+
+static void visit_dim(ifj17_visitor_t *self, ifj17_dim_node_t *node) {
+  print_func("(dim");
+  indents++;
+
+  ifj17_vec_each(node->vec, {
+    ifj17_binary_op_node_t *bin = (ifj17_binary_op_node_t *)val->value.as_pointer;
+
+    print_func("\n");
+    INDENT;
+    visit(bin->left);
+
+    if (bin->right) {
+      print_func("\n");
+      INDENT;
+      print_func(" = ");
+      visit(bin->right);
+    }
+  });
+
+  print_func(")");
+  indents--;
+}
+
+/*
  * Visit decl `node`.
  */
 
@@ -359,6 +386,7 @@ static void visit_if(ifj17_visitor_t *self, ifj17_if_node_t *node) {
 void ifj17_prettyprint(ifj17_node_t *node) {
   ifj17_visitor_t visitor = {.visit_if = visit_if,
                              .visit_id = visit_id,
+                             .visit_dim = visit_dim,
                              .visit_int = visit_int,
                              .visit_call = visit_call,
                              .visit_while = visit_while,

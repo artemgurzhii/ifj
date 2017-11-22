@@ -129,19 +129,17 @@ static ifj17_node_t *type_expr(ifj17_parser_t *self) {
 /*
  * Dim id as type_expr
  */
-// TODO: remove need_type, var decl in ifj17 always requires type (compare with luna)
-// TODO: not shure if works as required, need to be tested
 
-static ifj17_node_t *decl_expr(ifj17_parser_t *self, bool need_type) {
-  printf("hello word\n");
+static ifj17_node_t *decl_expr(ifj17_parser_t *self) {
   debug("decl_expr");
   context("declaration");
 
   ifj17_vec_t *vec = ifj17_vec_new();
   int decl_line = lineno;
 
+  printf("%s\n", self->tok->value.as_string);
+
   // 'dim'
-  // TODO: This is never executed
   if (accept(DIM) == false) {
     return error("expecting dim");
   }
@@ -398,7 +396,7 @@ static ifj17_vec_t *function_params(ifj17_parser_t *self) {
 
   do {
     int line = lineno;
-    ifj17_node_t *decl = decl_expr(self, false);
+    ifj17_node_t *decl = decl_expr(self);
     if (decl == false) {
       return NULL;
     }
@@ -447,7 +445,7 @@ static ifj17_node_t *function_expr(ifj17_parser_t *self) {
   // block
   if (body = block(self)) {
     // return (ifj17_node_t *) ifj17_function_node_new(body, params);
-    // TODO: line 457, see how it works and why commented in luna
+    // TODO: line 457, see how it works and why commented in ifj17
   }
 
   return NULL;
@@ -477,6 +475,39 @@ ifj17_args_node_t *call_args(ifj17_parser_t *self) {
 }
 
 /*
+ * 'dim' decl_expr ('=' expr)? (',' decl_expr ('=' expr)?)*
+ */
+
+static ifj17_node_t *dim_expr(ifj17_parser_t *self) {
+  // dim already consumed
+  int line = lineno;
+
+  ifj17_vec_t *vec = ifj17_vec_new();
+  ifj17_node_t *decl = decl_expr(self);
+  ifj17_node_t *val = NULL;
+
+  context("dim expression");
+
+  if (!decl) {
+    return error("expecting declaration");
+  }
+
+  // '='
+  if (accept(OP_ASSIGN)) {
+    val = expr(self);
+    if (!val) {
+      return error("expecting declaration initializer");
+    }
+  }
+
+  ifj17_node_t *bin = (ifj17_node_t *)ifj17_binary_op_node_new(IFJ17_TOKEN_OP_ASSIGN,
+                                                               decl, val, line);
+  ifj17_vec_push(vec, ifj17_node(bin));
+
+  return (ifj17_node_t *)ifj17_dim_node_new(vec, line);
+}
+
+/*
  *   logical_or_expr
  * | let_expr
  * | call_expr '=' not_expr
@@ -491,6 +522,11 @@ static ifj17_node_t *assignment_expr(ifj17_parser_t *self) {
   ifj17_token op;
   ifj17_node_t *node, *right;
   int line = lineno;
+
+  // dim?
+  if (accept(DIM)) {
+    return dim_expr(self);
+  }
 
   debug("assignment_expr");
   if ((node = logical_or_expr(self)) == false) {
@@ -542,6 +578,45 @@ static ifj17_node_t *expr(ifj17_parser_t *self) {
     return NULL;
   }
   return node;
+}
+
+// TODO: Drop this?
+static ifj17_node_t *type_stmt(ifj17_parser_t *self) {
+  debug("type_stmt");
+  context("type statement");
+  ifj17_type_node_t *type;
+  int line = lineno;
+
+  // 'type'
+  if (!accept(TYPE)) {
+    return NULL;
+  }
+
+  // id
+  if (!is(ID)) {
+    return error("missing type name");
+  }
+
+  const char *name = self->tok->value.as_string;
+  type = ifj17_type_node_new(name, line);
+  next;
+
+  // semicolon might have been inserted here
+  accept(SEMICOLON);
+
+  // type fields
+  do {
+    ifj17_node_t *decl = decl_expr(self);
+    if (!decl)
+      return error("expecting field");
+
+    // semicolon might have been inserted here
+    accept(SEMICOLON);
+
+    ifj17_vec_push(type->fields, ifj17_node(decl));
+  } while (!accept(END));
+
+  return (ifj17_node_t *)type;
 }
 
 /*
@@ -731,6 +806,7 @@ static ifj17_node_t *return_stmt(ifj17_parser_t *self) {
  * | while_stmt
  * | return_stmt
  * | function_stmt
+ * | type_stmt
  * | expr
  */
 
@@ -748,6 +824,9 @@ static ifj17_node_t *stmt(ifj17_parser_t *self) {
   }
   if (is(FUNCTION)) {
     return function_stmt(self);
+  }
+  if (is(TYPE)) {
+    return type_stmt(self);
   }
   return expr(self);
 }

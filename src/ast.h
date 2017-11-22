@@ -15,6 +15,7 @@
  * Nodes.
  */
 #define IFJ17_NODE_LIST \
+  n(TYPE)               \
   n(BLOCK)              \
   n(EXPR_STMT)          \
   n(RETURN)             \
@@ -33,7 +34,6 @@
   n(DOUBLE)             \
   n(STRING)             \
   n(FUNCTION)           \
-  n(TYPE)
 /*
  * Nodes enum.
  */
