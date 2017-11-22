@@ -110,6 +110,8 @@ static int scan_ident(ifj17_lexer_t *self, int c) {
   case 3:
     if (strcmp("asc", buf) == 0)
       return token(ASC);
+    if (strcmp("dim", buf) == 0)
+      return token(DIM);
     if (strcmp("end", buf) == 0)
       return token(END);
     if (strcmp("for", buf) == 0)
@@ -122,6 +124,8 @@ static int scan_ident(ifj17_lexer_t *self, int c) {
   case 4:
     if (strcmp("else", buf) == 0)
       return token(ELSE);
+    if (strcmp("type", buf) == 0)
+      return token(TYPE);
     if (strcmp("loop", buf) == 0)
       return token(LOOP);
     if (strcmp("exit", buf) == 0)
@@ -280,7 +284,7 @@ scan_hex:
     goto scan_int;
   }
 
-  // [0-9_]+
+// [0-9_]+
 
 scan_int:
   do {
@@ -296,7 +300,7 @@ scan_int:
   self->tok.value.as_int = n;
   return 1;
 
-  // [0-9_]+
+// [0-9_]+
 
 scan_double : {
   e = 1;
@@ -315,7 +319,7 @@ scan_double : {
   return 1;
 }
 
-  // [\+\-]?[0-9]+
+// [\+\-]?[0-9]+
 
 scan_expo : {
   while (isdigit(c = next) || '+' == c || '-' == c) {
@@ -376,6 +380,7 @@ scan:
     return token(OP_ASSIGN);
   case '<':
     switch (next) {
+    // TODO: Do we have `<=` operator?
     case '=':
       return token(OP_LTE);
     case '>':
@@ -385,6 +390,7 @@ scan:
     }
   case '>':
     switch (next) {
+    // TODO: Do we have `>=` operator?
     case '=':
       return token(OP_GTE);
     default:
@@ -407,8 +413,10 @@ scan:
       return scan_ident(self, c);
     if (isdigit(c) || '.' == c)
       return scan_number(self, c);
+
     token(ILLEGAL);
     error("illegal character");
+
     return 0;
   }
 }

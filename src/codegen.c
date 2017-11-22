@@ -231,6 +231,12 @@ static void visit_call(ifj17_visitor_t *self, ifj17_call_node_t *node) {
  * Visit function `node`.
  */
 
+static void visit_dim(ifj17_visitor_t *self, ifj17_dim_node_t *node) {}
+
+/*
+ * Visit function `node`.
+ */
+
 static void visit_function(ifj17_visitor_t *self, ifj17_function_node_t *node) {
   // printf("(function %s -> %s", node->name, node->type ? node->type : "");
   // ++indents;

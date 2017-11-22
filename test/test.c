@@ -1,4 +1,3 @@
-
 #include "errors.h"
 #include "hash.h"
 #include "khash.h"
@@ -33,8 +32,8 @@ int bprintf(const char *format, ...) {
 
 static void test_value_is() {
   ifj17_object_t one = {.type = IFJ17_TYPE_INT, .value.as_int = 1};
-  assert(ifj17_is_int(&one));
-  assert(!ifj17_is_string(&one));
+  assert(ifj17_is_int(&one) == true);
+  assert(ifj17_is_string(&one) == false);
 
   ifj17_object_t two = {.type = IFJ17_TYPE_NULL};
   assert(ifj17_is_null(&two));
@@ -306,32 +305,52 @@ static void test_string() {
  * Test parser.
  */
 
-// static void _test_parser(const char *source_path, const char *out_path) {
-//   ifj17_lexer_t lexer;
-//   ifj17_parser_t parser;
-//   ifj17_block_node_t *root;
-//
-//   char *source = file_read(source_path);
-//   assert(source != NULL);
-//   char *expected = file_read(out_path);
-//   assert(expected != NULL);
-//
-//   ifj17_lexer_init(&lexer, source, source_path);
-//   ifj17_parser_init(&parser, &lexer);
-//
-//   if (!(root = ifj17_parse(&parser))) {
-//     ifj17_report_error(&parser);
-//     exit(1);
-//   }
-//
-//   char buf[1024] = {0};
-//   print_buf = buf;
-//   ifj17_set_prettyprint_func(bprintf);
-//   ifj17_prettyprint((ifj17_node_t *)root);
-//
-//   assert(strcmp(expected, print_buf) == 0);
-// }
-//
+static void _test_parser(const char *source_path, const char *out_path) {
+  ifj17_lexer_t lexer;
+  ifj17_parser_t parser;
+  ifj17_block_node_t *root;
+
+  char *source = file_read(source_path);
+  assert(source != NULL);
+
+  char *expected = file_read(out_path);
+  assert(expected != NULL);
+
+  ifj17_lexer_init(&lexer, source, source_path);
+  ifj17_parser_init(&parser, &lexer);
+
+  root = ifj17_parse(&parser);
+
+  if (root == NULL) {
+    ifj17_report_error(&parser);
+    exit(1);
+  }
+
+  char buf[1024] = {0};
+  print_buf = buf;
+  ifj17_set_prettyprint_func(bprintf);
+  ifj17_prettyprint((ifj17_node_t *)root);
+
+  size_t ln = strlen(print_buf) - 1;
+  if (*print_buf && print_buf[ln] == '\n') {
+    strcat(expected, "\n");
+  }
+
+  assert(strcmp(expected, print_buf) == 0);
+}
+
+// NOTE: REAL WORLD TESTS
+// Testing variable declaration
+static void test_declaration() {
+  _test_parser("test/parser/declaration.ifj17", "test/parser/declaration.out");
+}
+
+// Testing variable declaration and value assignment
+static void test_declaration_and_assignment() {
+  _test_parser("test/parser/declaration-and-assignment.ifj17",
+               "test/parser/declaration-and-assignment.out");
+}
+
 // static void test_assign() {
 //   _test_parser("test/parser/assign.ifj17", "test/parser/assign.out");
 // }
@@ -342,10 +361,6 @@ static void test_string() {
 //
 // static void test_subscript() {
 //   _test_parser("test/parser/subscript.ifj17", "test/parser/subscript.out");
-// }
-//
-// static void test_declaration() {
-//   _test_parser("test/parser/declaration.ifj17", "test/parser/declaration.out");
 // }
 //
 // static void test_return() {
@@ -400,11 +415,13 @@ int main(int argc, const char **argv) {
   suite("string");
   test(string);
 
-  // suite("parser");
+  suite("parser");
+  test(declaration);
+  test(declaration_and_assignment);
+
   // test(assign);
   // test(assign_chain);
   // test(subscript);
-  // test(declaration);
   // test(return );
 
   printf("\n");
