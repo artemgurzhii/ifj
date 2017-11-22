@@ -837,7 +837,7 @@ static ifj17_node_t *dim_expr(ifj17_parser_t *self) {
     ifj17_node_t *decl = decl_expr(self, false);
     ifj17_node_t *val = NULL;
 
-    context("let expression");
+    context("dim expression");
     if (!decl) {
       return error("expecting declaration");
     }

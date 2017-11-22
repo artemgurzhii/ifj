@@ -30,7 +30,7 @@
   n(NULL) \
   n(ID) \
   n(DECL) \
-  n(LET) \
+  n(DIM) \
   n(CALL) \
   n(ARGS) \
   n(INT) \
