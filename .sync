@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+git stash
+
+git checkout master
+
+git fetch upstream
+
+git pull upstream master
+
+git checkout -
+
+git stash apply
+
+git rebase master
