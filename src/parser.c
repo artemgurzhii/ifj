@@ -607,7 +607,7 @@ static ifj17_node_t *function_stmt(ifj17_parser_t *self) {
  *  ('else' 'if' block)*
  *  ('else' block)?
  */
-// TODO: remove negate, fix ELSEIF
+// TODO: fix ELSEIF
 static ifj17_node_t *if_stmt(ifj17_parser_t *self) {
   ifj17_node_t *cond;
   ifj17_block_node_t *body;
@@ -618,7 +618,6 @@ static ifj17_node_t *if_stmt(ifj17_parser_t *self) {
   if (is(IF) == false) {
     return NULL;
   }
-  int negate = 0;
   next;
 
   // expr
@@ -635,7 +634,7 @@ static ifj17_node_t *if_stmt(ifj17_parser_t *self) {
     return NULL;
   }
 
-  ifj17_if_node_t *node = ifj17_if_node_new(negate, cond, body, line);
+  ifj17_if_node_t *node = ifj17_if_node_new(cond, body, line);
 
 // 'else'
 loop:
@@ -657,7 +656,7 @@ loop:
         return NULL;
       }
       ifj17_vec_push(node->else_ifs, ifj17_node((ifj17_node_t *)ifj17_if_node_new(
-                                         0, cond, body, line)));
+                                         cond, body, line)));
       goto loop;
       // 'else'
     } else {
@@ -675,7 +674,6 @@ loop:
 /*
  * 'while' expr block
  */
-// TODO: remove negate
 static ifj17_node_t *while_stmt(ifj17_parser_t *self) {
   ifj17_node_t *cond;
   ifj17_block_node_t *body;
@@ -686,7 +684,6 @@ static ifj17_node_t *while_stmt(ifj17_parser_t *self) {
   if (is(WHILE) == false) {
     return NULL;
   }
-  int negate = 0;
   context("while statement condition");
   next;
 
@@ -701,7 +698,7 @@ static ifj17_node_t *while_stmt(ifj17_parser_t *self) {
     return NULL;
   }
 
-  return (ifj17_node_t *)ifj17_while_node_new(negate, cond, body, line);
+  return (ifj17_node_t *)ifj17_while_node_new(cond, body, line);
 }
 
 /*

@@ -198,7 +198,6 @@ typedef struct {
 
 typedef struct {
   ifj17_node_t base;
-  int negate;
   ifj17_node_t *expr;
   ifj17_block_node_t *block;
   ifj17_block_node_t *else_block;
@@ -211,7 +210,6 @@ typedef struct {
 
 typedef struct {
   ifj17_node_t base;
-  int negate;
   ifj17_node_t *expr;
   ifj17_block_node_t *block;
 } ifj17_while_node_t;
@@ -260,10 +258,10 @@ ifj17_double_node_t *ifj17_double_node_new(double val, int lineno);
 
 ifj17_string_node_t *ifj17_string_node_new(const char *val, int lineno);
 
-ifj17_if_node_t *ifj17_if_node_new(int negate, ifj17_node_t *expr,
+ifj17_if_node_t *ifj17_if_node_new(ifj17_node_t *expr,
                                    ifj17_block_node_t *block, int lineno);
 
-ifj17_while_node_t *ifj17_while_node_new(int negate, ifj17_node_t *expr,
+ifj17_while_node_t *ifj17_while_node_new(ifj17_node_t *expr,
                                          ifj17_block_node_t *block, int lineno);
 
 ifj17_return_node_t *ifj17_return_node_new(ifj17_node_t *expr, int lineno);
