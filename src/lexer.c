@@ -105,8 +105,6 @@ static int scan_ident(ifj17_lexer_t *self, int c) {
       return token(AS);
     break;
   case 3:
-    if (strcmp("use", buf) == 0)
-      return token(USE);
     if (strcmp("for", buf) == 0)
       return token(FOR);
     if (strcmp("def", buf) == 0)
@@ -129,14 +127,10 @@ static int scan_ident(ifj17_lexer_t *self, int c) {
   case 5:
     if (strcmp("while", buf) == 0)
       return token(WHILE);
-    if (strcmp("until", buf) == 0)
-      return token(UNTIL);
     break;
   default:
     if (strcmp("return", buf) == 0)
       return token(RETURN);
-    if (strcmp("unless", buf) == 0)
-      return token(UNLESS);
   }
 
   self->tok.value.as_string = strdup(buf);

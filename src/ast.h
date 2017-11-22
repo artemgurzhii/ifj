@@ -14,35 +14,36 @@
 /*
  * Nodes.
  */
- #define IFJ17_NODE_LIST \
-   n(BLOCK) \
-   n(EXPR_STMT) \
-   n(RETURN) \
-   n(DEF) \
-   n(IF) \
-   n(WHILE) \
-   n(FOR) \
-   n(UNARY_OP) \
-   n(BINARY_OP) \
-   n(TERNARY_OP) \
-   n(BOOL) \
-   n(NULL) \
-   n(ID) \
-   n(DECL) \
-   n(DIM) \
-   n(CALL) \
-   n(ARGS) \
-   n(INT) \
-   n(DOUBLE) \
-   n(STRING) \
-   n(ARRAY) \
-   n(HASH_PAIR) \
-   n(HASH) \
-   n(FUNCTION) \
-   n(TYPE) \
-   n(SLOT) \
-   n(SUBSCRIPT) \
-   n(USE)
+
+#define IFJ17_NODE_LIST \
+  n(BLOCK) \
+  n(EXPR_STMT) \
+  n(RETURN) \
+  n(DEF) \
+  n(IF) \
+  n(WHILE) \
+  n(FOR) \
+  n(UNARY_OP) \
+  n(BINARY_OP) \
+  n(TERNARY_OP) \
+  n(BOOL) \
+  n(NULL) \
+  n(ID) \
+  n(DECL) \
+  n(LET) \
+  n(CALL) \
+  n(ARGS) \
+  n(INT) \
+  n(DOUBLE) \
+  n(STRING) \
+  n(ARRAY) \
+  n(HASH_PAIR) \
+  n(HASH) \
+  n(FUNCTION) \
+  n(TYPE) \
+  n(SLOT) \
+  n(SUBSCRIPT)
+
 /*
  * Nodes enum.
  */
@@ -244,7 +245,6 @@ typedef struct {
 
 typedef struct {
   ifj17_node_t base;
-  int negate;
   ifj17_node_t *expr;
   ifj17_block_node_t *block;
   ifj17_block_node_t *else_block;
@@ -257,7 +257,6 @@ typedef struct {
 
 typedef struct {
   ifj17_node_t base;
-  int negate;
   ifj17_node_t *expr;
   ifj17_block_node_t *block;
 } ifj17_while_node_t;
@@ -270,16 +269,6 @@ typedef struct {
   ifj17_node_t base;
   ifj17_node_t *expr;
 } ifj17_return_node_t;
-
-/*
- * IFJ17 use node.
- */
-
-typedef struct {
-  ifj17_node_t base;
-  char *module;
-  char *alias;
-} ifj17_use_node_t;
 
 // protos
 
@@ -328,18 +317,16 @@ ifj17_hash_node_t *ifj17_hash_node_new(int lineno);
 
 ifj17_string_node_t *ifj17_string_node_new(const char *val, int lineno);
 
-ifj17_if_node_t *ifj17_if_node_new(int negate, ifj17_node_t *expr,
-                                   ifj17_block_node_t *block, int lineno);
+ifj17_if_node_t *
+ifj17_if_node_new(ifj17_node_t *expr, ifj17_block_node_t *block, int lineno);
 
-ifj17_while_node_t *ifj17_while_node_new(int negate, ifj17_node_t *expr,
-                                         ifj17_block_node_t *block, int lineno);
+ifj17_while_node_t *
+ifj17_while_node_new(ifj17_node_t *expr, ifj17_block_node_t *block, int lineno);
 
 ifj17_return_node_t *ifj17_return_node_new(ifj17_node_t *expr, int lineno);
 
 ifj17_args_node_t *ifj17_args_node_new(int lineno);
 
 ifj17_type_node_t *ifj17_type_node_new(const char *name, int lineno);
-
-ifj17_use_node_t *ifj17_use_node_new(int lineno);
 
 #endif /* IFJ17_AST_H */
