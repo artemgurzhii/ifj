@@ -1,0 +1,6 @@
+(function foo ->
+  (return))
+
+(function bar -> (id string)
+  (return
+    (string 'foo')))

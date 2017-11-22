@@ -1,0 +1,10 @@
+(function factorial
+  (args
+    (decl
+      (id foo)
+      : (id integer)))
+    (decl
+      (id bar)
+      : (id integer)))
+  )
+  -> (id integer))
