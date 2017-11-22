@@ -17,6 +17,7 @@
           o(DIV, "div") o(MUL, "mul") o(MOD, "mod") o(POW, "pow")                   \
               o(NEGATE, "negate") o(BIT_SHL, "bshl") o(BIT_SHR, "bshr")             \
                   o(BIT_AND, "band") o(BIT_OR, "bor") o(BIT_XOR, "bxor")
+
 /*
  * Opcodes enum.
  */

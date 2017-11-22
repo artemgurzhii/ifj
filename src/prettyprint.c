@@ -4,8 +4,8 @@
 // Copyright (c) 2017 Hurzhii Artem, Demicev Alexandr, Denisov Artem, Chufarov Evgeny
 //
 
-#include "prettyprint.h"
 #include "ast.h"
+#include "prettyprint.h"
 #include "vec.h"
 #include "visitor.h"
 #include <stdio.h>
@@ -364,8 +364,8 @@ static void visit_type(ifj17_visitor_t *self, ifj17_type_node_t *node) {
  */
 
 static void visit_while(ifj17_visitor_t *self, ifj17_while_node_t *node) {
-  // while | until
-  print_func("(%s ", node->negate ? "until" : "while");
+  // while
+  print_func("(while ");
   visit((ifj17_node_t *)node->expr);
   ++indents;
   print_func("\n");
@@ -396,7 +396,7 @@ static void visit_return(ifj17_visitor_t *self, ifj17_return_node_t *node) {
 
 static void visit_if(ifj17_visitor_t *self, ifj17_if_node_t *node) {
   // if
-  print_func("(%s ", node->negate ? "unless" : "if");
+  print_func("(if ");
   visit((ifj17_node_t *)node->expr);
   ++indents;
   print_func("\n");
@@ -431,18 +431,6 @@ static void visit_if(ifj17_visitor_t *self, ifj17_if_node_t *node) {
 }
 
 /*
- * Visit use `node`.
- */
-
-static void visit_use(ifj17_visitor_t *self, ifj17_use_node_t *node) {
-  print_func("(use \'%s\'", node->module);
-  if (node->alias) {
-    print_func(" as %s", node->alias);
-  }
-  print_func(")");
-}
-
-/*
  * Pretty-print the given `node` to stdout.
  */
 
@@ -465,8 +453,7 @@ void ifj17_prettyprint(ifj17_node_t *node) {
                              .visit_unary_op = visit_unary_op,
                              .visit_binary_op = visit_binary_op,
                              .visit_subscript = visit_subscript,
-                             .visit_type = visit_type,
-                             .visit_use = visit_use};
+                             .visit_type = visit_type};
 
   ifj17_visit(&visitor, node);
 

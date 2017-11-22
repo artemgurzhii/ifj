@@ -52,7 +52,7 @@
  */
 
 #define need_semi(t)                                                                \
-  (t == IFJ17_TOKEN_ID || t == IFJ17_TOKEN_DOUBLE || t == IFJ17_TOKEN_INT ||         \
+  (t == IFJ17_TOKEN_ID || t == IFJ17_TOKEN_DOUBLE || t == IFJ17_TOKEN_INT ||        \
    t == IFJ17_TOKEN_STRING || t == IFJ17_TOKEN_RETURN)
 
 /*
@@ -105,8 +105,6 @@ static int scan_ident(ifj17_lexer_t *self, int c) {
       return token(AS);
     break;
   case 3:
-    if (0 == strcmp("use", buf))
-      return token(USE);
     if (0 == strcmp("for", buf))
       return token(FOR);
     if (0 == strcmp("def", buf))
@@ -129,14 +127,10 @@ static int scan_ident(ifj17_lexer_t *self, int c) {
   case 5:
     if (0 == strcmp("while", buf))
       return token(WHILE);
-    if (0 == strcmp("until", buf))
-      return token(UNTIL);
     break;
   default:
     if (0 == strcmp("return", buf))
       return token(RETURN);
-    if (0 == strcmp("unless", buf))
-      return token(UNLESS);
   }
 
   self->tok.value.as_string = strdup(buf);
@@ -250,7 +244,7 @@ scan_hex:
     goto scan_int;
   }
 
-  // [0-9_]+
+// [0-9_]+
 
 scan_int:
   do {
@@ -266,7 +260,7 @@ scan_int:
   self->tok.value.as_int = n;
   return 1;
 
-  // [0-9_]+
+// [0-9_]+
 
 scan_double : {
   e = 1;
@@ -285,7 +279,7 @@ scan_double : {
   return 1;
 }
 
-  // [\+\-]?[0-9]+
+// [\+\-]?[0-9]+
 
 scan_expo : {
   while (isdigit(c = next) || '+' == c || '-' == c) {

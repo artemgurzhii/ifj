@@ -329,40 +329,46 @@ ifj17_type_node_t *ifj17_type_node_new(const char *name, int lineno) {
 }
 
 /*
- * Alloc and initialize a new if stmt node, negated for "unless",
+ * Alloc and initialize a new if stmt node,
  * with required `expr` and `block`.
  */
 
-ifj17_if_node_t *ifj17_if_node_new(int negate, ifj17_node_t *expr,
-                                   ifj17_block_node_t *block, int lineno) {
+ifj17_if_node_t *ifj17_if_node_new(ifj17_node_t *expr, ifj17_block_node_t *block,
+                                   int lineno) {
   ifj17_if_node_t *self = malloc(sizeof(ifj17_if_node_t));
-  if (unlikely(!self))
+
+  if (unlikely(!self)) {
     return NULL;
+  }
+
   self->base.type = IFJ17_NODE_IF;
   self->base.lineno = lineno;
-  self->negate = negate;
   self->expr = expr;
   self->block = block;
   self->else_block = NULL;
   self->else_ifs = ifj17_vec_new();
+
   return self;
 }
 
 /*
- * Alloc and initialize a new while loop node, negated for "until",
+ * Alloc and initialize a new while loop node,
  * otherwise "while", with required `expr` and `block`.
  */
 
-ifj17_while_node_t *ifj17_while_node_new(int negate, ifj17_node_t *expr,
+ifj17_while_node_t *ifj17_while_node_new(ifj17_node_t *expr,
                                          ifj17_block_node_t *block, int lineno) {
   ifj17_while_node_t *self = malloc(sizeof(ifj17_while_node_t));
-  if (unlikely(!self))
+
+  if (unlikely(!self)) {
     return NULL;
+  }
+
   self->base.type = IFJ17_NODE_WHILE;
   self->base.lineno = lineno;
-  self->negate = negate;
   self->expr = expr;
   self->block = block;
+
   return self;
 }
 
@@ -372,25 +378,14 @@ ifj17_while_node_t *ifj17_while_node_new(int negate, ifj17_node_t *expr,
 
 ifj17_return_node_t *ifj17_return_node_new(ifj17_node_t *expr, int lineno) {
   ifj17_return_node_t *self = malloc(sizeof(ifj17_return_node_t));
-  if (unlikely(!self))
+
+  if (unlikely(!self)) {
     return NULL;
+  }
+
   self->base.type = IFJ17_NODE_RETURN;
   self->base.lineno = lineno;
   self->expr = expr;
-  return self;
-}
 
-/*
- * Alloc and initialize a new use node.
- */
-
-ifj17_use_node_t *ifj17_use_node_new(int lineno) {
-  ifj17_use_node_t *self = malloc(sizeof(ifj17_use_node_t));
-  if (unlikely(!self))
-    return NULL;
-  self->base.type = IFJ17_NODE_USE;
-  self->base.lineno = lineno;
-  self->module = NULL;
-  self->alias = NULL;
   return self;
 }
