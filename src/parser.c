@@ -542,11 +542,14 @@ static ifj17_node_t *function_decl(ifj17_parser_t *self) {
   context("function declaration");
 
   // 'function'
-  if (accept(FUNCTION) == false) return NULL;
+  if (accept(FUNCTION) == false) {
+    return NULL;
+  }
 
   // id
-  if (is(ID) == false) return error("missing function name");
-  
+  if (is(ID) == false) {
+    return error("missing function name");
+  }
 
   const char *name = self->tok->value.as_string;
   next;
@@ -554,19 +557,26 @@ static ifj17_node_t *function_decl(ifj17_parser_t *self) {
   // '('
   if (accept(LPAREN)) {
     // params?
-    if ((params = function_params(self)) == false) return NULL;
-    
+    if ((params = function_params(self)) == false) {
+      return NULL;
+    }
     // ')'
     context("function");
-    if (accept(RPAREN) == false) return error("missing closing ')'");
-  } else params = ifj17_vec_new();
+    if (accept(RPAREN) == false) {
+      return error("missing closing ')'");
+    }
+  } else {
+    params = ifj17_vec_new();
+  }
 
   context("function");
 
   // ('AS' type_expr)?
-  if (accept(AS) == false) return error("missing AS")
+  if (accept(AS) == false) return error("missing AS");
     type = type_expr(self);
-    if (type == false) return error("missing type after ':'");
+    if (type == false) {
+      return error("missing type after ':'");
+    }
 
   return NULL;
 }
