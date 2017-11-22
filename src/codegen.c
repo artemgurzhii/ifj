@@ -4,8 +4,8 @@
 // Copyright (c) 2017 Hurzhii Artem, Demicev Alexandr, Denisov Artem, Chufarov Evgeny
 //
 
-#include "ast.h"
 #include "codegen.h"
+#include "ast.h"
 #include "internal.h"
 #include "opcodes.h"
 #include "visitor.h"
@@ -32,11 +32,14 @@ static void emit_op(ifj17_vm_t *vm, ifj17_binary_op_node_t *node, int l, int r) 
   case IFJ17_TOKEN_OP_MINUS:
     emit(SUB, 0, l, r);
     break;
-  // case IFJ17_TOKEN_OP_DIV:
-  //   emit(DIV, 0, l, r);
-  //   break;
+  case IFJ17_TOKEN_OP_DIV:
+    emit(DIV, 0, l, r);
+    break;
   case IFJ17_TOKEN_OP_MUL:
     emit(MUL, 0, l, r);
+    break;
+  case IFJ17_TOKEN_OP_MOD:
+    emit(MOD, 0, l, r);
     break;
   case IFJ17_TOKEN_OP_LT:
     emit(LT, 0, l, r);
@@ -149,41 +152,40 @@ static void visit_binary_op(ifj17_visitor_t *self, ifj17_binary_op_node_t *node)
  * Visit array `node`.
  */
 
-// static void visit_array(ifj17_visitor_t *self, ifj17_array_node_t *node) {
-// printf("(array\n");
-// ++indents;
-// ifj17_vec_each(node->vals, {
-//   INDENT;
-//   visit((ifj17_node_t *) val->value.as_pointer);
-//   if (i != len - 1) printf("\n");
-// });
-// --indents;
-// printf(")");
-// }
+static void visit_array(ifj17_visitor_t *self, ifj17_array_node_t *node) {
+  // printf("(array\n");
+  // ++indents;
+  // ifj17_vec_each(node->vals, {
+  //   INDENT;
+  //   visit((ifj17_node_t *) val->value.as_pointer);
+  //   if (i != len - 1) printf("\n");
+  // });
+  // --indents;
+  // printf(")");
+}
 
 /*
  * Visit hash `node`.
  */
 
-// static void visit_hash(ifj17_visitor_t *self, ifj17_hash_node_t *node) {
-// printf("(hash\n");
-// ++indents;
-// ifj17_hash_each(node->vals, {
-//   INDENT;
-//   printf("%s: ", slot);
-//   visit((ifj17_node_t *) val->value.as_pointer);
-//   printf("\n");
-// });
-// --indents;
-// printf(")");
-// }
+static void visit_hash(ifj17_visitor_t *self, ifj17_hash_node_t *node) {
+  // printf("(hash\n");
+  // ++indents;
+  // ifj17_hash_each(node->vals, {
+  //   INDENT;
+  //   printf("%s: ", slot);
+  //   visit((ifj17_node_t *) val->value.as_pointer);
+  //   printf("\n");
+  // });
+  // --indents;
+  // printf(")");
+}
 
 /*
  * Visit subscript `node`.
  */
 
-// static void visit_subscript(ifj17_visitor_t *self, ifj17_subscript_node_t *node)
-// {}
+static void visit_subscript(ifj17_visitor_t *self, ifj17_subscript_node_t *node) {}
 
 /*
  * Visit slot `node`.
@@ -252,8 +254,8 @@ static void visit_function(ifj17_visitor_t *self, ifj17_function_node_t *node) {
  */
 
 static void visit_while(ifj17_visitor_t *self, ifj17_while_node_t *node) {
-  // // while
-  // printf("(while ");
+  // // while | until
+  // printf("(%s ", node->negate ? "until" : "while");
   // visit((ifj17_node_t *) node->expr);
   // ++indents;
   // printf("\n");
@@ -284,7 +286,7 @@ static void visit_return(ifj17_visitor_t *self, ifj17_return_node_t *node) {
 
 static void visit_if(ifj17_visitor_t *self, ifj17_if_node_t *node) {
   // // if
-  // printf("(if ");
+  // printf("(%s ", node->negate ? "unless" : "if");
   // visit((ifj17_node_t *) node->expr);
   // ++indents;
   // printf("\n");
@@ -325,6 +327,12 @@ static void visit_if(ifj17_visitor_t *self, ifj17_if_node_t *node) {
 static void visit_type(ifj17_visitor_t *self, ifj17_type_node_t *node) {}
 
 /*
+ * Visit use `node`.
+ */
+
+static void visit_use(ifj17_visitor_t *self, ifj17_use_node_t *node) {}
+
+/*
  * Generate code for the given `node`.
  */
 
@@ -341,10 +349,10 @@ ifj17_vm_t *ifj17_gen(ifj17_node_t *node) {
                              .visit_if = visit_if,
                              .visit_id = visit_id,
                              .visit_int = visit_int,
-                             //  .visit_slot = visit_slot,
+                             .visit_slot = visit_slot,
                              .visit_call = visit_call,
-                             //  .visit_hash = visit_hash,
-                             //  .visit_array = visit_array,
+                             .visit_hash = visit_hash,
+                             .visit_array = visit_array,
                              .visit_while = visit_while,
                              .visit_block = visit_block,
                              .visit_decl = visit_decl,
@@ -354,8 +362,9 @@ ifj17_vm_t *ifj17_gen(ifj17_node_t *node) {
                              .visit_function = visit_function,
                              .visit_unary_op = visit_unary_op,
                              .visit_binary_op = visit_binary_op,
-                             //  .visit_subscript = visit_subscript,
-                             .visit_type = visit_type};
+                             .visit_subscript = visit_subscript,
+                             .visit_type = visit_type,
+                             .visit_use = visit_use};
 
   ifj17_visit(&visitor, node);
   emit(HALT, 0, 0, 0);

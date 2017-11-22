@@ -38,9 +38,8 @@ void ifj17_object_inspect(ifj17_object_t *self) {
 
 static ifj17_object_t *alloc_object(ifj17_object type) {
   ifj17_object_t *self = malloc(sizeof(ifj17_object_t));
-  if (unlikely(!self)) {
+  if (unlikely(!self))
     return NULL;
-  }
   self->type = type;
   return self;
 }
@@ -51,9 +50,8 @@ static ifj17_object_t *alloc_object(ifj17_object type) {
 
 ifj17_object_t *ifj17_int_new(int val) {
   ifj17_object_t *self = alloc_object(IFJ17_TYPE_INT);
-  if (unlikely(!self)) {
+  if (unlikely(!self))
     return NULL;
-  }
   self->value.as_int = val;
   return self;
 }
@@ -64,9 +62,8 @@ ifj17_object_t *ifj17_int_new(int val) {
 
 ifj17_object_t *ifj17_double_new(double val) {
   ifj17_object_t *self = alloc_object(IFJ17_TYPE_DOUBLE);
-  if (unlikely(!self)) {
+  if (unlikely(!self))
     return NULL;
-  }
   self->value.as_double = val;
   return self;
 }
@@ -77,9 +74,8 @@ ifj17_object_t *ifj17_double_new(double val) {
 
 ifj17_object_t *ifj17_bool_new(bool val) {
   ifj17_object_t *self = alloc_object(IFJ17_TYPE_BOOL);
-  if (unlikely(!self)) {
+  if (unlikely(!self))
     return NULL;
-  }
   self->value.as_int = val;
   return self;
 }
@@ -90,9 +86,8 @@ ifj17_object_t *ifj17_bool_new(bool val) {
 
 ifj17_object_t *ifj17_string_new(const char *val) {
   ifj17_object_t *self = alloc_object(IFJ17_TYPE_STRING);
-  if (unlikely(!self)) {
+  if (unlikely(!self))
     return NULL;
-  }
   self->value.as_pointer = strdup(val);
   return self;
 }
