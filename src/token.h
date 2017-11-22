@@ -13,70 +13,77 @@
  * Tokens.
  */
 
- #define IFJ17_TOKEN_LIST   \
-   t(ILLEGAL, "illegal")    \
-   t(EOS, "end-of-source")  \
-   t(ID, "id")              \
-   t(INTEGER, "integer")    \
-   t(DOUBLE, "double")      \
-   t(CHR, "chr")            \
-   t(STRING, "string")      \
-   t(AS, "as")              \
-   t(ASC, "asc")            \
-   t(DECLARE, "declare")    \
-   t(DIM, "dim")            \
-   t(DO, "do")              \
-   t(IF, "if")              \
-   t(ELSE, "else")          \
-   t(END, "end")            \
-   t(FUNCTION, "function")  \
-   t(INPUT, "input")        \
-   t(LENGTH, "length")      \
-   t(LOOP, "loop")          \
-   t(PRINT, "print")        \
-   t(RETURN, "return")      \
-   t(SCOPE, "scope")        \
-   t(SUBSTR, "substr")      \
-   t(THEN, "then")          \
-   t(WHILE, "while")        \
-   t(AND, "and")            \
-   t(BOOLEAN, "boolean")    \
-   t(CONTINUE, "continue")  \
-   t(ELSEIF, "elseif")      \
-   t(EXIT, "exit")          \
-   t(FALSE, "false")        \
-   t(FOR, "for")            \
-   t(NEXT, "next")          \
-   t(OP_LNOT, "not")        \
-   t(OR, "or")              \
-   t(SHARED, "shared")      \
-   t(STATIC, "static")      \
-   t(TRUE, "true")          \
-   t(LINECOMM, "'")         \
-   t(LPAREN, "(")           \
-   t(RPAREN, ")")           \
-   t(SEMICOLON, ";")        \
-   t(COMMA, ",")            \
-   t(OP_DOT, ".")           \
-   t(OP_MUL, "*")           \
-   t(OP_DIV_DOUBLE, "/")    \
-   t(OP_DIV_INTEGER, "\\")  \
-   t(OP_PLUS, "+")          \
-   t(OP_MINUS, "-")         \
-   t(OP_ASSIGN, "=")        \
-   t(OP_NOT_EQ, "<>")       \
-   t(OP_GT, ">")            \
-   t(OP_LT, "<")            \
-   t(OP_GTE, ">=")          \
-   t(OP_LTE, "<=")          \
+#define IFJ17_TOKEN_LIST \
+  t(ILLEGAL, "illegal") \
+  t(EOS, "end-of-source") \
+  t(ID, "id") \
+  t(INT, "int") \
+  t(DOUBLE, "double") \
+  t(STRING, "string") \
+  t(DEF, "def") \
+  t(TYPE, "type") \
+  t(USE, "use") \
+  t(AS, "as") \
+  t(WHILE, "while") \
+  t(UNTIL, "until") \
+  t(IF, "if") \
+  t(UNLESS, "unless") \
+  t(ELSE, "else") \
+  t(FOR, "for") \
+  t(LET, "let") \
+  t(END, "end") \
+  t(RETURN, "return") \
+  t(LBRACE, "{") \
+  t(RBRACE, "}") \
+  t(LPAREN, "(") \
+  t(RPAREN, ")") \
+  t(LBRACK, "[") \
+  t(RBRACK, "]") \
+  t(COLON, ":") \
+  t(QMARK, "?") \
+  t(SEMICOLON, ";") \
+  t(COMMA, ",") \
+  t(OP_DOT, ".") \
+  t(OP_LNOT, "not") \
+  t(OP_NOT, "!") \
+  t(OP_FORK, "&") \
+  t(OP_PLUS, "+") \
+  t(OP_INCR, "++") \
+  t(OP_MINUS, "-") \
+  t(OP_DECR, "--") \
+  t(OP_MUL, "*") \
+  t(OP_DIV, "/") \
+  t(OP_MOD, "%") \
+  t(OP_POW, "**") \
+  t(OP_GT, ">") \
+  t(OP_LT, "<") \
+  t(OP_GTE, ">=") \
+  t(OP_LTE, "<=") \
+  t(OP_EQ, "==") \
+  t(OP_NEQ, "!=") \
+  t(OP_AND, "&&") \
+  t(OP_OR, "||") \
+  t(OP_ASSIGN, "=") \
+  t(OP_PLUS_ASSIGN, "+=") \
+  t(OP_MINUS_ASSIGN, "-=") \
+  t(OP_MUL_ASSIGN, "*=") \
+  t(OP_DIV_ASSIGN, "/=") \
+  t(OP_AND_ASSIGN, "&&=") \
+  t(OP_OR_ASSIGN, "||=") \
+  t(OP_BIT_AND, "and") \
+  t(OP_BIT_OR, "|") \
+  t(OP_BIT_XOR, "^") \
+  t(OP_BIT_NOT, "~") \
+  t(OP_BIT_SHL, "<<") \
+  t(OP_BIT_SHR, ">>")
+
 /*
  * Tokens enum.
  */
 
-typedef enum
-{
+typedef enum {
 #define t(tok, str) IFJ17_TOKEN_##tok,
-  IFJ17_TOKEN_LIST
+IFJ17_TOKEN_LIST
 #undef t
 } ifj17_token;
 
@@ -86,7 +93,7 @@ typedef enum
 
 static char *ifj17_token_strings[] = {
 #define t(tok, str) str,
-        IFJ17_TOKEN_LIST
+IFJ17_TOKEN_LIST
 #undef t
 };
 
@@ -94,12 +101,10 @@ static char *ifj17_token_strings[] = {
  * Token struct.
  */
 
-typedef struct
-{
+typedef struct {
   int len;
   ifj17_token type;
-  struct
-  {
+  struct {
     char *as_string;
     double as_double;
     int as_int;
@@ -111,12 +116,15 @@ typedef struct
  * given token `type`.
  */
 
-static inline const char *ifj17_token_type_string(ifj17_token type) {
-  assert(type <= IFJ17_TOKEN_OP_LTE);
+static inline const char *
+ifj17_token_type_string(ifj17_token type) {
+  assert(type <= IFJ17_TOKEN_OP_BIT_SHR);
   return ifj17_token_strings[type];
 }
 
-// prototypes
-void ifj17_token_inspect(ifj17_token_t *tok);
+// protos
+
+void
+ifj17_token_inspect(ifj17_token_t *tok);
 
 #endif /* IFJ17_TOKEN_H */

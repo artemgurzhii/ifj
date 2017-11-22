@@ -41,8 +41,8 @@ typedef enum {
   IFJ17_TYPE_DOUBLE,
   IFJ17_TYPE_STRING,
   IFJ17_TYPE_OBJECT,
-  IFJ17_TYPE_ARRAY, // delete
-  IFJ17_TYPE_LIST   // delete
+  IFJ17_TYPE_ARRAY,
+  IFJ17_TYPE_LIST
 } ifj17_object;
 
 /*
@@ -61,18 +61,24 @@ struct ifj17_object_struct {
   } value;
 };
 
-// prototypes
+// protos
 
-void ifj17_object_inspect(ifj17_object_t *self);
+void
+ifj17_object_inspect(ifj17_object_t *self);
 
-ifj17_object_t *ifj17_int_new(int val);
+ifj17_object_t *
+ifj17_int_new(int val);
 
-ifj17_object_t *ifj17_double_new(double val);
+ifj17_object_t *
+ifj17_double_new(double val);
 
-ifj17_object_t *ifj17_bool_new(bool val);
+ifj17_object_t *
+ifj17_bool_new(bool val);
 
-ifj17_object_t *ifj17_string_new(const char *val);
+ifj17_object_t *
+ifj17_string_new(const char *val);
 
-void ifj17_object_free(ifj17_object_t *self);
+void
+ifj17_object_free(ifj17_object_t *self);
 
 #endif /* IFJ17_OBJECT_H */
