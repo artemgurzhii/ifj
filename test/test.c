@@ -360,10 +360,6 @@ static void test_dim() {
 // static void test_return() {
 //   _test_parser("test/parser/return.ifj17", "test/parser/return.out");
 // }
-//
-// static void test_use() {
-//   _test_parser("test/parser/use.ifj17", "test/parser/use.out");
-// }
 
 /*
  * Test the given `fn`.
@@ -421,7 +417,6 @@ int main(int argc, const char **argv) {
   // test(subscript);
   // test(declaration);
   // test(return );
-  // test(use);
 
   printf("\n");
   printf("  \e[90mcompleted in \e[32m%.5fs\e[0m\n",
