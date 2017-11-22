@@ -3,4 +3,4 @@
 # Install on mac via `brew install fswatch`
 
 # Will watch for any file changes in the src directory and run test script
-fswatch -o src/*.{c,h} | xargs -n1 ./.test
+fswatch -o src/*.{c,h} | xargs -n1 ./scripts/.test

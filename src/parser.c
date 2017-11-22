@@ -1038,7 +1038,7 @@ static ifj17_node_t *function_stmt(ifj17_parser_t *self) {
 }
 
 /*
- *  ('if' | 'unless') expr block
+ *  ('if') expr block
  *  ('else' 'if' block)*
  *  ('else' block)?
  */
@@ -1049,10 +1049,11 @@ static ifj17_node_t *if_stmt(ifj17_parser_t *self) {
   int line = lineno;
   debug("if_stmt");
 
-  // ('if' | 'unless')
-  if (!(is(IF) || is(UNLESS)))
+  // 'if'
+  if (is(IF) == false) {
     return NULL;
-  int negate = IFJ17_TOKEN_UNLESS == self->tok->type;
+  }
+
   next;
 
   // expr
@@ -1070,7 +1071,7 @@ static ifj17_node_t *if_stmt(ifj17_parser_t *self) {
     return NULL;
   }
 
-  ifj17_if_node_t *node = ifj17_if_node_new(negate, cond, body, line);
+  ifj17_if_node_t *node = ifj17_if_node_new(cond, body, line);
 
 // 'else'
 loop:
@@ -1091,7 +1092,7 @@ loop:
       if (!(body = block(self)))
         return NULL;
       ifj17_vec_push(node->else_ifs, ifj17_node((ifj17_node_t *)ifj17_if_node_new(
-                                         0, cond, body, line)));
+                                         cond, body, line)));
       goto loop;
       // 'else'
     } else {
@@ -1106,7 +1107,7 @@ loop:
 }
 
 /*
- * ('while' | 'until') expr block
+ * 'while' expr block
  */
 
 static ifj17_node_t *while_stmt(ifj17_parser_t *self) {
@@ -1115,26 +1116,30 @@ static ifj17_node_t *while_stmt(ifj17_parser_t *self) {
   int line = lineno;
   debug("while_stmt");
 
-  // ('until' | 'while')
-  if (!(is(UNTIL) || is(WHILE)))
+  // 'while'
+  if (is(WHILE) == false) {
     return NULL;
-  int negate = IFJ17_TOKEN_UNTIL == self->tok->type;
+  }
+
   context("while statement condition");
   next;
 
   // expr
-  if (!(cond = expr(self)))
+  if (!(cond = expr(self))) {
     return NULL;
+  }
+
   context("while statement");
 
   // semicolon might have been inserted here
   accept(SEMICOLON);
 
   // block
-  if (!(body = block(self)))
+  if (!(body = block(self))) {
     return NULL;
+  }
 
-  return (ifj17_node_t *)ifj17_while_node_new(negate, cond, body, line);
+  return (ifj17_node_t *)ifj17_while_node_new(cond, body, line);
 }
 
 /*
@@ -1162,43 +1167,6 @@ static ifj17_node_t *return_stmt(ifj17_parser_t *self) {
 }
 
 /*
- * 'use' string ('as' id)?
- */
-
-static ifj17_node_t *use_stmt(ifj17_parser_t *self) {
-  // puts("asçkdhakjshd");
-
-  int line = lineno;
-  debug("use");
-  context("use statement");
-
-  // 'use'
-  if (!accept(USE))
-    return NULL;
-  ifj17_use_node_t *node = ifj17_use_node_new(line);
-
-  // string
-  if (!is(STRING)) {
-    return error("missing module name");
-  }
-  node->module = self->tok->value.as_string;
-  next;
-
-  // 'as'
-  if (accept(AS)) {
-
-    // id
-    if (!is(ID)) {
-      return error("missing alias name");
-    }
-    node->alias = self->tok->value.as_string;
-    next;
-  }
-
-  return (ifj17_node_t *)node;
-}
-
-/*
  *   if_stmt
  * | while_stmt
  * | return_stmt
@@ -1210,18 +1178,26 @@ static ifj17_node_t *use_stmt(ifj17_parser_t *self) {
 static ifj17_node_t *stmt(ifj17_parser_t *self) {
   debug("stmt");
   context("statement");
-  if (is(IF) || is(UNLESS))
+  if (is(IF) == true) {
     return if_stmt(self);
-  if (is(WHILE) || is(UNTIL))
+  }
+
+  if (is(WHILE) == true) {
     return while_stmt(self);
-  if (is(RETURN))
+  }
+
+  if (is(RETURN) == true) {
     return return_stmt(self);
-  if (is(DEF))
+  }
+
+  if (is(DEF) == true) {
     return function_stmt(self);
-  if (is(TYPE))
+  }
+
+  if (is(TYPE) == true) {
     return type_stmt(self);
-  if (is(USE))
-    return use_stmt(self);
+  }
+
   return expr(self);
 }
 
@@ -1234,8 +1210,9 @@ static ifj17_block_node_t *block(ifj17_parser_t *self) {
   ifj17_node_t *node;
   ifj17_block_node_t *block = ifj17_block_node_new(lineno);
 
-  if (accept(END))
+  if (accept(END) == true) {
     return block;
+  }
 
   do {
     if (!(node = stmt(self)))
