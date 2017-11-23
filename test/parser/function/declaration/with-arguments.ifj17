@@ -1,2 +1,2 @@
-def foo(bar as string, baz as integer) as string
+function foo(bar as string, baz as integer) as string
 end

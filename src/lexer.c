@@ -107,8 +107,6 @@ static int scan_ident(ifj17_lexer_t *self, int c) {
   case 3:
     if (strcmp("for", buf) == 0)
       return token(FOR);
-    if (strcmp("def", buf) == 0)
-      return token(DEF);
     if (strcmp("end", buf) == 0)
       return token(END);
     if (strcmp("dim", buf) == 0)
@@ -127,6 +125,10 @@ static int scan_ident(ifj17_lexer_t *self, int c) {
   case 5:
     if (strcmp("while", buf) == 0)
       return token(WHILE);
+    break;
+  case 8:
+    if (strcmp("function", buf) == 0)
+      return token(FUNCTION);
     break;
   default:
     if (strcmp("return", buf) == 0)

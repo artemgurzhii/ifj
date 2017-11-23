@@ -1,2 +1,2 @@
-def foo() as string
+function foo() as string
 end

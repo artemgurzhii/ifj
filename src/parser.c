@@ -987,7 +987,7 @@ static ifj17_node_t *type_stmt(ifj17_parser_t *self) {
 }
 
 /*
- * 'def' id '(' args? ')' (':' type_expr)? block
+ * 'function' id '(' args? ')' (':' type_expr)? block
  */
 
 static ifj17_node_t *function_stmt(ifj17_parser_t *self) {
@@ -998,26 +998,30 @@ static ifj17_node_t *function_stmt(ifj17_parser_t *self) {
   debug("function_stmt");
   context("function statement");
 
-  // 'def'
-  if (!accept(DEF))
+  // 'function'
+  if (accept(FUNCTION) == false) {
     return NULL;
+  }
 
   // id
-  if (!is(ID))
+  if (is(ID) == false) {
     return error("missing function name");
+  }
+
   const char *name = self->tok->value.as_string;
   next;
 
   // '('
-  if (accept(LPAREN)) {
+  if (accept(LPAREN) == true) {
     // params?
     if (!(params = function_params(self)))
       return NULL;
 
     // ')'
     context("function");
-    if (!accept(RPAREN))
+    if (accept(RPAREN) == false) {
       return error("missing closing ')'");
+    }
   } else {
     params = ifj17_vec_new();
   }
@@ -1025,7 +1029,7 @@ static ifj17_node_t *function_stmt(ifj17_parser_t *self) {
   context("function");
 
   // (':' type_expr)?
-  if (accept(AS)) {
+  if (accept(AS) == true) {
     type = type_expr(self);
 
     if (!type) {
@@ -1197,7 +1201,7 @@ static ifj17_node_t *stmt(ifj17_parser_t *self) {
     return return_stmt(self);
   }
 
-  if (is(DEF) == true) {
+  if (is(FUNCTION) == true) {
     return function_stmt(self);
   }
 
