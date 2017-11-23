@@ -68,7 +68,7 @@
 
 // forward declarations
 
-static ifj17_block_node_t *block(ifj17_parser_t *self);
+static ifj17_block_node_t *block(ifj17_parser_t *self, bool isFunctionBlock);
 static ifj17_node_t *expr(ifj17_parser_t *self);
 static ifj17_node_t *call_expr(ifj17_parser_t *self, ifj17_node_t *left);
 static ifj17_node_t *not_expr(ifj17_parser_t *self);
@@ -663,7 +663,7 @@ static ifj17_node_t *function_expr(ifj17_parser_t *self) {
     context("function");
 
     // block
-    if (body = block(self)) {
+    if (body = block(self, false)) {
       // return (ifj17_node_t *) ifj17_function_node_new(body, params);
     }
   }
@@ -1041,7 +1041,7 @@ static ifj17_node_t *function_stmt(ifj17_parser_t *self) {
   accept(SEMICOLON);
 
   // block
-  if (body = block(self)) {
+  if (body = block(self, true)) {
     return (ifj17_node_t *)ifj17_function_node_new(name, type, body, params, line);
   }
 
@@ -1078,7 +1078,7 @@ static ifj17_node_t *if_stmt(ifj17_parser_t *self) {
 
   // block
   context("if statement");
-  if (!(body = block(self))) {
+  if (!(body = block(self, false))) {
     return NULL;
   }
 
@@ -1100,7 +1100,7 @@ loop:
       accept(SEMICOLON);
 
       context("else if statement");
-      if (!(body = block(self)))
+      if (!(body = block(self, false)))
         return NULL;
       ifj17_vec_push(node->else_ifs, ifj17_node((ifj17_node_t *)ifj17_if_node_new(
                                          cond, body, line)));
@@ -1108,7 +1108,7 @@ loop:
       // 'else'
     } else {
       context("else statement");
-      if (!(body = block(self)))
+      if (!(body = block(self, false)))
         return NULL;
       node->else_block = body;
     }
@@ -1146,7 +1146,7 @@ static ifj17_node_t *while_stmt(ifj17_parser_t *self) {
   accept(SEMICOLON);
 
   // block
-  if (!(body = block(self))) {
+  if (!(body = block(self, false))) {
     return NULL;
   }
 
@@ -1216,18 +1216,29 @@ static ifj17_node_t *stmt(ifj17_parser_t *self) {
  * stmt* 'end'
  */
 
-static ifj17_block_node_t *block(ifj17_parser_t *self) {
+static ifj17_block_node_t *block(ifj17_parser_t *self, bool isFunctionBlock) {
   debug("block");
   ifj17_node_t *node;
   ifj17_block_node_t *block = ifj17_block_node_new(lineno);
 
+  // If `end` keyword is received
+  // We need to check if this is a `function statement` or any other
+  // As `function statement` requires `end function` for function closing
   if (accept(END) == true) {
-    return block;
+    if (isFunctionBlock == true) {
+      if (accept(FUNCTION) == true) {
+        return block;
+      }
+    } else {
+      return block;
+    }
   }
 
   do {
-    if (!(node = stmt(self)))
+    if (!(node = stmt(self))) {
       return NULL;
+    }
+
     accept(SEMICOLON);
 
     ifj17_vec_push(block->stmts, ifj17_node(node));
