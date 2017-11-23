@@ -159,9 +159,10 @@ int hash_pairs(ifj17_parser_t *self, ifj17_hash_node_t *hash, ifj17_token delim)
   if (!(pair->key = expr(self)))
     return 0;
 
-  // :
-  if (!accept(COLON))
+  // 'as'
+  if (accept(AS) == false) {
     return error("hash pair ':' missing"), 0;
+  }
 
   // expr
   if (!(pair->val = expr(self)))
@@ -213,7 +214,7 @@ static ifj17_node_t *type_expr(ifj17_parser_t *self) {
 }
 
 /*
- * id 'as' type_expr
+ * id (',' id)* ':' type_expr
  */
 
 static ifj17_node_t *decl_expr(ifj17_parser_t *self, bool need_type) {
@@ -226,11 +227,18 @@ static ifj17_node_t *decl_expr(ifj17_parser_t *self, bool need_type) {
 
   ifj17_vec_t *vec = ifj17_vec_new();
   int decl_line = lineno;
-  ifj17_node_t *id =
-      (ifj17_node_t *)ifj17_id_node_new(self->tok->value.as_string, lineno);
-  ifj17_vec_push(vec, ifj17_node(id));
+  while (is(ID) == true) {
+    // id
+    ifj17_node_t *id =
+        (ifj17_node_t *)ifj17_id_node_new(self->tok->value.as_string, lineno);
+    ifj17_vec_push(vec, ifj17_node(id));
+    next;
 
-  next;
+    // ','
+    if (accept(COMMA) == false) {
+      break;
+    }
+  }
 
   // 'as'
   if (accept(AS) == false) {
@@ -252,7 +260,7 @@ static ifj17_node_t *decl_expr(ifj17_parser_t *self, bool need_type) {
 /*
  *   id
  * | int
- * | double
+ * | float
  * | string
  * | array
  * | hash
@@ -645,11 +653,13 @@ static ifj17_node_t *function_expr(ifj17_parser_t *self) {
   ifj17_vec_t *params;
   debug("function_expr");
 
-  // ':'
-  if (accept(COLON)) {
+  // 'as'
+  if (accept(AS) == true) {
     // params?
-    if (!(params = function_params(self)))
+    if (!(params = function_params(self))) {
       return NULL;
+    }
+
     context("function");
 
     // block
@@ -755,7 +765,7 @@ ifj17_args_node_t *call_args(ifj17_parser_t *self) {
   debug("args");
   do {
     if (node = expr(self)) {
-      if (accept(COLON)) {
+      if (accept(AS)) {
         context("keyword argument");
 
         if (node->type != IFJ17_NODE_STRING && node->type != IFJ17_NODE_ID) {
@@ -1015,10 +1025,12 @@ static ifj17_node_t *function_stmt(ifj17_parser_t *self) {
   context("function");
 
   // (':' type_expr)?
-  if (accept(COLON)) {
+  if (accept(AS)) {
     type = type_expr(self);
-    if (!type)
+
+    if (!type) {
       return error("missing type after ':'");
+    }
   }
 
   // semicolon might have been inserted here
