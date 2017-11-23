@@ -20,7 +20,7 @@
   t(INT, "int") \
   t(DOUBLE, "double") \
   t(STRING, "string") \
-  t(DEF, "def") \
+  t(FUNCTION, "function") \
   t(TYPE, "type") \
   t(AS, "as") \
   t(WHILE, "while") \
