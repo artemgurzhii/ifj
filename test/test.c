@@ -329,6 +329,9 @@ static void _test_parser(const char *source_path, const char *out_path) {
   ifj17_set_prettyprint_func(bprintf);
   ifj17_prettyprint((ifj17_node_t *)root);
 
+  printf("%s\n", print_buf);
+  printf("%s\n", expected);
+
   size_t ln = strlen(print_buf) - 1;
   if (*print_buf && print_buf[ln] == '\n') {
     strcat(expected, "\n");
@@ -345,6 +348,21 @@ static void test_variable_declaration() {
 static void test_variable_declaration_and_assignment() {
   _test_parser("test/parser/variables/declaration-and-assignment.ifj17",
                "test/parser/variables/declaration-and-assignment.out");
+}
+
+static void test_function_declaration_without_arguments() {
+  _test_parser("test/parser/function/declaration/without-arguments.ifj17",
+               "test/parser/function/declaration/without-arguments.out");
+}
+
+static void test_function_declaration_with_argument() {
+  _test_parser("test/parser/function/declaration/with-argument.ifj17",
+               "test/parser/function/declaration/with-argument.out");
+}
+
+static void test_function_declaration_with_arguments() {
+  _test_parser("test/parser/function/declaration/with-arguments.ifj17",
+               "test/parser/function/declaration/with-arguments.out");
 }
 
 // static void test_assign() {
@@ -412,8 +430,15 @@ int main(int argc, const char **argv) {
   test(string);
 
   suite("parser");
+
+  // NOTE: Variable tests
   test(variable_declaration);
   test(variable_declaration_and_assignment);
+
+  // NOTE: Function tests
+  test(function_declaration_without_arguments);
+  test(function_declaration_with_argument);
+  test(function_declaration_with_arguments);
 
   // test(assign);
   // test(assign_chain);

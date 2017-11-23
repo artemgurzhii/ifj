@@ -1,0 +1,8 @@
+(function foo -> (id string)
+  (decl
+    (id bar)
+    : (id string))
+  (decl
+    (id baz)
+    : (id integer))
+)
