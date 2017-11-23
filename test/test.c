@@ -363,6 +363,10 @@ static void _test_parser(const char *source_path, const char *out_path) {
   ifj17_set_prettyprint_func(bprintf);
   ifj17_prettyprint((ifj17_node_t *)root);
 
+  // DEBUG
+  // printf("%s\n", print_buf);
+  // printf("%s\n", expected);
+
   size_t ln = strlen(print_buf) - 1;
   if (*print_buf && print_buf[ln] == '\n') {
     strcat(expected, "\n");
@@ -405,6 +409,11 @@ static void unit_test_function_declaration_with_body() {
 static void unit_test_scope_empty_declaration() {
   _test_parser("test/parser/scope/declaration/empty.ifj17",
                "test/parser/scope/declaration/empty.out");
+}
+
+static void unit_test_scope_with_body() {
+  _test_parser("test/parser/scope/declaration/with-body.ifj17",
+               "test/parser/scope/declaration/with-body.out");
 }
 
 // NOTE: INTEGRATION TESTS
@@ -473,6 +482,7 @@ int main(int argc, const char **argv) {
 
   // NOTE: Scope tests
   unit_test(scope_empty_declaration);
+  unit_test(scope_with_body);
 
   // unit_test(assign);
   // unit_test(assign_chain);

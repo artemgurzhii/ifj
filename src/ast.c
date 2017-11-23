@@ -332,9 +332,8 @@ ifj17_scope_node_t *ifj17_scope_node_new(ifj17_block_node_t *block, int lineno) 
 
   self->base.type = IFJ17_NODE_SCOPE;
   self->base.lineno = lineno;
+  self->block = block;
 
-  // block
-  self->block = ifj17_block_node_new(lineno);
   if (unlikely(!self->block)) {
     return NULL;
   }

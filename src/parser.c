@@ -1010,9 +1010,6 @@ static ifj17_node_t *scope_stmt(ifj17_parser_t *self) {
     return NULL;
   }
 
-  // semicolon might have been inserted here
-  accept(SEMICOLON);
-
   // block
   if (body = block(self, false)) {
     return (ifj17_node_t *)ifj17_scope_node_new(body, line);
