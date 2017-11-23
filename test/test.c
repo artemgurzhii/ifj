@@ -402,10 +402,15 @@ static void unit_test_function_declaration_with_body() {
                "test/parser/function/declaration/with-body.out");
 }
 
+static void unit_test_scope_empty_declaration() {
+  _test_parser("test/parser/scope/declaration/empty.ifj17",
+               "test/parser/scope/declaration/empty.out");
+}
+
 // NOTE: INTEGRATION TESTS
-static void integration_test_function_initialization() {
-  _test_parser("test/integration/parser/function-initialization.ifj17",
-               "test/integration/parser/function-initialization.out");
+static void integration_test_factorial() {
+  _test_parser("test/integration/parser/factorial.ifj17",
+               "test/integration/parser/factorial.out");
 }
 
 // static void unit_test_assign() {
@@ -466,6 +471,9 @@ int main(int argc, const char **argv) {
   unit_test(function_declaration_with_arguments);
   unit_test(function_declaration_with_body);
 
+  // NOTE: Scope tests
+  unit_test(scope_empty_declaration);
+
   // unit_test(assign);
   // unit_test(assign_chain);
   // unit_test(subscript);
@@ -474,7 +482,7 @@ int main(int argc, const char **argv) {
   type("INTEGRATION TESTS");
 
   suite("parser");
-  integration_test(function_initialization);
+  integration_test(factorial);
 
   printf("\n");
   printf("  \e[90mcompleted in \e[32m%.5fs\e[0m\n",

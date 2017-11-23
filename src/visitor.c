@@ -52,6 +52,8 @@ void ifj17_visit(ifj17_visitor_t *self, ifj17_node_t *node) {
     VISIT(binary_op);
   case IFJ17_NODE_FUNCTION:
     VISIT(function);
+  case IFJ17_NODE_SCOPE:
+    VISIT(scope);
   case IFJ17_NODE_TYPE:
     VISIT(type);
   case IFJ17_NODE_ARRAY:

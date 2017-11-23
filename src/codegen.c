@@ -230,6 +230,22 @@ static void visit_call(ifj17_visitor_t *self, ifj17_call_node_t *node) {
 }
 
 /*
+ * Visit scope `node`.
+ */
+
+static void visit_scope(ifj17_visitor_t *self, ifj17_scope_node_t *node) {
+  // print_func("(scope %s -> ");
+  // ++indents;
+  //
+  // --indents;
+  // print_func("\n");
+  // ++indents;
+  // visit((ifj17_node_t *)node->block);
+  // --indents;
+  // print_func(")");
+}
+
+/*
  * Visit function `node`.
  */
 
@@ -354,6 +370,7 @@ ifj17_vm_t *ifj17_gen(ifj17_node_t *node) {
                              .visit_string = visit_string,
                              .visit_return = visit_return,
                              .visit_function = visit_function,
+                             .visit_scope = visit_scope,
                              .visit_unary_op = visit_unary_op,
                              .visit_binary_op = visit_binary_op,
                              .visit_subscript = visit_subscript,
