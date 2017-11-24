@@ -9,6 +9,8 @@
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
+#include <exit_codes.h>
 
 /*
  * Next char in the array.
@@ -44,15 +46,17 @@
  * Set error `msg` and assign ILLEGAL token.
  */
 
-#define error(msg) (self->error = msg, token(ILLEGAL))
+ #define error(str, code)                                                               \
+   (self->error = self->error ? (self->error = str, self->exit_code = code) : NULL);    \
+   exit(self->exit_code);
 
 /*
  * True if the lexer should insert a semicolon after `t`.
  */
 
 #define need_semi(t)                                                                \
-  (t == IFJ17_TOKEN_ID || t == IFJ17_TOKEN_DOUBLE || t == IFJ17_TOKEN_INTEGER ||    \
-   t == IFJ17_TOKEN_STRING || t == IFJ17_TOKEN_RETURN) // ????
+  (t == IFJ17_TOKEN_ID || t == IFJ17_TOKEN_DOUBLE || t == IFJ17_TOKEN_INT ||        \
+   t == IFJ17_TOKEN_STRING || t == IFJ17_TOKEN_RETURN)
 
 /*
  * Initialize lexer with the given `source` and `filename`.
@@ -60,6 +64,7 @@
 
 void ifj17_lexer_init(ifj17_lexer_t *self, char *source, const char *filename) {
   self->error = NULL;
+  self->err_code = 0;
   self->source = source;
   self->filename = filename;
   self->lineno = 1;
@@ -68,7 +73,7 @@ void ifj17_lexer_init(ifj17_lexer_t *self, char *source, const char *filename) {
 
 /*
  * Convert hex digit `c` to a base 10 int,
- * return -1 when fails to convert.
+ * returning -1 on failure.
  */
 
 static int hex(const char c) {
@@ -102,71 +107,36 @@ static int scan_ident(ifj17_lexer_t *self, int c) {
       return token(IF);
     if (strcmp("as", buf) == 0)
       return token(AS);
-    if (strcmp("do", buf) == 0)
-      return token(DO);
-    if (strcmp("or", buf) == 0)
-      return token(OR);
     break;
   case 3:
-    if (strcmp("asc", buf) == 0)
-      return token(ASC);
-    if (strcmp("end", buf) == 0)
-      return token(END);
     if (strcmp("for", buf) == 0)
       return token(FOR);
+    if (strcmp("end", buf) == 0)
+      return token(END);
+    if (strcmp("dim", buf) == 0)
+      return token(DIM);
     if (strcmp("and", buf) == 0)
-      return token(AND);
+      return token(OP_BIT_AND);
     if (strcmp("not", buf) == 0)
       return token(OP_LNOT);
     break;
   case 4:
     if (strcmp("else", buf) == 0)
       return token(ELSE);
-    if (strcmp("loop", buf) == 0)
-      return token(LOOP);
-    if (strcmp("exit", buf) == 0)
-      return token(EXIT);
-    if (strcmp("next", buf) == 0)
-      return token(NEXT);
-    if (strcmp("true", buf) == 0)
-      return token(TRUE);
+    if (strcmp("type", buf) == 0)
+      return token(TYPE);
     break;
   case 5:
     if (strcmp("while", buf) == 0)
       return token(WHILE);
-    if (strcmp("print", buf) == 0)
-      return token(PRINT);
-    if (strcmp("scope", buf) == 0)
-      return token(SCOPE);
-    if (strcmp("false", buf) == 0)
-      return token(FALSE);
-    break;
-  case 6:
-    if (strcmp("length", buf) == 0)
-      return token(LENGTH);
-    if (strcmp("substr", buf) == 0)
-      return token(SUBSTR);
-    if (strcmp("elseif", buf) == 0)
-      return token(ELSEIF);
-    if (strcmp("shared", buf) == 0)
-      return token(SHARED);
-    if (strcmp("static", buf) == 0)
-      return token(STATIC);
-    if (strcmp("return", buf) == 0)
-      return token(RETURN);
-    break;
-  case 7:
-    if (strcmp("then", buf) == 0)
-      return token(THEN);
     break;
   case 8:
     if (strcmp("function", buf) == 0)
       return token(FUNCTION);
-    if (strcmp("continue", buf) == 0)
-      return token(CONTINUE);
     break;
   default:
-    break;
+    if (strcmp("return", buf) == 0)
+      return token(RETURN);
   }
 
   self->tok.value.as_string = strdup(buf);
@@ -174,7 +144,7 @@ static int scan_ident(ifj17_lexer_t *self, int c) {
 }
 
 /*
- * Scan string hex literal, returning -1 on invalid digits.
+ * Scan string hex literal, returning 2 on invalid digits.
  */
 
 static int hex_literal(ifj17_lexer_t *self) {
@@ -182,17 +152,16 @@ static int hex_literal(ifj17_lexer_t *self) {
   int b = hex(next);
   if (a > -1 && b > -1)
     return a << 4 | b;
-  error("string hex literal \\x contains invalid digits");
-  return -1;
+  error("string hex literal \\x contains invalid digits", SYNTAX_ERROR);
 }
 
 /*
  * Scan string.
  */
-// TODO delete quote arg
+
 static int scan_string(ifj17_lexer_t *self, int quote) {
   int c, len = 0;
-  char buf[128]; // TODO: change to realloc
+  char buf[128];
   token(STRING);
 
   while (quote != (c = next)) {
@@ -227,7 +196,7 @@ static int scan_string(ifj17_lexer_t *self, int quote) {
         c = '\v';
         break;
       case 'x':
-        if ((c = hex_literal(self)) == -1)
+        if (-1 == (c = hex_literal(self)))
           return 0;
       }
       break;
@@ -251,7 +220,7 @@ static int scan_number(ifj17_lexer_t *self, int c) {
    * 1 -> '+'(default)
    * 0 -> '-'
    */
-  token(INTEGER);
+  token(INT);
 
   switch (c) {
   case '0':
@@ -264,8 +233,7 @@ scan_hex:
   switch (c = next) {
   case 'x':
     if (!isxdigit(c = next)) {
-      error("hex literal expects one or more digits");
-      return 0;
+      error("hex literal expects one or more digits", SYNTAX_ERROR);
     } else {
       do
         n = n << 4 | hex(c);
@@ -280,7 +248,7 @@ scan_hex:
     goto scan_int;
   }
 
-  // [0-9_]+
+// [0-9_]+
 
 scan_int:
   do {
@@ -296,7 +264,7 @@ scan_int:
   self->tok.value.as_int = n;
   return 1;
 
-  // [0-9_]+
+// [0-9_]+
 
 scan_double : {
   e = 1;
@@ -315,7 +283,7 @@ scan_double : {
   return 1;
 }
 
-  // [\+\-]?[0-9]+
+// [\+\-]?[0-9]+
 
 scan_expo : {
   while (isdigit(c = next) || '+' == c || '-' == c) {
@@ -356,30 +324,81 @@ scan:
     return token(LPAREN);
   case ')':
     return token(RPAREN);
+  case '{':
+    return token(LBRACE);
+  case '}':
+    return token(RBRACE);
+  case '[':
+    return token(LBRACK);
+  case ']':
+    return token(RBRACK);
   case ',':
     return token(COMMA);
   case '.':
     return token(OP_DOT);
+  case '%':
+    return token(OP_MOD);
+  case '^':
+    return token(OP_BIT_XOR);
+  case '~':
+    return token(OP_BIT_NOT);
+  case '?':
+    return token(QMARK);
+  case ':':
+    return token(COLON);
   case '+':
-    return token(OP_PLUS);
+    switch (next) {
+    case '+':
+      return token(OP_INCR);
+    case '=':
+      return token(OP_PLUS_ASSIGN);
+    default:
+      return undo, token(OP_PLUS);
+    }
   case '-':
-    return token(OP_MINUS);
+    switch (next) {
+    case '-':
+      return token(OP_DECR);
+    case '=':
+      return token(OP_MINUS_ASSIGN);
+    default:
+      return undo, token(OP_MINUS);
+    }
   case '*':
-    return token(OP_MUL);
+    switch (next) {
+    case '=':
+      return token(OP_MUL_ASSIGN);
+    case '*':
+      return token(OP_POW);
+    default:
+      return undo, token(OP_MUL);
+    }
   case '/':
-    return token(OP_DIV_DOUBLE);
-  case '\\':
-    return token(OP_DIV_INTEGER);
+    return '=' == next ? token(OP_DIV_ASSIGN) : (undo, token(OP_DIV));
   case '!':
-    return '"' == next ? scan_string(self, c) : token(ILLEGAL);
+    return '=' == next ? token(OP_NEQ) : (undo, token(OP_NOT));
   case '=':
-    return token(OP_ASSIGN);
+    return '=' == next ? token(OP_EQ) : (undo, token(OP_ASSIGN));
+  case '&':
+    switch (next) {
+    case '&':
+      return '=' == next ? token(OP_AND_ASSIGN) : (undo, token(OP_AND));
+    default:
+      return undo, token(OP_FORK);
+    }
+  case '|':
+    switch (next) {
+    case '|':
+      return '=' == next ? token(OP_OR_ASSIGN) : (undo, token(OP_OR));
+    default:
+      return undo, token(OP_BIT_OR);
+    }
   case '<':
     switch (next) {
     case '=':
       return token(OP_LTE);
-    case '>':
-      return token(OP_NOT_EQ);
+    case '<':
+      return token(OP_BIT_SHL);
     default:
       return undo, token(OP_LT);
     }
@@ -387,9 +406,16 @@ scan:
     switch (next) {
     case '=':
       return token(OP_GTE);
+    case '>':
+      return token(OP_BIT_SHR);
     default:
       return undo, token(OP_GT);
     }
+  case '#':
+    while ((c = next) != '\n' && c)
+      ;
+    undo;
+    goto scan;
   case ';':
     return token(SEMICOLON);
   case '\n':
@@ -398,7 +424,10 @@ scan:
       return undo, token(SEMICOLON);
     }
     ++self->lineno;
-    goto scan; // TODO: Check if need_semi is needed
+    goto scan;
+  case '"':
+  case '\'':
+    return scan_string(self, c);
   case 0:
     token(EOS);
     return 0;
@@ -408,7 +437,6 @@ scan:
     if (isdigit(c) || '.' == c)
       return scan_number(self, c);
     token(ILLEGAL);
-    error("illegal character");
-    return 0;
+    error("illegal character", LEXICAL_ERROR);
   }
 }
