@@ -351,6 +351,30 @@ static void test_string() {
 // static void test_return() {
 //   _test_parser("test/parser/return.ifj17", "test/parser/return.out");
 // }
+// static void test_err_expr(){
+//   _test_parser("test/parser/err_parser/expr.ifj", "test/parser/err_parser/expr.out");
+// }
+// static void test_err_paren_expr(){
+//   _test_parser("test/parser/err_parser/paren_expr.ifj", "test/parser/err_parser/paren_expr.out");
+// }
+// static void test_err_as(){
+//   _test_parser("test/parser/err_parser/decl_expr/as.ifj", "test/parser/err_parser/decl_expr/as.out");
+// }
+// static void test_err_dim(){
+//   _test_parser("test/parser/err_parser/decl_expr/dim.ifj", "test/parser/err_parser/decl_expr/dim.out");
+// }
+// static void test_err_var_id(){
+//   _test_parser("test/parser/err_parser/decl_expr/var_id.ifj", "test/parser/err_parser/decl_expr/var_id.out");
+// }
+// static void test_err_var_type(){
+//   _test_parser("test/parser/err_parser/decl_expr/var_type.ifj", "test/parser/err_parser/decl_expr/var_type.out");
+// }
+// static void test_err_func_id(){
+//   _test_parser("test/parser/err_parser/function_stmt/func_id.ifj", "test/parser/err_parser/function_stmt/func_id.out");
+// }
+// static void test_err_rparen(){
+//   _test_parser("test/parser/err_parser/function_stmt/rparen.ifj", "test/parser/err_parser/function_stmt/rparen.out");
+// }
 
 /*
  * Test the given `fn`.
@@ -406,6 +430,15 @@ int main(int argc, const char **argv) {
   // test(subscript);
   // test(declaration);
   // test(return );
+  
+  // test(err_expr);
+  // test(err_paren_expr);
+  // test(err_as);
+  // test(err_dim);
+  // test(err_var_type);
+  // test(err_func_id);
+  // test(err_var_id);
+  // test(err_rparen);
 
   printf("\n");
   printf("  \e[90mcompleted in \e[32m%.5fs\e[0m\n",
