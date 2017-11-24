@@ -376,6 +376,7 @@ static void _test_parser(const char *source_path, const char *out_path) {
 }
 
 // NOTE: UNIT TESTS
+// VARIABLES
 static void unit_test_variable_declaration() {
   _test_parser("test/parser/variables/declaration.ifj17",
                "test/parser/variables/declaration.out");
@@ -386,6 +387,17 @@ static void unit_test_variable_declaration_and_assignment() {
                "test/parser/variables/declaration-and-assignment.out");
 }
 
+static void unit_test_variable_assign() {
+  _test_parser("test/parser/variables/assign.ifj17",
+               "test/parser/variables/assign.out");
+}
+
+static void unit_test_variable_assign_chain() {
+  _test_parser("test/parser/variables/assign-chain.ifj17",
+               "test/parser/variables/assign-chain.out");
+}
+
+// FUNCTIONS
 static void unit_test_function_declaration_without_arguments() {
   _test_parser("test/parser/function/declaration/without-arguments.ifj17",
                "test/parser/function/declaration/without-arguments.out");
@@ -406,6 +418,12 @@ static void unit_test_function_declaration_with_body() {
                "test/parser/function/declaration/with-body.out");
 }
 
+static void unit_test_function_initialization_with_return() {
+  _test_parser("test/parser/function/initialization/with-return.ifj17",
+               "test/parser/function/initialization/with-return.out");
+}
+
+// SCOPE
 static void unit_test_scope_empty_declaration() {
   _test_parser("test/parser/scope/declaration/empty.ifj17",
                "test/parser/scope/declaration/empty.out");
@@ -416,19 +434,38 @@ static void unit_test_scope_with_body() {
                "test/parser/scope/declaration/with-body.out");
 }
 
+// COMMENTS
+static void unit_test_comments_inline() {
+  _test_parser("test/parser/comments/inline.ifj17",
+               "test/parser/comments/inline.out");
+}
+
+static void unit_test_comments_multiline_with_code() {
+  _test_parser("test/parser/comments/multiline-with-code.ifj17",
+               "test/parser/comments/multiline-with-code.out");
+}
+
+static void unit_test_comments_multiline_only_comments() {
+  _test_parser("test/parser/comments/multiline-only-comments.ifj17",
+               "test/parser/comments/multiline-only-comments.out");
+}
+
+static void unit_test_comments_only_comments() {
+  _test_parser("test/parser/comments/only-comments.ifj17",
+               "test/parser/comments/only-comments.out");
+}
+
+static void unit_test_comments_without_spaces() {
+  _test_parser("test/parser/comments/without-spaces.ifj17",
+               "test/parser/comments/without-spaces.out");
+}
+
 // NOTE: INTEGRATION TESTS
 static void integration_test_factorial() {
   _test_parser("test/integration/parser/factorial.ifj17",
                "test/integration/parser/factorial.out");
 }
 
-// static void unit_test_assign() {
-//   _test_parser("test/parser/assign.ifj17", "test/parser/assign.out");
-// }
-//
-// static void unit_test_assign_chain() {
-//   _test_parser("test/parser/assign.chain.ifj17", "test/parser/assign.chain.out");
-// }
 //
 // static void unit_test_subscript() {
 //   _test_parser("test/parser/subscript.ifj17", "test/parser/subscript.out");
@@ -470,22 +507,33 @@ int main(int argc, const char **argv) {
 
   suite("parser");
 
+  // NOTE: Comment tests
+  unit_test(comments_only_comments);
+  unit_test(comments_multiline_only_comments);
+  unit_test(comments_inline);
+  unit_test(comments_without_spaces);
+  unit_test(comments_multiline_with_code);
+
   // NOTE: Variable tests
   unit_test(variable_declaration);
   unit_test(variable_declaration_and_assignment);
+  unit_test(variable_assign);
+  unit_test(variable_assign_chain);
 
   // NOTE: Function tests
+  // Declaration
   unit_test(function_declaration_without_arguments);
   unit_test(function_declaration_with_argument);
   unit_test(function_declaration_with_arguments);
   unit_test(function_declaration_with_body);
 
+  // Initialization
+  unit_test(function_initialization_with_return);
+
   // NOTE: Scope tests
   unit_test(scope_empty_declaration);
   unit_test(scope_with_body);
 
-  // unit_test(assign);
-  // unit_test(assign_chain);
   // unit_test(subscript);
   // unit_test(return );
 
