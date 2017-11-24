@@ -475,6 +475,11 @@ static void unit_test_if_elseif() {
                "test/parser/conditions/if-elseif.out");
 }
 
+static void unit_test_if_elseif_else() {
+  _test_parser("test/parser/conditions/if-elseif-else.ifj17",
+               "test/parser/conditions/if-elseif-else.out");
+}
+
 // NOTE: INTEGRATION TESTS
 static void integration_test_factorial() {
   _test_parser("test/integration/parser/factorial.ifj17",
@@ -553,6 +558,7 @@ int main(int argc, const char **argv) {
   unit_test(if_single);
   unit_test(if_else);
   unit_test(if_elseif);
+  unit_test(if_elseif_else);
 
   // unit_test(subscript);
   // unit_test(return );
