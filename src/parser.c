@@ -998,6 +998,52 @@ static ifj17_node_t *type_stmt(ifj17_parser_t *self) {
 /*
  * 'function' id '(' args? ')' (':' type_expr)? block
  */
+static ifj17_node_t *function_decl(ifj17_parser_t *self) {
+  ifj17_vec_t *params;
+  ifj17_node_t *type = NULL;
+  int line = lineno;
+  debug("function_decl");
+  context("function declaration");
+
+  // 'function'
+  if (accept(FUNCTION) == false) {
+    return NULL;
+  }
+
+  // id
+  if (is(ID) == false) {
+    return error("missing function name");
+  }
+
+  const char *name = self->tok->value.as_string;
+  next;
+
+  // '('
+  if (accept(LPAREN)) {
+    // params?
+    if ((params = function_params(self)) == false) {
+      return NULL;
+    }
+    // ')'
+    context("function");
+    if (accept(RPAREN) == false) {
+      return error("missing closing ')'");
+    }
+  } else {
+    params = ifj17_vec_new();
+  }
+
+  context("function");
+
+  // ('AS' type_expr)?
+  if (accept(AS) == false) return error("missing AS");
+    type = type_expr(self);
+    if (type == false) {
+      return error("missing type after ':'");
+    }
+
+  return NULL;
+}
 
 static ifj17_node_t *function_stmt(ifj17_parser_t *self) {
   ifj17_block_node_t *body;
