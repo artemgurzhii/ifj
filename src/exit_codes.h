@@ -12,4 +12,4 @@
 #define UNEXIST_VAL 56
 #define DIV_BY_ZERO 57
 #define STR_ERROR 58
-#define DEFAULT_ERRORS 60
+#define DEFAULT_ERROR 60
