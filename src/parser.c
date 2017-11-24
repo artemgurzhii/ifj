@@ -1082,7 +1082,7 @@ static ifj17_node_t *function_stmt(ifj17_parser_t *self) {
 
 /*
  *  ('if') expr block
- *  ('else' 'if' block)*
+ *  ('elseif' block)*
  *  ('else' block)?
  */
 
@@ -1105,11 +1105,9 @@ static ifj17_node_t *if_stmt(ifj17_parser_t *self) {
     return NULL;
   }
 
-  // semicolon might have been inserted here
-  accept(SEMICOLON);
-  // if (!accept(COLON)) {
-  //   return error("missing `:`");
-  // }
+  if (!accept(THEN)) {
+    return error("missing 'then'");
+  }
 
   // block
   context("if statement");
@@ -1119,38 +1117,36 @@ static ifj17_node_t *if_stmt(ifj17_parser_t *self) {
 
   ifj17_if_node_t *node = ifj17_if_node_new(cond, body, line);
 
-// 'else'
+// 'elseif' || 'else'
 loop:
   if (accept(ELSE)) {
-    ifj17_block_node_t *body;
+    context("else statement");
 
-    // ('else' 'if' block)*
-    if (accept(IF)) {
-      int line = lineno;
-      context("else if statement condition");
-      if (!(cond = expr(self))) {
-        return NULL;
-      }
-
-      // semicolon might have been inserted here
-      accept(SEMICOLON);
-      // if (!accept(COLON)) {
-      //   return error("missing `:`");
-      // }
-
-      context("else if statement");
-      if (!(body = block(self, false)))
-        return NULL;
-      ifj17_vec_push(node->else_ifs, ifj17_node((ifj17_node_t *)ifj17_if_node_new(
-                                         cond, body, line)));
-      goto loop;
-      // 'else'
-    } else {
-      context("else statement");
-      if (!(body = block(self, false)))
-        return NULL;
-      node->else_block = body;
+    if (!(body = block(self, false))) {
+      return NULL;
     }
+
+    node->else_block = body;
+  } else if (accept(ELSEIF)) {
+    context("elseif statement condition");
+
+    if (!(cond = expr(self))) {
+      return NULL;
+    }
+
+    if (!accept(THEN)) {
+      return error("missing 'then'");
+    }
+
+    // block
+    context("if statement");
+    if (!(body = block(self, false))) {
+      return NULL;
+    }
+
+    ifj17_vec_push(node->else_ifs,
+                   ifj17_node((ifj17_node_t *)ifj17_if_node_new(cond, body, line)));
+    goto loop;
   }
 
   return (ifj17_node_t *)node;
@@ -1288,7 +1284,7 @@ static ifj17_block_node_t *block(ifj17_parser_t *self, bool isFunctionBlock) {
     accept(SEMICOLON);
 
     ifj17_vec_push(block->stmts, ifj17_node(node));
-  } while (!accept(END) && !is(ELSE));
+  } while (!accept(END) && !is(ELSEIF) && !is(ELSE));
 
   return block;
 }

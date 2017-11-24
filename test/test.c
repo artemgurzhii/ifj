@@ -460,6 +460,21 @@ static void unit_test_comments_without_spaces() {
                "test/parser/comments/without-spaces.out");
 }
 
+static void unit_test_if_single() {
+  _test_parser("test/parser/conditions/if-single.ifj17",
+               "test/parser/conditions/if-single.out");
+}
+
+static void unit_test_if_else() {
+  _test_parser("test/parser/conditions/if-else.ifj17",
+               "test/parser/conditions/if-else.out");
+}
+
+static void unit_test_if_elseif() {
+  _test_parser("test/parser/conditions/if-elseif.ifj17",
+               "test/parser/conditions/if-elseif.out");
+}
+
 // NOTE: INTEGRATION TESTS
 static void integration_test_factorial() {
   _test_parser("test/integration/parser/factorial.ifj17",
@@ -533,6 +548,11 @@ int main(int argc, const char **argv) {
   // NOTE: Scope tests
   unit_test(scope_empty_declaration);
   unit_test(scope_with_body);
+
+  // NOTE: Conditions test
+  unit_test(if_single);
+  unit_test(if_else);
+  unit_test(if_elseif);
 
   // unit_test(subscript);
   // unit_test(return );
