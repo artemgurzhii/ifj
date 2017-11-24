@@ -1,0 +1,5 @@
+(if (id a)
+  (dim
+    (decl
+      (id a)
+      : (id string))))

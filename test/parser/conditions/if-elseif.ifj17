@@ -1,0 +1,7 @@
+if 1 > 0 then
+  return 1
+elseif 2 > 1 then
+  return 2
+elseif 3 > 2 then
+  return 3
+end
