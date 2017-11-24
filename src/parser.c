@@ -330,7 +330,7 @@ static ifj17_node_t *pow_expr(ifj17_parser_t *self) {
       return (ifj17_node_t *)ifj17_binary_op_node_new(IFJ17_TOKEN_OP_POW, node,
                                                       right, line);
     } else {
-      error("missing right-hand expression", SYNTAX_ERROR);
+      return error("missing right-hand expression", SYNTAX_ERROR);
     }
   }
   return node;
