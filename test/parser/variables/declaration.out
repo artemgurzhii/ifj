@@ -1,0 +1,14 @@
+(dim
+  (decl
+    (id foo)
+    : (id string)))
+
+(dim
+  (decl
+    (id bar)
+    : (id integer)))
+
+(dim
+  (decl
+    (id baz)
+    : (id string)))

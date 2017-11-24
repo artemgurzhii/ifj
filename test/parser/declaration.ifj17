@@ -1,3 +1,0 @@
-let a, b: int
-let a = 5
-let a: string = "foo"

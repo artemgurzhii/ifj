@@ -1,5 +1,5 @@
-(dim
+(function foo -> (id string)
   (decl
     (id bar)
     : (id string))
-   = (string 'baz'))
+)

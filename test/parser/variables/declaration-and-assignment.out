@@ -1,0 +1,11 @@
+(dim
+  (decl
+    (id foo)
+    : (id string))
+   = (string 'hello'))
+
+(dim
+  (decl
+    (id bar)
+    : (id string))
+   = (string 'world'))

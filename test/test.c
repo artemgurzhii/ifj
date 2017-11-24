@@ -15,6 +15,40 @@
 #include <string.h>
 #include <time.h>
 
+/*
+ * Unit test the given `fn`.
+ */
+
+#define unit_test(fn)                                                               \
+  printf("    \e[92m✓ \e[90m%s\e[0m\n", #fn);                                       \
+  unit_test_##fn();
+
+/*
+ * Integration test the given `fn`.
+ */
+
+#define integration_test(fn)                                                        \
+  printf("    \e[92m✓ \e[90m%s\e[0m\n", #fn);                                       \
+  integration_test_##fn();
+
+/*
+ * Test suite title.
+ */
+
+#define suite(title) printf("\n  \e[36m%s\e[0m\n", title)
+
+/*
+ * Test type.
+ */
+
+#define type(title) printf("\n  \e[1;33m\033[1m%s\033[0m\e[0m\n", title)
+
+/*
+ * Report sizeof.
+ */
+
+#define size(type) printf("\n  \e[90m%s: %ld bytes\e[0m\n", #type, sizeof(type));
+
 // print func for prettyprint
 
 char *print_buf;
@@ -31,7 +65,7 @@ int bprintf(const char *format, ...) {
  * Test ifj17_is_* macros.
  */
 
-static void test_value_is() {
+static void unit_test_value_is() {
   ifj17_object_t one = {.type = IFJ17_TYPE_INT, .value.as_int = 1};
   assert(ifj17_is_int(&one));
   assert(!ifj17_is_string(&one));
@@ -44,7 +78,7 @@ static void test_value_is() {
  * Test ifj17_vec_length().
  */
 
-static void test_array_length() {
+static void unit_test_array_length() {
   ifj17_vec_t arr;
   ifj17_vec_init(&arr);
 
@@ -68,7 +102,7 @@ static void test_array_length() {
  * Test ifj17_vec_push().
  */
 
-static void test_array_push() {
+static void unit_test_array_push() {
   ifj17_vec_t arr;
   ifj17_vec_init(&arr);
 
@@ -104,7 +138,7 @@ static void test_array_push() {
  * Test ifj17_vec_at().
  */
 
-static void test_array_at() {
+static void unit_test_array_at() {
   ifj17_vec_t arr;
   ifj17_vec_init(&arr);
 
@@ -129,7 +163,7 @@ static void test_array_at() {
  * Test array iteration.
  */
 
-static void test_array_iteration() {
+static void unit_test_array_iteration() {
   ifj17_vec_t arr;
   ifj17_vec_init(&arr);
 
@@ -154,7 +188,7 @@ static void test_array_iteration() {
  * Test ifj17_hash_set().
  */
 
-static void test_hash_set() {
+static void unit_test_hash_set() {
   ifj17_object_t one = {.type = IFJ17_TYPE_INT, .value.as_int = 1};
   ifj17_object_t two = {.type = IFJ17_TYPE_INT, .value.as_int = 2};
   ifj17_object_t three = {.type = IFJ17_TYPE_INT, .value.as_int = 3};
@@ -184,7 +218,7 @@ static void test_hash_set() {
  * Test ifj17_hash_has().
  */
 
-static void test_hash_has() {
+static void unit_test_hash_has() {
   ifj17_object_t one = {.type = IFJ17_TYPE_INT, .value.as_int = 1};
 
   ifj17_hash_t *obj = ifj17_hash_new();
@@ -201,7 +235,7 @@ static void test_hash_has() {
  * Test ifj17_hash_remove().
  */
 
-static void test_hash_remove() {
+static void unit_test_hash_remove() {
   ifj17_object_t one = {.type = IFJ17_TYPE_INT, .value.as_int = 1};
 
   ifj17_hash_t *obj = ifj17_hash_new();
@@ -235,7 +269,7 @@ static int valid_slot(const char *slot) {
  * Test object iteration macros.
  */
 
-static void test_hash_iteration() {
+static void unit_test_hash_iteration() {
   ifj17_object_t one = {.type = IFJ17_TYPE_INT, .value.as_int = 1};
   ifj17_object_t two = {.type = IFJ17_TYPE_INT, .value.as_int = 2};
   ifj17_object_t three = {.type = IFJ17_TYPE_INT, .value.as_int = 3};
@@ -275,7 +309,7 @@ static void test_hash_iteration() {
  * Test mixins.
  */
 
-static void test_hash_mixins() {
+static void unit_test_hash_mixins() {
   ifj17_object_t type = {.type = IFJ17_TYPE_INT, .value.as_int = 1};
   ifj17_vec_t arr;
   ifj17_vec_init(&arr);
@@ -285,7 +319,7 @@ static void test_hash_mixins() {
  * Test strings.
  */
 
-static void test_string() {
+static void unit_test_string() {
   ifj17_state_t state;
   ifj17_state_init(&state);
 
@@ -306,49 +340,87 @@ static void test_string() {
  * Test parser.
  */
 
-// static void _test_parser(const char *source_path, const char *out_path) {
-//   ifj17_lexer_t lexer;
-//   ifj17_parser_t parser;
-//   ifj17_block_node_t *root;
-//
-//   char *source = file_read(source_path);
-//   assert(source != NULL);
-//   char *expected = file_read(out_path);
-//   assert(expected != NULL);
-//
-//   ifj17_lexer_init(&lexer, source, source_path);
-//   ifj17_parser_init(&parser, &lexer);
-//
-//   if (!(root = ifj17_parse(&parser))) {
-//     ifj17_report_error(&parser);
-//     exit(1);
-//   }
-//
-//   char buf[1024] = {0};
-//   print_buf = buf;
-//   ifj17_set_prettyprint_func(bprintf);
-//   ifj17_prettyprint((ifj17_node_t *)root);
-//
-//   assert(strcmp(expected, print_buf) == 0);
-// }
-//
-// static void test_assign() {
+static void _test_parser(const char *source_path, const char *out_path) {
+  ifj17_lexer_t lexer;
+  ifj17_parser_t parser;
+  ifj17_block_node_t *root;
+
+  char *source = file_read(source_path);
+  assert(source != NULL);
+  char *expected = file_read(out_path);
+  assert(expected != NULL);
+
+  ifj17_lexer_init(&lexer, source, source_path);
+  ifj17_parser_init(&parser, &lexer);
+
+  if (!(root = ifj17_parse(&parser))) {
+    ifj17_report_error(&parser);
+    exit(1);
+  }
+
+  char buf[1024] = {0};
+  print_buf = buf;
+  ifj17_set_prettyprint_func(bprintf);
+  ifj17_prettyprint((ifj17_node_t *)root);
+
+  size_t ln = strlen(print_buf) - 1;
+  if (*print_buf && print_buf[ln] == '\n') {
+    strcat(expected, "\n");
+  }
+
+  assert(strcmp(expected, print_buf) == 0);
+}
+
+// NOTE: UNIT TESTS
+static void unit_test_variable_declaration() {
+  _test_parser("test/parser/variables/declaration.ifj17",
+               "test/parser/variables/declaration.out");
+}
+
+static void unit_test_variable_declaration_and_assignment() {
+  _test_parser("test/parser/variables/declaration-and-assignment.ifj17",
+               "test/parser/variables/declaration-and-assignment.out");
+}
+
+static void unit_test_function_declaration_without_arguments() {
+  _test_parser("test/parser/function/declaration/without-arguments.ifj17",
+               "test/parser/function/declaration/without-arguments.out");
+}
+
+static void unit_test_function_declaration_with_argument() {
+  _test_parser("test/parser/function/declaration/with-argument.ifj17",
+               "test/parser/function/declaration/with-argument.out");
+}
+
+static void unit_test_function_declaration_with_arguments() {
+  _test_parser("test/parser/function/declaration/with-arguments.ifj17",
+               "test/parser/function/declaration/with-arguments.out");
+}
+
+static void unit_test_function_declaration_with_body() {
+  _test_parser("test/parser/function/declaration/with-body.ifj17",
+               "test/parser/function/declaration/with-body.out");
+}
+
+// NOTE: INTEGRATION TESTS
+static void integration_test_function_initialization() {
+  _test_parser("test/integration/parser/function-initialization.ifj17",
+               "test/integration/parser/function-initialization.out");
+}
+
+// static void unit_test_assign() {
 //   _test_parser("test/parser/assign.ifj17", "test/parser/assign.out");
 // }
 //
-// static void test_assign_chain() {
+// static void unit_test_assign_chain() {
 //   _test_parser("test/parser/assign.chain.ifj17", "test/parser/assign.chain.out");
 // }
 //
-// static void test_subscript() {
+// static void unit_test_subscript() {
 //   _test_parser("test/parser/subscript.ifj17", "test/parser/subscript.out");
 // }
 //
-// static void test_declaration() {
-//   _test_parser("test/parser/declaration.ifj17", "test/parser/declaration.out");
-// }
-//
-// static void test_return() {
+// static void unit_test_return() {
 //   _test_parser("test/parser/return.ifj17", "test/parser/return.out");
 // }
 // static void test_err_expr(){
@@ -377,26 +449,6 @@ static void test_string() {
 // }
 
 /*
- * Test the given `fn`.
- */
-
-#define test(fn)                                                                    \
-  printf("    \e[92m✓ \e[90m%s\e[0m\n", #fn);                                       \
-  test_##fn();
-
-/*
- * Test suite title.
- */
-
-#define suite(title) printf("\n  \e[36m%s\e[0m\n", title)
-
-/*
- * Report sizeof.
- */
-
-#define size(type) printf("\n  \e[90m%s: %ld bytes\e[0m\n", #type, sizeof(type));
-
-/*
  * Run all test suites.
  */
 
@@ -405,26 +457,32 @@ int main(int argc, const char **argv) {
 
   size(ifj17_object_t);
 
+  type("UNIT TESTS");
+
   suite("value");
-  test(value_is);
+  unit_test(value_is);
 
   suite("array");
-  test(array_length);
-  test(array_push);
-  test(array_at);
-  test(array_iteration);
+  unit_test(array_length);
+  unit_test(array_push);
+  unit_test(array_at);
+  unit_test(array_iteration);
 
   suite("hash");
-  test(hash_set);
-  test(hash_has);
-  test(hash_remove);
-  test(hash_iteration);
-  test(hash_mixins);
+  unit_test(hash_set);
+  unit_test(hash_has);
+  unit_test(hash_remove);
+  unit_test(hash_iteration);
+  unit_test(hash_mixins);
 
   suite("string");
+
+  unit_test(string);
+
+  suite("parser");
+  
   test(string);
 
-  // suite("parser");
   // test(assign);
   // test(assign_chain);
   // test(subscript);
@@ -439,6 +497,26 @@ int main(int argc, const char **argv) {
   // test(err_func_id);
   // test(err_var_id);
   // test(err_rparen);
+  
+  // NOTE: Variable tests
+  unit_test(variable_declaration);
+  unit_test(variable_declaration_and_assignment);
+
+  // NOTE: Function tests
+  unit_test(function_declaration_without_arguments);
+  unit_test(function_declaration_with_argument);
+  unit_test(function_declaration_with_arguments);
+  unit_test(function_declaration_with_body);
+
+  // unit_test(assign);
+  // unit_test(assign_chain);
+  // unit_test(subscript);
+  // unit_test(return );
+
+  type("INTEGRATION TESTS");
+
+  suite("parser");
+  integration_test(function_initialization);
 
   printf("\n");
   printf("  \e[90mcompleted in \e[32m%.5fs\e[0m\n",

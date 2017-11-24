@@ -105,7 +105,7 @@ static ifj17_node_t *paren_expr(ifj17_parser_t *self) {
     return NULL;
   }
 
-  if (accept(RPAREN) == false) {
+  if (!accept(RPAREN)) {
     error("expression missing closing ')'", SYNTAX_ERROR);
   }
 
@@ -232,9 +232,8 @@ static ifj17_node_t *decl_expr(ifj17_parser_t *self, bool need_type) {
   debug("decl_expr");
   context("declaration");
 
-  // 'dim'
-  if (accept(DIM) == false) {
-    error("expecting dim", SYNTAX_ERROR);
+  if (!is(ID)) {
+    return NULL;
   }
 
   ifj17_vec_t *vec = ifj17_vec_new();
@@ -250,9 +249,6 @@ static ifj17_node_t *decl_expr(ifj17_parser_t *self, bool need_type) {
     if (!accept(COMMA)) {
       break;
     }
-  }
-  if (is(ID) == false) {
-    error("expecting id", SYNTAX_ERROR);
   }
 
   // 'as'
@@ -521,7 +517,7 @@ static ifj17_node_t *bitwise_and_expr(ifj17_parser_t *self) {
       node = (ifj17_node_t *)ifj17_binary_op_node_new(IFJ17_TOKEN_OP_BIT_AND, node,
                                                       right, line);
     } else {
-      return error("missing right-hand expression", SYNTAX_ERROR);
+      error("missing right-hand expression", SYNTAX_ERROR);
     }
   }
   return node;
@@ -1000,7 +996,6 @@ static ifj17_node_t *type_stmt(ifj17_parser_t *self) {
     ifj17_node_t *decl = decl_expr(self, true);
     if (!decl)
      error("expecting field", SYNTAX_ERROR);
-
     // semicolon might have been inserted here
     accept(SEMICOLON);
 
@@ -1029,7 +1024,7 @@ static ifj17_node_t *function_stmt(ifj17_parser_t *self) {
 
   // id
   if (!is(ID))
-    return error("missing function name", SYNTAX_ERROR);
+    error("missing function name", SYNTAX_ERROR);
 
   const char *name = self->tok->value.as_string;
   next;
@@ -1098,6 +1093,9 @@ static ifj17_node_t *if_stmt(ifj17_parser_t *self) {
 
   // semicolon might have been inserted here
   accept(SEMICOLON);
+  // if (!accept(COLON)) {
+  //   return error("missing `:`");
+  // }
 
   // block
   context("if statement");
@@ -1122,6 +1120,9 @@ loop:
 
       // semicolon might have been inserted here
       accept(SEMICOLON);
+      // if (!accept(COLON)) {
+      //   return error("missing `:`");
+      // }
 
       context("else if statement");
       if (!(body = block(self, false)))
