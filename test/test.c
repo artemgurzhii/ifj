@@ -364,8 +364,8 @@ static void _test_parser(const char *source_path, const char *out_path) {
   ifj17_prettyprint((ifj17_node_t *)root);
 
   // DEBUG
-  printf("%s\n", print_buf);
-  printf("%s\n", expected);
+  // printf("%s\n", print_buf);
+  // printf("%s\n", expected);
 
   size_t ln = strlen(print_buf) - 1;
   if (*print_buf && print_buf[ln] == '\n') {
