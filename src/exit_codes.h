@@ -1,0 +1,6 @@
+#define LEXICAL_ERROR 1
+#define SYNTAX_ERROR 2
+#define SEM_UNDECL_VAR_ERROR 3
+#define SEM_ARGS 4
+#define SEMANTIC_ERROR 6
+#define COMPL_ERROR 99
