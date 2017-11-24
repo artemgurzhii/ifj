@@ -1106,14 +1106,18 @@ static ifj17_node_t *if_stmt(ifj17_parser_t *self) {
   }
 
   // semicolon might have been inserted here
-  accept(SEMICOLON);
+  if (!accept(THEN)) {
+    return error("expecting 'then'");
+  }
   // if (!accept(COLON)) {
   //   return error("missing `:`");
   // }
 
+
   // block
   context("if statement");
   if (!(body = block(self, false))) {
+    printf("huj\n");
     return NULL;
   }
 
@@ -1121,36 +1125,35 @@ static ifj17_node_t *if_stmt(ifj17_parser_t *self) {
 
 // 'else'
 loop:
-  if (accept(ELSE)) {
+  if (accept(ELSEIF)) {
+    printf("dfghj\n");
     ifj17_block_node_t *body;
-
     // ('else' 'if' block)*
-    if (accept(IF)) {
-      int line = lineno;
-      context("else if statement condition");
-      if (!(cond = expr(self))) {
-        return NULL;
-      }
-
-      // semicolon might have been inserted here
-      accept(SEMICOLON);
-      // if (!accept(COLON)) {
-      //   return error("missing `:`");
-      // }
-
-      context("else if statement");
-      if (!(body = block(self, false)))
-        return NULL;
-      ifj17_vec_push(node->else_ifs, ifj17_node((ifj17_node_t *)ifj17_if_node_new(
-                                         cond, body, line)));
-      goto loop;
-      // 'else'
-    } else {
-      context("else statement");
-      if (!(body = block(self, false)))
-        return NULL;
-      node->else_block = body;
+    int line = lineno;
+    context("elseif statement condition");
+    if (!(cond = expr(self))) {
+      return NULL;
     }
+
+    // semicolon might have been inserted here
+    accept(THEN);
+    // if (!accept(COLON)) {
+    //   return error("missing `:`");
+    // }
+
+    context("elseif statement");
+    if (!(body = block(self, false)))
+      return NULL;
+    ifj17_vec_push(node->else_ifs,
+                   ifj17_node((ifj17_node_t *)ifj17_if_node_new(cond, body, line)));
+    goto loop;
+  }
+
+  if (accept(ELSE)) {
+    context("else statement");
+    if (!(body = block(self, false)))
+      return NULL;
+    node->else_block = body;
   }
 
   return (ifj17_node_t *)node;

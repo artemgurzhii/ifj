@@ -121,12 +121,20 @@ static int scan_ident(ifj17_lexer_t *self, int c) {
       return token(ELSE);
     if (strcmp("type", buf) == 0)
       return token(TYPE);
+    if (strcmp("then", buf) == 0)
+      return token(THEN);
     break;
   case 5:
     if (strcmp("while", buf) == 0)
       return token(WHILE);
     if (strcmp("scope", buf) == 0)
       return token(SCOPE);
+    break;
+  case 6:
+    if (strcmp("elseif", buf) == 0)
+      return token(ELSEIF);
+    if (strcmp("return", buf) == 0)
+      return token(RETURN);
     break;
   case 8:
     if (strcmp("function", buf) == 0)
@@ -135,6 +143,7 @@ static int scan_ident(ifj17_lexer_t *self, int c) {
   default:
     if (strcmp("return", buf) == 0)
       return token(RETURN);
+    break;
   }
 
   self->tok.value.as_string = strdup(buf);
