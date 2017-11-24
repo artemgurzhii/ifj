@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdlib.h>
-#include <exit_codes.h>
+#include "exit_codes.h"
 
 /*
  * Next char in the array.
@@ -47,9 +47,9 @@
  * Set error `msg` and assign ILLEGAL token.
  */
 
- #define error(str, code)                                                               \
-   (self->error = self->error ? (self->error = str, self->exit_code = code) : NULL);    \
-   exit(self->exit_code);
+ #define error(str, code)                                                           \ 
+   self->error = str, self->exit_code = code,                                       \
+   exit(self->exit_code)
 
 /*
  * True if the lexer should insert a semicolon after `t`.
@@ -65,7 +65,7 @@
 
 void ifj17_lexer_init(ifj17_lexer_t *self, char *source, const char *filename) {
   self->error = NULL;
-  self->err_code = 0;
+  self->exit_code = 0;
   self->source = source;
   self->filename = filename;
   self->lineno = 1;
@@ -145,7 +145,7 @@ static int scan_ident(ifj17_lexer_t *self, int c) {
 }
 
 /*
- * Scan string hex literal, returning 2 on invalid digits.
+ * Scan string hex literal, returning SYNTAX_ERROR on invalid digits.
  */
 
 static int hex_literal(ifj17_lexer_t *self) {
@@ -153,7 +153,7 @@ static int hex_literal(ifj17_lexer_t *self) {
   int b = hex(next);
   if (a > -1 && b > -1)
     return a << 4 | b;
-  error("string hex literal \\x contains invalid digits", SYNTAX_ERROR);
+  return error("string hex literal \\x contains invalid digits", SYNTAX_ERROR);
 }
 
 /*
@@ -234,7 +234,7 @@ scan_hex:
   switch (c = next) {
   case 'x':
     if (!isxdigit(c = next)) {
-      error("hex literal expects one or more digits", SYNTAX_ERROR);
+      return error("hex literal expects one or more digits", SYNTAX_ERROR);
     } else {
       do
         n = n << 4 | hex(c);
@@ -438,6 +438,6 @@ scan:
     if (isdigit(c) || '.' == c)
       return scan_number(self, c);
     token(ILLEGAL);
-    error("illegal character", LEXICAL_ERROR);
+    return error("illegal character", LEXICAL_ERROR);
   }
 }
