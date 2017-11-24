@@ -363,9 +363,9 @@ static void _test_parser(const char *source_path, const char *out_path) {
   ifj17_set_prettyprint_func(bprintf);
   ifj17_prettyprint((ifj17_node_t *)root);
 
-  // DEBUG
-  // printf("%s\n", print_buf);
-  // printf("%s\n", expected);
+  //DEBUG
+  printf("%s\n", print_buf);
+  printf("%s\n", expected);
 
   size_t ln = strlen(print_buf) - 1;
   if (*print_buf && print_buf[ln] == '\n') {
@@ -480,6 +480,12 @@ static void unit_test_if_elseif_else() {
                "test/parser/conditions/if-elseif-else.out");
 }
 
+// LOOPS
+static void unit_test_do_while() {
+  _test_parser("test/parser/loops/do-while.ifj17",
+               "test/parser/loops/do-while.out");
+}
+
 // NOTE: INTEGRATION TESTS
 static void integration_test_factorial() {
   _test_parser("test/integration/parser/factorial.ifj17",
@@ -559,6 +565,9 @@ int main(int argc, const char **argv) {
   unit_test(if_else);
   unit_test(if_elseif);
   unit_test(if_elseif_else);
+
+  // NOTE: Loops test
+  unit_test(do_while);
 
   // unit_test(subscript);
   // unit_test(return );

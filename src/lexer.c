@@ -103,6 +103,8 @@ static int scan_ident(ifj17_lexer_t *self, int c) {
       return token(IF);
     if (strcmp("as", buf) == 0)
       return token(AS);
+    if (strcmp("do", buf) == 0)
+      return token(DO);
     break;
   case 3:
     if (strcmp("for", buf) == 0)
@@ -123,6 +125,8 @@ static int scan_ident(ifj17_lexer_t *self, int c) {
       return token(TYPE);
     if (strcmp("then", buf) == 0)
       return token(THEN);
+    if (strcmp("loop", buf) == 0)
+      return token(LOOP);
     break;
   case 5:
     if (strcmp("while", buf) == 0)
