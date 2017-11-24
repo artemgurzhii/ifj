@@ -10,7 +10,7 @@
 #include "vec.h"
 #include <stdbool.h>
 #include <stdio.h>
-#include <exit_codes.h>
+#include "exit_codes.h"
 
 // TODO: test contextual errors
 
@@ -59,9 +59,9 @@
  * Set error `str` when not previously set.
  */
 
-#define error(str, code)                                                         \
-  (self->err = self->err ? (self->err = str, self->exit_code = code) : NULL);    \
-  exit(self->exit_code);
+#define error(str, code)                                                            \
+  self->err = str, self->exit_code = code,                                          \
+  exit(self->exit_code)
 
 /*
  * The lexer's current line number.
@@ -106,7 +106,7 @@ static ifj17_node_t *paren_expr(ifj17_parser_t *self) {
   }
 
   if (!accept(RPAREN)) {
-    error("expression missing closing ')'", SYNTAX_ERROR);
+    return error("expression missing closing ')'", SYNTAX_ERROR);
   }
 
   return node;
@@ -152,7 +152,7 @@ static ifj17_node_t *array_expr(ifj17_parser_t *self) {
   if (!arg_list(self, node, IFJ17_TOKEN_RBRACK))
     return NULL;
   if (!accept(RBRACK))
-    error("array missing closing ']'", SYNTAX_ERROR);
+    return error("array missing closing ']'", SYNTAX_ERROR);
   return (ifj17_node_t *)node;
 }
 
@@ -172,7 +172,7 @@ int hash_pairs(ifj17_parser_t *self, ifj17_hash_node_t *hash, ifj17_token delim)
 
   // 'as'
   if (!accept(AS)) {
-    error("hash pair ':' missing", SYNTAX_ERROR);
+    return error("hash pair ':' missing", SYNTAX_ERROR);
   }
 
   // expr
@@ -204,7 +204,7 @@ static ifj17_node_t *hash_expr(ifj17_parser_t *self) {
   if (!hash_pairs(self, node, IFJ17_TOKEN_RBRACE))
     return NULL;
   if (!accept(RBRACE))
-    error("hash missing closing '}'", SYNTAX_ERROR);
+    return error("hash missing closing '}'", SYNTAX_ERROR);
   return (ifj17_node_t *)node;
 }
 
@@ -254,19 +254,19 @@ static ifj17_node_t *decl_expr(ifj17_parser_t *self, bool need_type) {
   // 'as'
   if (!accept(AS)) {
     if (need_type) {
-      error("expecting type", SYNTAX_ERROR);
+      return error("expecting 'type'", SYNTAX_ERROR);
     } else {
       return (ifj17_node_t *)ifj17_decl_node_new(vec, NULL, decl_line);
     }
 
-  if (accept(AS) == false) {
-    error("expecting as", SYNTAX_ERROR);
+  if (!accept(AS)) {
+    return error("expecting 'as'", SYNTAX_ERROR);
   }
 
   ifj17_node_t *type = type_expr(self);
 
   if (!type) {
-    error("expecting type", SYNTAX_ERROR);
+    return error("expecting 'type'", SYNTAX_ERROR);
   }
 
   return (ifj17_node_t *)ifj17_decl_node_new(vec, type, decl_line);
@@ -395,8 +395,7 @@ static ifj17_node_t *multiplicative_expr(ifj17_parser_t *self) {
     if (right = unary_expr(self)) {
       node = (ifj17_node_t *)ifj17_binary_op_node_new(op, node, right, line);
     } else {
-      error("missing right-hand expression", SYNTAX_ERROR);
-      exit(self->err_code);
+      return error("missing right-hand expression", SYNTAX_ERROR);
     }
   }
   return node;
@@ -420,8 +419,7 @@ static ifj17_node_t *additive_expr(ifj17_parser_t *self) {
     if (right = multiplicative_expr(self)) {
       node = (ifj17_node_t *)ifj17_binary_op_node_new(op, node, right, line);
     } else {
-      error("missing right-hand expression", SYNTAX_ERROR);
-      exit(self->err_code);
+     return error("missing right-hand expression", SYNTAX_ERROR);
     }
   }
   return node;
@@ -445,7 +443,7 @@ static ifj17_node_t *shift_expr(ifj17_parser_t *self) {
     if (right = additive_expr(self)) {
       node = (ifj17_node_t *)ifj17_binary_op_node_new(op, node, right, line);
     } else {
-      error("missing right-hand expression", SYNTAX_ERROR);
+      return error("missing right-hand expression", SYNTAX_ERROR);
     }
   }
   return node;
@@ -469,8 +467,7 @@ static ifj17_node_t *relational_expr(ifj17_parser_t *self) {
     if (right = shift_expr(self)) {
       node = (ifj17_node_t *)ifj17_binary_op_node_new(op, node, right, line);
     } else {
-      error("missing right-hand expression", SYNTAX_ERROR);
-      exit(self->err_code);
+      return error("missing right-hand expression", SYNTAX_ERROR);
     }
   }
   return node;
@@ -494,8 +491,7 @@ static ifj17_node_t *equality_expr(ifj17_parser_t *self) {
     if (right = relational_expr(self)) {
       node = (ifj17_node_t *)ifj17_binary_op_node_new(op, node, right, line);
     } else {
-      error("missing right-hand expression", SYNTAX_ERROR);
-      exit(self->err_code);
+      return error("missing right-hand expression", SYNTAX_ERROR);
     }
   }
   return node;
@@ -517,7 +513,7 @@ static ifj17_node_t *bitwise_and_expr(ifj17_parser_t *self) {
       node = (ifj17_node_t *)ifj17_binary_op_node_new(IFJ17_TOKEN_OP_BIT_AND, node,
                                                       right, line);
     } else {
-      error("missing right-hand expression", SYNTAX_ERROR);
+      return error("missing right-hand expression", SYNTAX_ERROR);
     }
   }
   return node;
@@ -539,7 +535,7 @@ static ifj17_node_t *bitwise_xor_expr(ifj17_parser_t *self) {
       node = (ifj17_node_t *)ifj17_binary_op_node_new(IFJ17_TOKEN_OP_BIT_XOR, node,
                                                       right, line);
     } else {
-      error("missing right-hand expression", SYNTAX_ERROR);
+      return error("missing right-hand expression", SYNTAX_ERROR);
     }
   }
   return node;
@@ -561,7 +557,7 @@ static ifj17_node_t *bitswise_or_expr(ifj17_parser_t *self) {
       node = (ifj17_node_t *)ifj17_binary_op_node_new(IFJ17_TOKEN_OP_BIT_OR, node,
                                                       right, line);
     } else {
-      error("missing right-hand expression", SYNTAX_ERROR);
+      return error("missing right-hand expression", SYNTAX_ERROR);
     }
   }
   return node;
@@ -583,7 +579,7 @@ static ifj17_node_t *logical_and_expr(ifj17_parser_t *self) {
       node = (ifj17_node_t *)ifj17_binary_op_node_new(IFJ17_TOKEN_OP_AND, node,
                                                       right, line);
     } else {
-      error("missing right-hand expression", SYNTAX_ERROR);
+      return error("missing right-hand expression", SYNTAX_ERROR);
     }
   }
   return node;
@@ -607,7 +603,7 @@ static ifj17_node_t *logical_or_expr(ifj17_parser_t *self) {
       node = (ifj17_node_t *)ifj17_binary_op_node_new(IFJ17_TOKEN_OP_OR, node, right,
                                                       line);
     } else {
-      error("missing right-hand expression", SYNTAX_ERROR);
+      return error("missing right-hand expression", SYNTAX_ERROR);
     }
   }
 
@@ -653,7 +649,7 @@ static ifj17_vec_t *function_params(ifj17_parser_t *self) {
     } else {
       // if there isn't a value we need a type
       if (!decl->type)
-       error("expecting type", SYNTAX_ERROR);
+       return error("expecting 'type'", SYNTAX_ERROR);
       param = ifj17_node((ifj17_node_t *)decl);
     }
     ifj17_vec_push(params, param);
@@ -711,11 +707,11 @@ static ifj17_node_t *slot_access_expr(ifj17_parser_t *self, ifj17_node_t *left) 
     ifj17_node_t *right;
 
     if (!(right = expr(self))) {
-      error("missing index in subscript", SYNTAX_ERROR);
+      return error("missing index in subscript", SYNTAX_ERROR);
     }
     context("subscript");
     if (!accept(RBRACK))
-      error("missing closing ']'", SYNTAX_ERROR);
+      return error("missing closing ']'", SYNTAX_ERROR);
     left = (ifj17_node_t *)ifj17_subscript_node_new(left, right, line);
     return call_expr(self, left);
   }
@@ -724,7 +720,7 @@ static ifj17_node_t *slot_access_expr(ifj17_parser_t *self, ifj17_node_t *left) 
   while (accept(OP_DOT)) {
     context("slot access");
     if (!is(ID))
-      error("expecting identifier", SYNTAX_ERROR);
+     return error("expecting 'identifier'", SYNTAX_ERROR);
     ifj17_node_t *id =
         (ifj17_node_t *)ifj17_id_node_new(self->tok->value.as_string, lineno);
     next;
@@ -787,7 +783,7 @@ ifj17_args_node_t *call_args(ifj17_parser_t *self) {
         context("keyword argument");
 
         if (node->type != IFJ17_NODE_STRING && node->type != IFJ17_NODE_ID) {
-          error("expecting string or identifier as key", SYNTAX_ERROR);
+         return error("expecting string or identifier as key", SYNTAX_ERROR);
         }
 
         ifj17_node_t *val = expr(self);
@@ -833,7 +829,7 @@ static ifj17_node_t *call_expr(ifj17_parser_t *self, ifj17_node_t *left) {
     if (!is(RPAREN)) {
       call->args = call_args(self);
       if (!is(RPAREN))
-        error("missing closing ')'", SYNTAX_ERROR);
+        return error("missing closing ')'", SYNTAX_ERROR);
     }
     next;
     left = (ifj17_node_t *)call;
@@ -867,14 +863,14 @@ static ifj17_node_t *dim_expr(ifj17_parser_t *self) {
 
     context("dim expression");
     if (!decl) {
-      error("expecting declaration", SYNTAX_ERROR);
+      return error("expecting declaration", SYNTAX_ERROR);
     }
 
     // '='
     if (accept(OP_ASSIGN)) {
       val = expr(self);
       if (!val)
-        error("expecting declaration initializer", SYNTAX_ERROR);
+        return error("expecting declaration initializer", SYNTAX_ERROR);
     }
 
     ifj17_node_t *bin = (ifj17_node_t *)ifj17_binary_op_node_new(
@@ -981,7 +977,7 @@ static ifj17_node_t *type_stmt(ifj17_parser_t *self) {
 
   // id
   if (!is(ID)) {
-   error("missing type name", SYNTAX_ERROR);
+   return error("missing type name", SYNTAX_ERROR);
   }
 
   const char *name = self->tok->value.as_string;
@@ -995,7 +991,7 @@ static ifj17_node_t *type_stmt(ifj17_parser_t *self) {
   do {
     ifj17_node_t *decl = decl_expr(self, true);
     if (!decl)
-     error("expecting field", SYNTAX_ERROR);
+     return error("expecting field", SYNTAX_ERROR);
     // semicolon might have been inserted here
     accept(SEMICOLON);
 
@@ -1023,9 +1019,10 @@ static ifj17_node_t *function_stmt(ifj17_parser_t *self) {
   }
 
   // id
-  if (!is(ID))
-    error("missing function name", SYNTAX_ERROR);
-
+  if (!is(ID)){
+    return error("missing function name", SYNTAX_ERROR);
+  }
+  
   const char *name = self->tok->value.as_string;
   next;
 
@@ -1039,7 +1036,7 @@ static ifj17_node_t *function_stmt(ifj17_parser_t *self) {
     context("function");
 
     if (!accept(RPAREN)) {
-      error("missing closing ')'", SYNTAX_ERROR);
+      return error("missing closing ')'", SYNTAX_ERROR);
     }
   } else {
     params = ifj17_vec_new();
@@ -1052,7 +1049,7 @@ static ifj17_node_t *function_stmt(ifj17_parser_t *self) {
     type = type_expr(self); // ????
 
     if (!type)
-      error("missing type after ':'", SYNTAX_ERROR);
+     return error("missing type after ':'", SYNTAX_ERROR);
   }
 
   // semicolon might have been inserted here
