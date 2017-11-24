@@ -434,6 +434,22 @@ static void unit_test_scope_with_body() {
                "test/parser/scope/declaration/with-body.out");
 }
 
+// IF/ELSE/ELSEIF conditions
+static void unit_test_single_if() {
+  _test_parser("test/parser/conditions/single-if.ifj17",
+               "test/parser/conditions/single-if.out");
+}
+
+static void unit_test_if_else() {
+  _test_parser("test/parser/conditions/if-else.ifj17",
+               "test/parser/conditions/if-else.out");
+}
+
+// static void unit_test_if_elseif() {
+//   _test_parser("test/parser/conditions/if-elseif.ifj17",
+//                "test/parser/conditions/if-elseif.out");
+// }
+
 // COMMENTS
 static void unit_test_comments_inline() {
   _test_parser("test/parser/comments/inline.ifj17",
@@ -533,6 +549,11 @@ int main(int argc, const char **argv) {
   // NOTE: Scope tests
   unit_test(scope_empty_declaration);
   unit_test(scope_with_body);
+
+  // NOTE: Conditions test
+  unit_test(single_if);
+  unit_test(if_else);
+  // unit_test(if_elseif);
 
   // unit_test(subscript);
   // unit_test(return );
