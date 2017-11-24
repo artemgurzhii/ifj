@@ -17,6 +17,7 @@
 typedef struct {
   char *ctx;
   char *err;
+  int exit_code;
   int in_args;
   ifj17_token_t *tok;
   ifj17_lexer_t *lex;
