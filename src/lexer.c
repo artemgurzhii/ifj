@@ -411,7 +411,7 @@ scan:
     default:
       return undo, token(OP_GT);
     }
-  case '#':
+  case '\'':
     while ((c = next) != '\n' && c)
       ;
     undo;
@@ -426,7 +426,6 @@ scan:
     ++self->lineno;
     goto scan;
   case '"':
-  case '\'':
     return scan_string(self, c);
   case 0:
     token(EOS);
