@@ -125,6 +125,8 @@ static int scan_ident(ifj17_lexer_t *self, int c) {
   case 5:
     if (strcmp("while", buf) == 0)
       return token(WHILE);
+    if (strcmp("scope", buf) == 0)
+      return token(SCOPE);
     break;
   case 8:
     if (strcmp("function", buf) == 0)

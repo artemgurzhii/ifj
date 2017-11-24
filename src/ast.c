@@ -319,6 +319,28 @@ ifj17_hash_node_t *ifj17_hash_node_new(int lineno) {
   return self;
 }
 
+// TODO: Comments
+/*
+ * Alloc and initialize a new scope
+ */
+
+ifj17_scope_node_t *ifj17_scope_node_new(ifj17_block_node_t *block, int lineno) {
+  ifj17_scope_node_t *self = malloc(sizeof(ifj17_scope_node_t));
+  if (unlikely(!self)) {
+    return NULL;
+  }
+
+  self->base.type = IFJ17_NODE_SCOPE;
+  self->base.lineno = lineno;
+  self->block = block;
+
+  if (unlikely(!self->block)) {
+    return NULL;
+  }
+
+  return self;
+}
+
 /*
  * Alloc and initialize a new function node with the given `name`,
  * `type`, `block` of statements and `params`.

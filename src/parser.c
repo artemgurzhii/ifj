@@ -996,6 +996,29 @@ static ifj17_node_t *type_stmt(ifj17_parser_t *self) {
 }
 
 /*
+ * 'scope' expr block
+ */
+
+static ifj17_node_t *scope_stmt(ifj17_parser_t *self) {
+  ifj17_block_node_t *body;
+  int line = lineno;
+  debug("scope_stmt");
+  context("scope statement");
+
+  // 'scope'
+  if (!accept(SCOPE)) {
+    return NULL;
+  }
+
+  // block
+  if (body = block(self, false)) {
+    return (ifj17_node_t *)ifj17_scope_node_new(body, line);
+  }
+
+  return NULL;
+}
+
+/*
  * 'function' id '(' args? ')' (':' type_expr)? block
  */
 
@@ -1197,6 +1220,7 @@ static ifj17_node_t *return_stmt(ifj17_parser_t *self) {
  *   if_stmt
  * | while_stmt
  * | return_stmt
+ * | scope_stmts
  * | function_stmt
  * | type_stmt
  * | expr
@@ -1215,6 +1239,10 @@ static ifj17_node_t *stmt(ifj17_parser_t *self) {
 
   if (is(RETURN)) {
     return return_stmt(self);
+  }
+
+  if (is(SCOPE)) {
+    return scope_stmt(self);
   }
 
   if (is(FUNCTION)) {

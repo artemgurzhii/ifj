@@ -21,6 +21,7 @@
   t(DOUBLE, "double") \
   t(STRING, "string") \
   t(FUNCTION, "function") \
+  t(SCOPE, "scope") \
   t(TYPE, "type") \
   t(AS, "as") \
   t(WHILE, "while") \
