@@ -3,7 +3,7 @@ function factorial(n as integer) as integer
   dim decremented_n as integer
   dim result as integer
 
-  if n < 2
+  if n < 2 then
     result = 1
   else
     decremented_n = n - 1
