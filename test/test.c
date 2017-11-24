@@ -447,6 +447,17 @@ static void integration_test_function_initialization() {
 // static void test_err_rparen(){
 //   _test_parser("test/parser/err_parser/function_stmt/rparen.ifj", "test/parser/err_parser/function_stmt/rparen.out");
 // }
+// static void test_err_chr(){
+//    _test_parser("test/lexer/error_chr.ifj", "test/lexer/error_chr.out");
+// }
+//
+// static void test_err_hex(){
+//    _test_parser("test/lexer/hex/error_hex.ifj", "test/lexer/hex/error_hex.out");
+// }
+//
+// static void test_err_hex1(){
+//    _test_parser("test/lexer/hex/error_hex1.ifj", "test/lexer/hex/error_hex1.out");
+// }
 
 /*
  * Run all test suites.
@@ -488,6 +499,10 @@ int main(int argc, const char **argv) {
   // test(subscript);
   // test(declaration);
   // test(return );
+  
+  // test(err_chr);
+  // test(err_hex);
+  // test(err_hex1);
   
   // test(err_expr);
   // test(err_paren_expr);
