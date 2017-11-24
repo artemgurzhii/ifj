@@ -1,0 +1,3 @@
+(do while(> (id a) (int 0))
+  (= (id vysl) (* (id vysl) (id a)))
+  (= (id a) (- (id a) (int a))))
