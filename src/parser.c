@@ -85,7 +85,7 @@ void ifj17_parser_init(ifj17_parser_t *self, ifj17_lexer_t *lex) {
   self->tok = NULL;
   self->ctx = NULL;
   self->err = NULL;
-  self->err_code = 0;
+  self->exit_code= 0;
   self->in_args = 0;
 }
 
