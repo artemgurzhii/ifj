@@ -517,10 +517,42 @@ static void unit_test_escape_line_break() {
                "test/unit/parser/string/escape-line-break.out");
 }
 
+// CASE insensitive
+
+static void unit_test_case_insensitive_variable_declaration() {
+  _test_parser("test/unit/parser/case-insensitive/variable-declaration.ifj17",
+               "test/unit/parser/case-insensitive/variable-declaration.out");
+}
+
+static void unit_test_case_insensitive_if_elseif_else() {
+  _test_parser("test/unit/parser/case-insensitive/if-elseif-else.ifj17",
+               "test/unit/parser/case-insensitive/if-elseif-else.out");
+}
+
+static void unit_test_case_insensitive_function_declaration_with_body() {
+  _test_parser("test/unit/parser/case-insensitive/function-with-body.ifj17",
+               "test/unit/parser/case-insensitive/function-with-body.out");
+}
+
+static void unit_test_case_insensitive_scope_with_body() {
+  _test_parser("test/unit/parser/case-insensitive/scope-with-body.ifj17",
+               "test/unit/parser/case-insensitive/scope-with-body.out");
+}
+
+static void unit_test_case_insensitive_string() {
+  _test_parser("test/unit/parser/case-insensitive/string.ifj17",
+               "test/unit/parser/case-insensitive/string.out");
+}
+
 // NOTE: INTEGRATION TESTS
 static void integration_test_factorial() {
   _test_parser("test/integration/parser/factorial.ifj17",
                "test/integration/parser/factorial.out");
+}
+
+static void integration_test_case_insensitive_factorial() {
+  _test_parser("test/integration/parser/case-insensitive-factorial.ifj17",
+               "test/integration/parser/case-insensitive-factorial.out");
 }
 
 
@@ -606,6 +638,12 @@ int main(int argc, const char **argv) {
   unit_test(simple_string);
   unit_test(escape_line_break);
 
+  // NOTE: Case insensitive
+  unit_test(case_insensitive_variable_declaration);
+  unit_test(case_insensitive_if_elseif_else);
+  unit_test(case_insensitive_function_declaration_with_body);
+  unit_test(case_insensitive_scope_with_body);
+  unit_test(case_insensitive_string);
   // unit_test(subscript);
   // unit_test(return );
 
@@ -613,6 +651,7 @@ int main(int argc, const char **argv) {
 
   suite("parser");
   integration_test(factorial);
+  integration_test(case_insensitive_factorial);
 
   printf("\n");
   printf("  \e[90mcompleted in \e[32m%.5fs\e[0m\n",
