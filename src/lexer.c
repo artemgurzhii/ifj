@@ -166,12 +166,12 @@ static int hex_literal(ifj17_lexer_t *self) {
  * Scan string.
  */
 
-static int scan_string(ifj17_lexer_t *self, int quote) {
+static int scan_string(ifj17_lexer_t *self) {
   int c, len = 0;
   char buf[128];
   token(STRING);
 
-  while (quote != (c = next)) {
+  while ('"' != (c = next)) {
     switch (c) {
     case '\n':
       ++self->lineno;
