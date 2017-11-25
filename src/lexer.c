@@ -96,6 +96,11 @@ static int scan_ident(ifj17_lexer_t *self, int c) {
   } while (isalpha(c = next) || isdigit(c) || '_' == c);
   undo;
 
+  // transform all keywords to the lower case
+  for (unsigned int i = 0; buf[i]; i++) {
+    buf[i] = tolower(buf[i]);
+  }
+
   buf[len++] = 0;
   switch (len - 1) {
   case 2:
