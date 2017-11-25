@@ -1,0 +1,3 @@
+(scope ->
+  (function foo -> (id string)
+))
