@@ -1,3 +1,3 @@
-dim foo as string = "hello"
+dim foo as string = !"hello"
 
-dim  bar  as  string  =  "world"
+dim  bar  as  string  =  !"world"

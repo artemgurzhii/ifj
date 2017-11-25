@@ -460,6 +460,7 @@ static void unit_test_comments_without_spaces() {
                "test/parser/comments/without-spaces.out");
 }
 
+// CONDITIONS
 static void unit_test_if_single() {
   _test_parser("test/parser/conditions/if-single.ifj17",
                "test/parser/conditions/if-single.out");
@@ -480,13 +481,49 @@ static void unit_test_if_elseif_else() {
                "test/parser/conditions/if-elseif-else.out");
 }
 
+// STRINGS
+static void unit_test_empty_string() {
+  _test_parser("test/parser/string/empty-string.ifj17",
+               "test/parser/string/empty-string.out");
+}
+
+static void unit_test_escape_new_line() {
+  _test_parser("test/parser/string/escape-new-line.ifj17",
+               "test/parser/string/escape-new-line.out");
+}
+
+static void unit_test_escape_quote() {
+  _test_parser("test/parser/string/escape-quote.ifj17",
+               "test/parser/string/escape-quote.out");
+}
+
+static void unit_test_escape_sequence() {
+  _test_parser("test/parser/string/escape-sequence.ifj17",
+               "test/parser/string/escape-sequence.out");
+}
+
+static void unit_test_simple_string() {
+  _test_parser("test/parser/string/simple-string.ifj17",
+               "test/parser/string/simple-string.out");
+}
+
+static void unit_test_long_string() {
+  _test_parser("test/parser/string/long-string.ifj17",
+               "test/parser/string/long-string.out");
+}
+
+static void unit_test_escape_line_break() {
+  _test_parser("test/parser/string/escape-line-break.ifj17",
+               "test/parser/string/escape-line-break.out");
+}
+
 // NOTE: INTEGRATION TESTS
 static void integration_test_factorial() {
   _test_parser("test/integration/parser/factorial.ifj17",
                "test/integration/parser/factorial.out");
 }
 
-//
+
 // static void unit_test_subscript() {
 //   _test_parser("test/parser/subscript.ifj17", "test/parser/subscript.out");
 // }
@@ -559,6 +596,15 @@ int main(int argc, const char **argv) {
   unit_test(if_else);
   unit_test(if_elseif);
   unit_test(if_elseif_else);
+
+  // NOTE: String test
+  unit_test(empty_string);
+  unit_test(escape_new_line);
+  unit_test(escape_quote);
+  unit_test(escape_sequence);
+  // unit_test(long_string);
+  unit_test(simple_string);
+  unit_test(escape_line_break);
 
   // unit_test(subscript);
   // unit_test(return );
