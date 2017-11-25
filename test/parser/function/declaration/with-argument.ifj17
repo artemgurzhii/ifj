@@ -1,2 +1,2 @@
 function foo(bar as string) as string
-end
+end function

@@ -9,7 +9,7 @@ function factorial(n as integer) as integer
     decremented_n = n - 1
     temp_result = factorial(decremented_n)
     result = n * temp_result
-  end
+  end if
 
   return result
-end
+end function
