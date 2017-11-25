@@ -171,12 +171,12 @@ static int hex_literal(ifj17_lexer_t *self) {
  * Scan string.
  */
 
-static int scan_string(ifj17_lexer_t *self, int quote) {
+static int scan_string(ifj17_lexer_t *self) {
   int c, len = 0;
   char buf[128];
   token(STRING);
 
-  while (quote != (c = next)) {
+  while ('"' != (c = next)) {
     switch (c) {
     case '\n':
       ++self->lineno;
@@ -389,7 +389,15 @@ scan:
   case '/':
     return '=' == next ? token(OP_DIV_ASSIGN) : (undo, token(OP_DIV));
   case '!':
-    return '=' == next ? token(OP_NEQ) : (undo, token(OP_NOT));
+    //return '"' == next ? token(OP_NEQ) : (undo, token(OP_NOT));
+    if ('=' == next) {
+      return token(OP_NEQ);
+    }
+    undo;
+    if ('"' == next) {
+      return scan_string(self);
+    }
+    return (undo, token(OP_NOT));
   case '=':
     return '=' == next ? token(OP_EQ) : (undo, token(OP_ASSIGN));
   case '&':
@@ -438,8 +446,6 @@ scan:
     }
     ++self->lineno;
     goto scan;
-  case '"':
-    return scan_string(self, c);
   case 0:
     token(EOS);
     return 0;
