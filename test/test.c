@@ -378,143 +378,143 @@ static void _test_parser(const char *source_path, const char *out_path) {
 // NOTE: UNIT TESTS
 // VARIABLES
 static void unit_test_variable_declaration() {
-  _test_parser("test/parser/variables/declaration.ifj17",
-               "test/parser/variables/declaration.out");
+  _test_parser("test/unit/parser/variables/declaration.ifj17",
+               "test/unit/parser/variables/declaration.out");
 }
 
 static void unit_test_variable_declaration_and_assignment() {
-  _test_parser("test/parser/variables/declaration-and-assignment.ifj17",
-               "test/parser/variables/declaration-and-assignment.out");
+  _test_parser("test/unit/parser/variables/declaration-and-assignment.ifj17",
+               "test/unit/parser/variables/declaration-and-assignment.out");
 }
 
 static void unit_test_variable_assign() {
-  _test_parser("test/parser/variables/assign.ifj17",
-               "test/parser/variables/assign.out");
+  _test_parser("test/unit/parser/variables/assign.ifj17",
+               "test/unit/parser/variables/assign.out");
 }
 
 static void unit_test_variable_assign_chain() {
-  _test_parser("test/parser/variables/assign-chain.ifj17",
-               "test/parser/variables/assign-chain.out");
+  _test_parser("test/unit/parser/variables/assign-chain.ifj17",
+               "test/unit/parser/variables/assign-chain.out");
 }
 
 // FUNCTIONS
 static void unit_test_function_declaration_without_arguments() {
-  _test_parser("test/parser/function/declaration/without-arguments.ifj17",
-               "test/parser/function/declaration/without-arguments.out");
+  _test_parser("test/unit/parser/function/declaration/without-arguments.ifj17",
+               "test/unit/parser/function/declaration/without-arguments.out");
 }
 
 static void unit_test_function_declaration_with_argument() {
-  _test_parser("test/parser/function/declaration/with-argument.ifj17",
-               "test/parser/function/declaration/with-argument.out");
+  _test_parser("test/unit/parser/function/declaration/with-argument.ifj17",
+               "test/unit/parser/function/declaration/with-argument.out");
 }
 
 static void unit_test_function_declaration_with_arguments() {
-  _test_parser("test/parser/function/declaration/with-arguments.ifj17",
-               "test/parser/function/declaration/with-arguments.out");
+  _test_parser("test/unit/parser/function/declaration/with-arguments.ifj17",
+               "test/unit/parser/function/declaration/with-arguments.out");
 }
 
 static void unit_test_function_declaration_with_body() {
-  _test_parser("test/parser/function/declaration/with-body.ifj17",
-               "test/parser/function/declaration/with-body.out");
+  _test_parser("test/unit/parser/function/declaration/with-body.ifj17",
+               "test/unit/parser/function/declaration/with-body.out");
 }
 
 static void unit_test_function_initialization_with_return() {
-  _test_parser("test/parser/function/initialization/with-return.ifj17",
-               "test/parser/function/initialization/with-return.out");
+  _test_parser("test/unit/parser/function/initialization/with-return.ifj17",
+               "test/unit/parser/function/initialization/with-return.out");
 }
 
 // SCOPE
 static void unit_test_scope_empty_declaration() {
-  _test_parser("test/parser/scope/declaration/empty.ifj17",
-               "test/parser/scope/declaration/empty.out");
+  _test_parser("test/unit/parser/scope/declaration/empty.ifj17",
+               "test/unit/parser/scope/declaration/empty.out");
 }
 
 static void unit_test_scope_with_body() {
-  _test_parser("test/parser/scope/declaration/with-body.ifj17",
-               "test/parser/scope/declaration/with-body.out");
+  _test_parser("test/unit/parser/scope/declaration/with-body.ifj17",
+               "test/unit/parser/scope/declaration/with-body.out");
 }
 
 // COMMENTS
 static void unit_test_comments_inline() {
-  _test_parser("test/parser/comments/inline.ifj17",
-               "test/parser/comments/inline.out");
+  _test_parser("test/unit/parser/comments/inline.ifj17",
+               "test/unit/parser/comments/inline.out");
 }
 
 static void unit_test_comments_multiline_with_code() {
-  _test_parser("test/parser/comments/multiline-with-code.ifj17",
-               "test/parser/comments/multiline-with-code.out");
+  _test_parser("test/unit/parser/comments/multiline-with-code.ifj17",
+               "test/unit/parser/comments/multiline-with-code.out");
 }
 
 static void unit_test_comments_multiline_only_comments() {
-  _test_parser("test/parser/comments/multiline-only-comments.ifj17",
-               "test/parser/comments/multiline-only-comments.out");
+  _test_parser("test/unit/parser/comments/multiline-only-comments.ifj17",
+               "test/unit/parser/comments/multiline-only-comments.out");
 }
 
 static void unit_test_comments_only_comments() {
-  _test_parser("test/parser/comments/only-comments.ifj17",
-               "test/parser/comments/only-comments.out");
+  _test_parser("test/unit/parser/comments/only-comments.ifj17",
+               "test/unit/parser/comments/only-comments.out");
 }
 
 static void unit_test_comments_without_spaces() {
-  _test_parser("test/parser/comments/without-spaces.ifj17",
-               "test/parser/comments/without-spaces.out");
+  _test_parser("test/unit/parser/comments/without-spaces.ifj17",
+               "test/unit/parser/comments/without-spaces.out");
 }
 
 // CONDITIONS
 static void unit_test_if_single() {
-  _test_parser("test/parser/conditions/if-single.ifj17",
-               "test/parser/conditions/if-single.out");
+  _test_parser("test/unit/parser/conditions/if-single.ifj17",
+               "test/unit/parser/conditions/if-single.out");
 }
 
 static void unit_test_if_else() {
-  _test_parser("test/parser/conditions/if-else.ifj17",
-               "test/parser/conditions/if-else.out");
+  _test_parser("test/unit/parser/conditions/if-else.ifj17",
+               "test/unit/parser/conditions/if-else.out");
 }
 
 static void unit_test_if_elseif() {
-  _test_parser("test/parser/conditions/if-elseif.ifj17",
-               "test/parser/conditions/if-elseif.out");
+  _test_parser("test/unit/parser/conditions/if-elseif.ifj17",
+               "test/unit/parser/conditions/if-elseif.out");
 }
 
 static void unit_test_if_elseif_else() {
-  _test_parser("test/parser/conditions/if-elseif-else.ifj17",
-               "test/parser/conditions/if-elseif-else.out");
+  _test_parser("test/unit/parser/conditions/if-elseif-else.ifj17",
+               "test/unit/parser/conditions/if-elseif-else.out");
 }
 
 // STRINGS
 static void unit_test_empty_string() {
-  _test_parser("test/parser/string/empty-string.ifj17",
-               "test/parser/string/empty-string.out");
+  _test_parser("test/unit/parser/string/empty-string.ifj17",
+               "test/unit/parser/string/empty-string.out");
 }
 
 static void unit_test_escape_new_line() {
-  _test_parser("test/parser/string/escape-new-line.ifj17",
-               "test/parser/string/escape-new-line.out");
+  _test_parser("test/unit/parser/string/escape-new-line.ifj17",
+               "test/unit/parser/string/escape-new-line.out");
 }
 
 static void unit_test_escape_quote() {
-  _test_parser("test/parser/string/escape-quote.ifj17",
-               "test/parser/string/escape-quote.out");
+  _test_parser("test/unit/parser/string/escape-quote.ifj17",
+               "test/unit/parser/string/escape-quote.out");
 }
 
 static void unit_test_escape_sequence() {
-  _test_parser("test/parser/string/escape-sequence.ifj17",
-               "test/parser/string/escape-sequence.out");
+  _test_parser("test/unit/parser/string/escape-sequence.ifj17",
+               "test/unit/parser/string/escape-sequence.out");
 }
 
 static void unit_test_simple_string() {
-  _test_parser("test/parser/string/simple-string.ifj17",
-               "test/parser/string/simple-string.out");
+  _test_parser("test/unit/parser/string/simple-string.ifj17",
+               "test/unit/parser/string/simple-string.out");
 }
 
 static void unit_test_long_string() {
-  _test_parser("test/parser/string/long-string.ifj17",
-               "test/parser/string/long-string.out");
+  _test_parser("test/unit/parser/string/long-string.ifj17",
+               "test/unit/parser/string/long-string.out");
 }
 
 static void unit_test_escape_line_break() {
-  _test_parser("test/parser/string/escape-line-break.ifj17",
-               "test/parser/string/escape-line-break.out");
+  _test_parser("test/unit/parser/string/escape-line-break.ifj17",
+               "test/unit/parser/string/escape-line-break.out");
 }
 
 // NOTE: INTEGRATION TESTS
@@ -525,11 +525,11 @@ static void integration_test_factorial() {
 
 
 // static void unit_test_subscript() {
-//   _test_parser("test/parser/subscript.ifj17", "test/parser/subscript.out");
+//   _test_parser("test/unit/parser/subscript.ifj17", "test/unit/parser/subscript.out");
 // }
 //
 // static void unit_test_return() {
-//   _test_parser("test/parser/return.ifj17", "test/parser/return.out");
+//   _test_parser("test/unit/parser/return.ifj17", "test/unit/parser/return.out");
 // }
 
 /*
