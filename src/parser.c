@@ -1030,7 +1030,7 @@ static ifj17_node_t *func_declare(ifj17_parser_t *self) {
 
   debug("function_decl");
 
-  if (!accept(DECLARE)){
+  if (!accept(DECLARE)) {
     return NULL;
   }
 
@@ -1077,7 +1077,7 @@ static ifj17_node_t *func_declare(ifj17_parser_t *self) {
   // semicolon might have been inserted here
   accept(SEMICOLON);
 
-  return (ifj17_node_t *)ifj17_func_declare_node_new(name, type, params, line);
+  return (ifj17_node_t *)ifj17_declare_node_new(name, type, params, line);
 }
 
 /*
@@ -1312,7 +1312,7 @@ static ifj17_node_t *stmt(ifj17_parser_t *self) {
     return scope_stmt(self);
   }
 
-  if(is(DECLARE)) {
+  if (is(DECLARE)) {
     return func_declare(self);
   }
 

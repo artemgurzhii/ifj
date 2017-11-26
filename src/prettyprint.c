@@ -331,10 +331,12 @@ static void visit_scope(ifj17_visitor_t *self, ifj17_scope_node_t *node) {
   print_func(")");
 }
 
-static void visit_func_declare(ifj17_visitor_t *self, ifj17_func_declare_node_t *node) {
-  print_func("(declare \n");
-  print_func("  (function %s -> ", node->name);
+static void visit_declare(ifj17_visitor_t *self, ifj17_declare_node_t *node) {
+  print_func("(declare");
+  print_func("\n");
   ++indents;
+  INDENT;
+  print_func("(function %s -> ", node->name);
 
   if (node->type) {
     visit(node->type);
@@ -342,13 +344,13 @@ static void visit_func_declare(ifj17_visitor_t *self, ifj17_func_declare_node_t 
 
   ifj17_vec_each(node->params, {
     print_func("\n");
+    ++indents;
     INDENT;
     visit((ifj17_node_t *)val->value.as_pointer);
+    --indents;
   });
   --indents;
-  print_func("\n");
-  ++indents;
-  print_func(")");
+  print_func("))");
 }
 
 /*
@@ -482,7 +484,7 @@ void ifj17_prettyprint(ifj17_node_t *node) {
                              .visit_double = visit_double,
                              .visit_string = visit_string,
                              .visit_return = visit_return,
-                             .visit_func_declare = visit_func_declare,
+                             .visit_declare = visit_declare,
                              .visit_function = visit_function,
                              .visit_scope = visit_scope,
                              .visit_unary_op = visit_unary_op,

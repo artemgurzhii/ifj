@@ -29,7 +29,6 @@
   n(NULL) \
   n(ID) \
   n(DECL) \
-  n(FUNC_DECLARE) \
   n(DIM) \
   n(CALL) \
   n(ARGS) \
@@ -40,6 +39,7 @@
   n(HASH_PAIR) \
   n(HASH) \
   n(FUNCTION) \
+  n(DECLARE) \
   n(SCOPE) \
   n(TYPE) \
   n(SLOT) \
@@ -236,7 +236,7 @@ typedef struct {
   const char *name;
   ifj17_node_t *type;
   ifj17_vec_t *params;
-} ifj17_func_declare_node_t;
+} ifj17_declare_node_t;
 
 /*
  * IFJ17 function node.
@@ -299,7 +299,7 @@ ifj17_block_node_t *ifj17_block_node_new(int lineno);
 
 ifj17_scope_node_t *ifj17_scope_node_new(ifj17_block_node_t *block, int lineno);
 
-ifj17_func_declare_node_t *ifj17_func_declare_node_new(const char *name, ifj17_node_t *type,
+ifj17_declare_node_t *ifj17_declare_node_new(const char *name, ifj17_node_t *type,
                                                       ifj17_vec_t *params, int lineno);
 
 ifj17_function_node_t *ifj17_function_node_new(const char *name, ifj17_node_t *type,
