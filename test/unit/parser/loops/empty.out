@@ -1,0 +1,2 @@
+(while (> (id foo) (int 0))
+)
