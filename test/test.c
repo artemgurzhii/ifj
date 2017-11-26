@@ -544,6 +544,17 @@ static void unit_test_case_insensitive_string() {
                "test/unit/parser/case-insensitive/string.out");
 }
 
+// LOOPS
+static void unit_test_do_while_empty() {
+  _test_parser("test/unit/parser/loops/empty.ifj17",
+               "test/unit/parser/loops/empty.out");
+}
+
+static void unit_test_do_while_with_body() {
+  _test_parser("test/unit/parser/loops/with-body.ifj17",
+               "test/unit/parser/loops/with-body.out");
+}
+
 // NOTE: INTEGRATION TESTS
 static void integration_test_factorial() {
   _test_parser("test/integration/parser/factorial.ifj17",
@@ -555,9 +566,9 @@ static void integration_test_case_insensitive_factorial() {
                "test/integration/parser/case-insensitive-factorial.out");
 }
 
-
 // static void unit_test_subscript() {
-//   _test_parser("test/unit/parser/subscript.ifj17", "test/unit/parser/subscript.out");
+//   _test_parser("test/unit/parser/subscript.ifj17",
+//   "test/unit/parser/subscript.out");
 // }
 //
 // static void unit_test_return() {
@@ -629,6 +640,10 @@ int main(int argc, const char **argv) {
   unit_test(if_elseif);
   unit_test(if_elseif_else);
 
+  // NOTE: Loop tests
+  unit_test(do_while_empty);
+  unit_test(do_while_with_body);
+
   // NOTE: String test
   unit_test(empty_string);
   unit_test(escape_new_line);
@@ -638,7 +653,7 @@ int main(int argc, const char **argv) {
   unit_test(simple_string);
   unit_test(escape_line_break);
 
-  // NOTE: Case insensitive
+  // NOTE: Case insensitive tests
   unit_test(case_insensitive_variable_declaration);
   unit_test(case_insensitive_if_elseif_else);
   unit_test(case_insensitive_function_declaration_with_body);

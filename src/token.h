@@ -24,6 +24,8 @@
   t(SCOPE, "scope") \
   t(TYPE, "type") \
   t(AS, "as") \
+  t(DO, "do") \
+  t(LOOP, "loop") \
   t(WHILE, "while") \
   t(IF, "if") \
   t(THEN, "then") \

@@ -1,0 +1,4 @@
+do while bar > 0
+  foo = foo * bar
+  bar = bar - 1
+loop

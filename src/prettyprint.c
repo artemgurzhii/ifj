@@ -384,7 +384,7 @@ static void visit_while(ifj17_visitor_t *self, ifj17_while_node_t *node) {
   print_func("\n");
   visit((ifj17_node_t *)node->block);
   --indents;
-  print_func(")\n");
+  print_func(")");
 }
 
 /*

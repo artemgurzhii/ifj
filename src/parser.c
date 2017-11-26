@@ -1160,22 +1160,29 @@ static ifj17_node_t *while_stmt(ifj17_parser_t *self) {
   ifj17_node_t *cond;
   ifj17_block_node_t *body;
   int line = lineno;
-  debug("while_stmt");
+  debug("do_while_stmt");
 
-  // 'while'
-  if (!is(WHILE)) {
+  // 'do'
+  if (!accept(DO)) {
     return NULL;
   }
 
+  if (!accept(WHILE)) {
+    return error("missing 'while'");
+  }
+
   context("while statement condition");
-  next;
+
+  // BUG: From what I have seen in our language docs
+  // there is 2 ways of `do while` loop
+  // 1. do while ${condition}
+  // 1. do while ( ${condition} )
+  // Need to find out which is correct or both of them
 
   // expr
   if (!(cond = expr(self))) {
     return NULL;
   }
-
-  context("while statement");
 
   // semicolon might have been inserted here
   accept(SEMICOLON);
@@ -1199,8 +1206,9 @@ static ifj17_node_t *return_stmt(ifj17_parser_t *self) {
   context("return statement");
 
   // 'return'
-  if (!accept(RETURN))
+  if (!accept(RETURN)) {
     return NULL;
+  }
 
   // 'return' expr
   ifj17_node_t *node = NULL;
@@ -1209,6 +1217,7 @@ static ifj17_node_t *return_stmt(ifj17_parser_t *self) {
     if (!(node = expr(self)))
       return NULL;
   }
+
   return (ifj17_node_t *)ifj17_return_node_new(node, line);
 }
 
@@ -1229,7 +1238,7 @@ static ifj17_node_t *stmt(ifj17_parser_t *self) {
     return if_stmt(self);
   }
 
-  if (is(WHILE)) {
+  if (is(DO)) {
     return while_stmt(self);
   }
 
@@ -1264,12 +1273,14 @@ static ifj17_block_node_t *block(ifj17_parser_t *self, bool isFunctionBlock) {
   // If `end` keyword is received
   // We need to check if this is a `function statement` or any other
   // As `function statement` requires `end function` for function closing
-  if (accept(END)) {
+
+  if (accept(END) || accept(LOOP)) {
+
     // if (isFunctionBlock) {
     //   if (is(FUNCTION)) {
     //     return block;
     //   }
-    //
+    // }
     //   return error("missing closing statement");
     // } else {
     return block;
@@ -1281,10 +1292,11 @@ static ifj17_block_node_t *block(ifj17_parser_t *self, bool isFunctionBlock) {
       return NULL;
     }
 
+    // semicolon might have been inserted here
     accept(SEMICOLON);
 
     ifj17_vec_push(block->stmts, ifj17_node(node));
-  } while (!accept(END) && !is(ELSEIF) && !is(ELSE));
+  } while ((!accept(END) && !is(ELSEIF) && !is(ELSE)) && (!accept(LOOP)));
 
   return block;
 }
