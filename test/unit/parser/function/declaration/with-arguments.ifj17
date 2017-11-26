@@ -1,2 +1,1 @@
-function foo(bar as string, baz as integer) as string
-end
+declare function foo(bar as integer, baz as integer) as integer
