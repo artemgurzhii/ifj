@@ -1,2 +1,2 @@
 function foo() as string
-end
+end function

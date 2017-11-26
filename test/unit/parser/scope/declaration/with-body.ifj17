@@ -1,4 +1,4 @@
 scope
   function foo() as string
-  end
-end
+  end function
+end scope

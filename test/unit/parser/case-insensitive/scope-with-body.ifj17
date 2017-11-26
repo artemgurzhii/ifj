@@ -1,4 +1,4 @@
 scOPe
   fuNCTIon foo() as stRINg
-  eNd
-enD
+  eNd fuNCTIon
+enD scOPe
