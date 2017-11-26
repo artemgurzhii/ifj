@@ -423,6 +423,11 @@ static void unit_test_function_initialization_with_return() {
                "test/unit/parser/function/initialization/with-return.out");
 }
 
+static void unit_test_function_declaration_without_body(){
+  _test_parser("test/unit/parser/function/declaration/without-body.ifj17",
+               "test/unit/parser/function/declaration/without-body.out");
+}
+
 // SCOPE
 static void unit_test_scope_empty_declaration() {
   _test_parser("test/unit/parser/scope/declaration/empty.ifj17",
@@ -626,6 +631,7 @@ int main(int argc, const char **argv) {
   unit_test(function_declaration_with_argument);
   unit_test(function_declaration_with_arguments);
   unit_test(function_declaration_with_body);
+  unit_test(function_declaration_without_body);
 
   // Initialization
   unit_test(function_initialization_with_return);
