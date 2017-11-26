@@ -1,0 +1,6 @@
+(declare
+  (function foo -> (id integer)
+  (decl
+    (id n)
+    : (id integer))
+)

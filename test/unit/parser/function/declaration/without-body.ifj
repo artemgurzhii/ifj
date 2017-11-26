@@ -1,0 +1,1 @@
+Declare Function foo(n as integer) As Integer 
