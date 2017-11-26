@@ -145,6 +145,10 @@ static int scan_ident(ifj17_lexer_t *self, int c) {
     if (strcmp("return", buf) == 0)
       return token(RETURN);
     break;
+  case 7:
+    if (strcmp("declare", buf) == 0)
+      return token(DECLARE);
+    break;
   case 8:
     if (strcmp("function", buf) == 0)
       return token(FUNCTION);

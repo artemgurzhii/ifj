@@ -1019,6 +1019,68 @@ static ifj17_node_t *scope_stmt(ifj17_parser_t *self) {
 }
 
 /*
+ * Function declaration
+ */
+
+static ifj17_node_t *func_declare(ifj17_parser_t *self) {
+  // declare already consumed
+  ifj17_vec_t *params;
+  ifj17_node_t *type = NULL;
+  int line = lineno;
+
+  debug("function_decl");
+
+  if (!accept(DECLARE)){
+    return NULL;
+  }
+
+  context("function declaration");
+  // 'function'
+  if (!accept(FUNCTION)) {
+    return error("expecting 'function'");
+  }
+
+  // id
+  if (!is(ID)) {
+    return error("missing function name");
+  }
+
+  const char *name = self->tok->value.as_string;
+  next;
+
+  // '('
+  if (accept(LPAREN)) {
+    // params?
+    if (!(params = function_params(self)))
+      return NULL;
+
+    // ')'
+    context("function declaration");
+    if (!accept(RPAREN)) {
+      return error("missing closing ')'");
+    }
+  } else {
+    params = ifj17_vec_new();
+  }
+
+  context("function declaration");
+
+  // (':' type_expr)?
+  if (accept(AS)) {
+    type = type_expr(self);
+
+    if (!type) {
+      return error("missing type after ':'");
+    }
+  }
+
+  // semicolon might have been inserted here
+  accept(SEMICOLON);
+
+  return (ifj17_node_t *)ifj17_func_declare_node_new(name, type, params, line);
+}
+
+/*
  * 'function' id '(' args? ')' (':' type_expr)? block
  */
 
@@ -1248,6 +1310,10 @@ static ifj17_node_t *stmt(ifj17_parser_t *self) {
 
   if (is(SCOPE)) {
     return scope_stmt(self);
+  }
+
+  if(is(DECLARE)) {
+    return func_declare(self);
   }
 
   if (is(FUNCTION)) {
