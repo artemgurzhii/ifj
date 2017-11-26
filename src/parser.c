@@ -1261,16 +1261,19 @@ static ifj17_block_node_t *block(ifj17_parser_t *self) {
   ifj17_node_t *node;
   ifj17_block_node_t *block = ifj17_block_node_new(lineno);
 
-  // If `end` keyword is received
-  // We need to check if this is a `function statement` or any other
-  // As `function statement` requires `end function` for function closing
-  if (accept(END)) {
-    accept(FUNCTION) || accept(SCOPE) || accept(IF);
-
-    return block;
-  }
-
   do {
+    // if `ELSEIF` or `ELSE` break to return block
+    if (is(ELSEIF) || is(ELSE)) {
+      break;
+    }
+
+    // if `END` then after we can see `FUNCTION/SCOPE/IF`
+    if (accept(END)) {
+      accept(FUNCTION) || accept(SCOPE) || accept(IF);
+
+      break;
+    }
+
     if (!(node = stmt(self))) {
       return NULL;
     }
@@ -1278,8 +1281,7 @@ static ifj17_block_node_t *block(ifj17_parser_t *self) {
     accept(SEMICOLON);
 
     ifj17_vec_push(block->stmts, ifj17_node(node));
-  } while (!accept(END) && (!accept(FUNCTION) || !accept(IF) || !accept(SCOPE) ||
-                            !accept(ELSEIF) || !accept(ELSE)));
+  } while (true);
 
   return block;
 }
