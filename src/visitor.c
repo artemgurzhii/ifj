@@ -50,6 +50,8 @@ void ifj17_visit(ifj17_visitor_t *self, ifj17_node_t *node) {
     VISIT(unary_op);
   case IFJ17_NODE_BINARY_OP:
     VISIT(binary_op);
+  case IFJ17_NODE_DECLARE:
+    VISIT(declare);
   case IFJ17_NODE_FUNCTION:
     VISIT(function);
   case IFJ17_NODE_SCOPE:

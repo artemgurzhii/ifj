@@ -413,14 +413,24 @@ static void unit_test_function_declaration_with_arguments() {
                "test/unit/parser/function/declaration/with-arguments.out");
 }
 
-static void unit_test_function_declaration_with_body() {
-  _test_parser("test/unit/parser/function/declaration/with-body.ifj17",
-               "test/unit/parser/function/declaration/with-body.out");
+static void unit_test_function_initialization_without_arguments() {
+  _test_parser("test/unit/parser/function/initialization/without-arguments.ifj17",
+               "test/unit/parser/function/initialization/without-arguments.out");
 }
 
-static void unit_test_function_initialization_with_return() {
-  _test_parser("test/unit/parser/function/initialization/with-return.ifj17",
-               "test/unit/parser/function/initialization/with-return.out");
+static void unit_test_function_initialization_with_argument() {
+  _test_parser("test/unit/parser/function/initialization/with-argument.ifj17",
+               "test/unit/parser/function/initialization/with-argument.out");
+}
+
+static void unit_test_function_initialization_with_arguments() {
+  _test_parser("test/unit/parser/function/initialization/with-arguments.ifj17",
+               "test/unit/parser/function/initialization/with-arguments.out");
+}
+
+static void unit_test_function_initialization_with_body() {
+  _test_parser("test/unit/parser/function/initialization/with-body.ifj17",
+               "test/unit/parser/function/initialization/with-body.out");
 }
 
 // SCOPE
@@ -529,7 +539,7 @@ static void unit_test_case_insensitive_if_elseif_else() {
                "test/unit/parser/case-insensitive/if-elseif-else.out");
 }
 
-static void unit_test_case_insensitive_function_declaration_with_body() {
+static void unit_test_case_insensitive_function_initialization_with_body() {
   _test_parser("test/unit/parser/case-insensitive/function-with-body.ifj17",
                "test/unit/parser/case-insensitive/function-with-body.out");
 }
@@ -625,10 +635,12 @@ int main(int argc, const char **argv) {
   unit_test(function_declaration_without_arguments);
   unit_test(function_declaration_with_argument);
   unit_test(function_declaration_with_arguments);
-  unit_test(function_declaration_with_body);
 
   // Initialization
-  unit_test(function_initialization_with_return);
+  unit_test(function_initialization_without_arguments);
+  unit_test(function_initialization_with_argument);
+  unit_test(function_initialization_with_arguments);
+  unit_test(function_initialization_with_body);
 
   // NOTE: Scope tests
   unit_test(scope_empty_declaration);
@@ -656,7 +668,7 @@ int main(int argc, const char **argv) {
   // NOTE: Case insensitive tests
   unit_test(case_insensitive_variable_declaration);
   unit_test(case_insensitive_if_elseif_else);
-  unit_test(case_insensitive_function_declaration_with_body);
+  unit_test(case_insensitive_function_initialization_with_body);
   unit_test(case_insensitive_scope_with_body);
   unit_test(case_insensitive_string);
   // unit_test(subscript);

@@ -20,6 +20,7 @@
   t(INT, "int") \
   t(DOUBLE, "double") \
   t(STRING, "string") \
+  t(DECLARE, "declare") \
   t(FUNCTION, "function") \
   t(SCOPE, "scope") \
   t(TYPE, "type") \
