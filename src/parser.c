@@ -224,7 +224,7 @@ static ifj17_node_t *type_expr(ifj17_parser_t *self) {
  * id (',' id)* ':' type_expr
  */
 
-static ifj17_node_t *decl_expr(ifj17_parser_t *self, bool need_type) {
+static ifj17_node_t *decl_expr(ifj17_parser_t *self) {
   debug("decl_expr");
   context("declaration");
 
@@ -247,13 +247,8 @@ static ifj17_node_t *decl_expr(ifj17_parser_t *self, bool need_type) {
     }
   }
 
-  // 'as'
   if (!accept(AS)) {
-    if (need_type) {
-      return error("expecting type");
-    } else {
-      return (ifj17_node_t *)ifj17_decl_node_new(vec, NULL, decl_line);
-    }
+    return error("expecting type");
   }
 
   ifj17_node_t *type = type_expr(self);
@@ -623,7 +618,7 @@ static ifj17_vec_t *function_params(ifj17_parser_t *self) {
 
   do {
     int line = lineno;
-    ifj17_node_t *decl = decl_expr(self, false);
+    ifj17_node_t *decl = decl_expr(self);
     if (!decl)
       return NULL;
 
@@ -851,7 +846,7 @@ static ifj17_node_t *dim_expr(ifj17_parser_t *self) {
 
   do {
     int line = lineno;
-    ifj17_node_t *decl = decl_expr(self, false);
+    ifj17_node_t *decl = decl_expr(self);
     ifj17_node_t *val = NULL;
 
     context("dim expression");
@@ -982,7 +977,7 @@ static ifj17_node_t *type_stmt(ifj17_parser_t *self) {
 
   // type fields
   do {
-    ifj17_node_t *decl = decl_expr(self, true);
+    ifj17_node_t *decl = decl_expr(self);
     if (!decl)
       return error("expecting field");
 
