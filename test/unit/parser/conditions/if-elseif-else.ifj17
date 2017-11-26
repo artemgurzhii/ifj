@@ -4,4 +4,4 @@ elseif 2 > 1 then
   return 2
 else
   return 3
-end
+end if

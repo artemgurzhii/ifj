@@ -576,15 +576,6 @@ static void integration_test_case_insensitive_factorial() {
                "test/integration/parser/case-insensitive-factorial.out");
 }
 
-// static void unit_test_subscript() {
-//   _test_parser("test/unit/parser/subscript.ifj17",
-//   "test/unit/parser/subscript.out");
-// }
-//
-// static void unit_test_return() {
-//   _test_parser("test/unit/parser/return.ifj17", "test/unit/parser/return.out");
-// }
-
 /*
  * Run all test suites.
  */
@@ -671,8 +662,6 @@ int main(int argc, const char **argv) {
   unit_test(case_insensitive_function_initialization_with_body);
   unit_test(case_insensitive_scope_with_body);
   unit_test(case_insensitive_string);
-  // unit_test(subscript);
-  // unit_test(return );
 
   type("INTEGRATION TESTS");
 

@@ -1,1 +1,0 @@
-declare function factorial (foo as integer, bar as integer) as integer
