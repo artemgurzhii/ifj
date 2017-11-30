@@ -5,6 +5,7 @@
 //
 
 #include "visitor.h"
+#include <stdio.h>
 
 /*
  * Visit the node when a `type` callback is present.

@@ -21,7 +21,7 @@ void ifj17_dump(ifj17_vm_t *vm) {
   ifj17_instruction_t *ip = vm->main->ip;
   ifj17_instruction_t i;
   int registers[32] = {0};
-
+  
   for (;;) {
     i = *ip++;
     printf("%10s ", ifj17_op_strings[OP(i)]);
