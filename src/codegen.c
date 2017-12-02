@@ -21,6 +21,16 @@
 
 #define emit(op, a, b, c) *vm->main->code++ = ABC(op, a, b, c);
 
+static int else_if_num = 0;
+
+// print function
+
+int (*print_func)(const char *format, ...);
+
+void ifj17_set_codegenprint_func(int (*func)(const char *format, ...)) {
+  print_func = func;
+}
+
 /*
  * Emit binary operation.
  */
@@ -28,7 +38,15 @@
 static void emit_op(ifj17_visitor_t *self, ifj17_binary_op_node_t *node) {
   switch (node->op) {
   case IFJ17_TOKEN_OP_PLUS:
-    printf("ADD ");
+    print_func("ADD ");
+    break;
+  case IFJ17_TOKEN_OP_EQ:
+    print_func("EQ ");
+    print_func("RES_IF_%d ", else_if_num);
+    break;
+  case IFJ17_TOKEN_OP_NEQ:
+    print_func("NEQ ");
+    print_func("RES_IF_%d ", else_if_num);
     break;
   // case IFJ17_TOKEN_OP_MINUS:
   //   emit(SUB, 0, l, r);
@@ -85,7 +103,7 @@ static void visit_block(ifj17_visitor_t *self, ifj17_block_node_t *node) {
  */
 
 static void visit_int(ifj17_visitor_t *self, ifj17_int_node_t *node) {
-  printf("%d", node->val);
+  print_func("int@%d", node->val);
 }
 
 /*
@@ -101,7 +119,7 @@ static void visit_double(ifj17_visitor_t *self, ifj17_double_node_t *node) {
  */
 
 static void visit_id(ifj17_visitor_t *self, ifj17_id_node_t *node) {
-  printf("GF@%s", node->val);
+  print_func("GF@%s", node->val);
 }
 
 /*
@@ -115,9 +133,9 @@ static void visit_decl(ifj17_visitor_t *self, ifj17_decl_node_t *node) {
 
   // printf("I AM IN DECL\n");
   ifj17_vec_each(node->vec, {
-    printf("DEFVAR ");
+    print_func("DEFVAR ");
     visit((ifj17_node_t *)val->value.as_pointer);
-    printf("\n");
+    print_func("\n");
   });
 
   // if (node->type) {
@@ -132,7 +150,7 @@ static void visit_decl(ifj17_visitor_t *self, ifj17_decl_node_t *node) {
  */
 
 static void visit_string(ifj17_visitor_t *self, ifj17_string_node_t *node) {
-  printf("\"%s\"", node->val);
+  print_func("\"%s\"", node->val);
 }
 
 /*
@@ -170,11 +188,11 @@ static void visit_binary_op(ifj17_visitor_t *self, ifj17_binary_op_node_t *node)
     // REMOVE REPEATABLE CODE!!!!
     if (!strcmp(ifj17_token_type_string(node->op), "=")) {
       if (node->right->type != IFJ17_NODE_BINARY_OP) {
-        printf("MOVE ");
+        print_func("MOVE ");
         visit(node->left);
-        printf(" ");
+        print_func(" ");
         visit(node->right);
-        printf("\n");
+        print_func("\n");
         return;
       }
     }
@@ -198,9 +216,9 @@ static void visit_binary_op(ifj17_visitor_t *self, ifj17_binary_op_node_t *node)
     // }
 
     visit(node->left);
-    printf(" ");
+    print_func(" ");
     visit(node->right);
-    printf("\n");
+    print_func("\n");
 
 }
 
@@ -363,7 +381,7 @@ static void visit_while(ifj17_visitor_t *self, ifj17_while_node_t *node) {
  */
 
 static void visit_return(ifj17_visitor_t *self, ifj17_return_node_t *node) {
-  // printf("(return");
+  print_func("return\n");
   // if (node->expr) {
   //   ++indents;
   //   printf("\n");
@@ -379,39 +397,48 @@ static void visit_return(ifj17_visitor_t *self, ifj17_return_node_t *node) {
  */
 
 static void visit_if(ifj17_visitor_t *self, ifj17_if_node_t *node) {
-  // // if
-  // printf("(if ");
-  // visit((ifj17_node_t *) node->expr);
-  // ++indents;
-  // printf("\n");
-  // visit((ifj17_node_t *) node->block);
-  // --indents;
-  // printf(")");
+  else_if_num = 1;
+  
+  // if
+  print_func("JUMPIF");
+  visit((ifj17_node_t *)node->expr);
 
-  // // else ifs
-  // ifj17_vec_each(node->else_ifs, {
-  //   ifj17_if_node_t *else_if = (ifj17_if_node_t *) val->value.as_pointer;
-  //   printf("\n");
-  //   INDENT;
-  //   printf("(else if ");
-  //   visit((ifj17_node_t *) else_if->expr);
-  //   ++indents;
-  //   printf("\n");
-  //   visit((ifj17_node_t *) else_if->block);
-  //   --indents;
-  //   printf(")");
-  // });
+  // else ifs
+  ifj17_vec_each(node->else_ifs, {
+    else_if_num++;
+    ifj17_if_node_t *else_if = (ifj17_if_node_t *)val->value.as_pointer;
+    print_func("JUMPIF");
+    visit((ifj17_node_t *)else_if->expr);
+  });
 
-  // // else
-  // if (node->else_block) {
-  //   printf("\n");
-  //   INDENT;
-  //   printf("(else\n");
-  //   ++indents;
-  //   visit((ifj17_node_t *) node->else_block);
-  //   --indents;
-  //   printf(")");
-  // }
+  // else
+  if (node->else_block) {
+    print_func("JUMP RES_ELSE\n");
+  }
+
+  else_if_num = 0;
+
+  print_func("LABEL RES_IF_%d\n", ++else_if_num);
+
+  visit((ifj17_node_t *)node->block);
+
+  print_func("JUMP END_IF\n");
+
+  // else ifs
+  ifj17_vec_each(node->else_ifs, {
+    ifj17_if_node_t *else_if = (ifj17_if_node_t *)val->value.as_pointer;
+    print_func("LABEL RES_IF_%d\n", ++else_if_num);
+    visit((ifj17_node_t *)else_if->block);
+    print_func("JUMP END_IF\n");
+  });
+
+  if (node->else_block) {
+    print_func("LABEL RES_ELSE\n");
+    visit((ifj17_node_t *)node->else_block);
+    print_func("JUMP END_IF\n");
+  }
+
+  print_func("LABEL END_IF\n");
 }
 
 /*
@@ -454,6 +481,7 @@ ifj17_vm_t *ifj17_gen(ifj17_node_t *node) {
                              .visit_subscript = visit_subscript,
                              .visit_type = visit_type};
 
+  print_func(".IFJcode17\n");
   ifj17_visit(&visitor, node);
 
   // Reset code so we can free it later
