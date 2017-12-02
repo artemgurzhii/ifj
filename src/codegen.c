@@ -284,6 +284,60 @@ static void visit_while(ifj17_visitor_t *self, ifj17_while_node_t *node) {
  * Visit `return` node.
  */
 
+static void visit_while(ifj17_visitor_t *self, ifj17_while_node_t *node) {
+  printf("CREATEFRAME\n");
+  printf("PUSHFRAME\n");
+
+  ++indents;
+  printf("\n");
+
+  printf("DEFVAR LF@b\n");
+  printf("DEFVAR LF@b1");
+
+  ++indents;
+  printf("\n");
+
+  printf("MOVE LF@b bool@TRUE\n");
+  printf("Label loop\n");
+  visit((ifj17_node_t *) node->block);
+  visit((ifj17_node_t *) node->expr);
+  printf("JUMPIFNEQ loop LF@b LF@b1"); // JUMP if the condition in b1 is not satisfied
+                                      // we will get b1 value from node->expr (i hope)
+  --indents;
+  printf("\n");
+}
+
+/*
+ * Visit `for` node.
+ */
+
+static void visit_for(ifj17_visitor_t *self, ifj17_while_node_t *node) {
+  printf("CREATEFRAME\n");
+  printf("PUSHFRAME\n");
+
+  ++indents;
+  printf("\n");
+
+  printf("DEFVAR LF@b\n");
+  printf("DEFVAR LF@b1\n");
+  printf("DEFVAR LF@i\n");
+
+  ++indents;
+  printf("\n");
+
+  printf("MOVE LF@b bool@TRUE\n");
+  printf("MOVE LF@i int@0\n");
+  printf("Label loop\n");
+  visit((ifj17_node_t *) node->block);
+  visit((ifj17_node_t *) node->expr);
+
+  printf("ADD LF@i LF@i int@1\n");
+  printf("JUMPIFNEQ loop LF@b LF@b1"); // JUMP if the condition in b1 is not satisfied
+                                      // we will get b1 value from node->expr (i hope)
+  --indents;
+  printf("\n");
+}
+
 static void visit_return(ifj17_visitor_t *self, ifj17_return_node_t *node) {
   // printf("(return");
   // if (node->expr) {
