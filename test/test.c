@@ -9,6 +9,7 @@
 #include "state.h"
 #include "utils.h"
 #include "vec.h"
+#include "vm.h"
 #include <assert.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -375,6 +376,45 @@ static void _test_parser(const char *source_path, const char *out_path) {
   assert(strcmp(expected, print_buf) == 0);
 }
 
+// Test code generator
+
+static void _test_codegen(const char *source_path, const char *out_path) {
+  ifj17_lexer_t lexer;
+  ifj17_parser_t parser;
+  ifj17_block_node_t *root;
+
+  char *source = file_read(source_path);
+  assert(source != NULL);
+  char *expected = file_read(out_path);
+  assert(expected != NULL);
+
+  ifj17_lexer_init(&lexer, source, source_path);
+  ifj17_parser_init(&parser, &lexer);
+
+  if (!(root = ifj17_parse(&parser))) {
+    ifj17_report_error(&parser);
+    exit(1);
+  }
+
+  char buf[1024] = {0};
+  print_buf = buf;
+
+  ifj17_vm_t *vm = ifj17_gen((ifj17_node_t *)root);
+  ifj17_object_t *obj = ifj17_eval(vm);
+
+  ifj17_object_inspect(obj);
+  ifj17_object_free(obj);
+  ifj17_vm_free(vm);
+
+  size_t ln = strlen(print_buf) - 1;
+  if (*print_buf && print_buf[ln] == '\n') {
+    strcat(expected, "\n");
+  }
+
+  assert(strcmp(expected, print_buf) == 0);
+}
+
+
 // NOTE: UNIT TESTS
 // VARIABLES
 static void unit_test_variable_declaration() {
@@ -395,6 +435,27 @@ static void unit_test_variable_assign() {
 static void unit_test_variable_assign_chain() {
   _test_parser("test/unit/parser/variables/assign-chain.ifj17",
                "test/unit/parser/variables/assign-chain.out");
+}
+
+// OPERATIONS
+static void unit_test_add(){
+  _test_codegen("test/unit/codegen/operations/add.ifj17",
+                "test/unit/codegen/operations/add.out");
+}
+
+static void unit_test_sub(){
+  _test_codegen("test/unit/codegen/operations/sub.ifj17",
+                "test/unit/codegen/operations/sub.out");
+}
+
+static void unit_test_mul(){
+  _test_codegen("test/unit/codegen/operations/mul.ifj17",
+                "test/unit/codegen/operations/mul.out");
+}
+
+static void unit_test_div(){
+  _test_codegen("test/unit/codegen/operations/div.ifj17",
+                "test/unit/codegen/operations/div.out");
 }
 
 // FUNCTIONS
@@ -663,6 +724,8 @@ int main(int argc, const char **argv) {
   unit_test(case_insensitive_scope_with_body);
   unit_test(case_insensitive_string);
 
+  // suite("codegen");
+  
   type("INTEGRATION TESTS");
 
   suite("parser");
