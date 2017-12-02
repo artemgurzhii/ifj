@@ -11,7 +11,10 @@
 #include "vm.h"
 
 // prototypes
+void ifj17_set_codegenprint_func(int (*func)(const char *format, ...));
+
 
 ifj17_vm_t *ifj17_gen(ifj17_node_t *node);
+
 
 #endif /* IFJ17_CODE_H */

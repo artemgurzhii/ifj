@@ -32,6 +32,10 @@
   printf("    \e[92m✓ \e[90m%s\e[0m\n", #fn);                                       \
   integration_test_##fn();
 
+#define acceptance_test(fn)                                                        \
+  printf("    \e[92m✓ \e[90m%s\e[0m\n", #fn);                                       \
+  acceptance_test_##fn();
+
 /*
  * Test suite title.
  */
@@ -398,16 +402,24 @@ static void _test_codegen(const char *source_path, const char *out_path) {
 
   char buf[1024] = {0};
   print_buf = buf;
-
   ifj17_vm_t *vm = ifj17_gen((ifj17_node_t *)root);
-  ifj17_object_t *obj = ifj17_eval(vm);
 
-  ifj17_object_inspect(obj);
-  ifj17_object_free(obj);
-  ifj17_vm_free(vm);
+  // ifj17_object_t *obj = ifj17_eval(vm);
+  //
+  // ifj17_object_inspect(obj);
+  // ifj17_object_free(obj);
+  // ifj17_vm_free(vm);
+
+  // DEBUG
+  // printf("%s\n", print_buf);
+  // printf("%s\n", expected);
 
   size_t ln = strlen(print_buf) - 1;
-  if (*print_buf && print_buf[ln] == '\n') {
+  if (
+    *print_buf &&
+    print_buf[ln] == '\n' &&
+    print_buf[ln - 1] == '\n'
+  ) {
     strcat(expected, "\n");
   }
 
@@ -416,6 +428,9 @@ static void _test_codegen(const char *source_path, const char *out_path) {
 
 
 // NOTE: UNIT TESTS
+
+// PARSER
+
 // VARIABLES
 static void unit_test_variable_declaration() {
   _test_parser("test/unit/parser/variables/declaration.ifj17",
@@ -435,27 +450,6 @@ static void unit_test_variable_assign() {
 static void unit_test_variable_assign_chain() {
   _test_parser("test/unit/parser/variables/assign-chain.ifj17",
                "test/unit/parser/variables/assign-chain.out");
-}
-
-// OPERATIONS
-static void unit_test_add(){
-  _test_codegen("test/unit/codegen/operations/add.ifj17",
-                "test/unit/codegen/operations/add.out");
-}
-
-static void unit_test_sub(){
-  _test_codegen("test/unit/codegen/operations/sub.ifj17",
-                "test/unit/codegen/operations/sub.out");
-}
-
-static void unit_test_mul(){
-  _test_codegen("test/unit/codegen/operations/mul.ifj17",
-                "test/unit/codegen/operations/mul.out");
-}
-
-static void unit_test_div(){
-  _test_codegen("test/unit/codegen/operations/div.ifj17",
-                "test/unit/codegen/operations/div.out");
 }
 
 // FUNCTIONS
@@ -626,6 +620,29 @@ static void unit_test_do_while_with_body() {
                "test/unit/parser/loops/with-body.out");
 }
 
+// CODEGEN
+
+// OPERATIONS
+static void acceptance_test_if_single(){
+  _test_codegen("test/acceptance/conditions/if-single.ifj17",
+                "test/acceptance/conditions/if-single.out");
+}
+
+static void acceptance_test_if_else(){
+  _test_codegen("test/acceptance/conditions/if-else.ifj17",
+                "test/acceptance/conditions/if-else.out");
+}
+
+static void acceptance_test_if_elseif(){
+  _test_codegen("test/acceptance/conditions/if-elseif.ifj17",
+                "test/acceptance/conditions/if-elseif.out");
+}
+
+static void acceptance_test_if_elseif_else(){
+  _test_codegen("test/acceptance/conditions/if-elseif-else.ifj17",
+                "test/acceptance/conditions/if-elseif-else.out");
+}
+
 // NOTE: INTEGRATION TESTS
 static void integration_test_factorial() {
   _test_parser("test/integration/parser/factorial.ifj17",
@@ -724,13 +741,20 @@ int main(int argc, const char **argv) {
   unit_test(case_insensitive_scope_with_body);
   unit_test(case_insensitive_string);
 
-  // suite("codegen");
-  
   type("INTEGRATION TESTS");
 
   suite("parser");
   integration_test(factorial);
   integration_test(case_insensitive_factorial);
+
+  type("ACCEPTANCE TESTS");
+
+  suite("conditions");
+  acceptance_test(if_single);
+  acceptance_test(if_else);
+  acceptance_test(if_elseif);
+  acceptance_test(if_elseif_else);
+
 
   printf("\n");
   printf("  \e[90mcompleted in \e[32m%.5fs\e[0m\n",
