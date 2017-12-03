@@ -10,6 +10,7 @@
 #include "utils.h"
 #include "vec.h"
 #include "vm.h"
+#include "codegen.h"
 #include <assert.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -404,11 +405,12 @@ static void _test_codegen(const char *source_path, const char *out_path) {
   print_buf = buf;
   ifj17_vm_t *vm = ifj17_gen((ifj17_node_t *)root);
 
+
   // ifj17_object_t *obj = ifj17_eval(vm);
   //
   // ifj17_object_inspect(obj);
   // ifj17_object_free(obj);
-  // ifj17_vm_free(vm);
+  ifj17_vm_free(vm);
 
   // DEBUG
   // printf("%s\n", print_buf);
@@ -643,6 +645,26 @@ static void acceptance_test_if_elseif_else(){
                 "test/acceptance/conditions/if-elseif-else.out");
 }
 
+static void acceptance_test_if_single2x(){
+  _test_codegen("test/acceptance/conditions/if-single2x.ifj17",
+                "test/acceptance/conditions/if-single2x.out");
+}
+
+static void acceptance_test_if_else2x(){
+  _test_codegen("test/acceptance/conditions/if-else2x.ifj17",
+                "test/acceptance/conditions/if-else2x.out");
+}
+
+static void acceptance_test_if_elseif2x(){
+  _test_codegen("test/acceptance/conditions/if-elseif2x.ifj17",
+                "test/acceptance/conditions/if-elseif2x.out");
+}
+
+static void acceptance_test_if_elseif_else2x(){
+  _test_codegen("test/acceptance/conditions/if-elseif-else2x.ifj17",
+                "test/acceptance/conditions/if-elseif-else2x.out");
+}
+
 // NOTE: INTEGRATION TESTS
 static void integration_test_factorial() {
   _test_parser("test/integration/parser/factorial.ifj17",
@@ -754,6 +776,10 @@ int main(int argc, const char **argv) {
   acceptance_test(if_else);
   acceptance_test(if_elseif);
   acceptance_test(if_elseif_else);
+  acceptance_test(if_single2x);
+  acceptance_test(if_else2x);
+  acceptance_test(if_elseif2x);
+  acceptance_test(if_elseif_else2x);
 
 
   printf("\n");

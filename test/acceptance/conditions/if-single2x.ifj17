@@ -1,0 +1,10 @@
+dim a as integer
+dim res as integer
+a = 1
+if a == 1 then
+  res = 42
+end if
+
+if a == 1 then
+  res = 42
+end if
