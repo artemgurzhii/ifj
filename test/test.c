@@ -404,8 +404,7 @@ static void _test_codegen(const char *source_path, const char *out_path) {
   char buf[1024] = {0};
   print_buf = buf;
   ifj17_vm_t *vm = ifj17_gen((ifj17_node_t *)root);
-
-
+  
   // ifj17_object_t *obj = ifj17_eval(vm);
   //
   // ifj17_object_inspect(obj);
@@ -413,8 +412,8 @@ static void _test_codegen(const char *source_path, const char *out_path) {
   ifj17_vm_free(vm);
 
   // DEBUG
-  // printf("%s\n", print_buf);
-  // printf("%s\n", expected);
+  printf("%s\n", print_buf);
+  printf("%s\n", expected);
 
   size_t ln = strlen(print_buf) - 1;
   if (
@@ -624,7 +623,7 @@ static void unit_test_do_while_with_body() {
 
 // CODEGEN
 
-// OPERATIONS
+// CONDITIONS
 static void acceptance_test_if_single(){
   _test_codegen("test/acceptance/conditions/if-single.ifj17",
                 "test/acceptance/conditions/if-single.out");
@@ -664,6 +663,39 @@ static void acceptance_test_if_elseif_else2x(){
   _test_codegen("test/acceptance/conditions/if-elseif-else2x.ifj17",
                 "test/acceptance/conditions/if-elseif-else2x.out");
 }
+
+// LOOPS
+
+static void acceptance_test_do_while_empty() {
+  _test_codegen("test/acceptance/loops/while/without-body.ifj17",
+                "test/acceptance/loops/while/without-body.out");
+}
+
+static void acceptance_test_do_while_with_body() {
+  _test_codegen("test/acceptance/loops/while/with-body.ifj17",
+                "test/acceptance/loops/while/with-body.out");
+}
+
+static void acceptance_test_do_while_nested() {
+  _test_codegen("test/acceptance/loops/while/nested-loop.ifj17",
+                "test/acceptance/loops/while/nested-loop.out");
+}
+
+static void acceptance_test_do_while_empty2x() {
+  _test_codegen("test/acceptance/loops/while/without-body2x.ifj17",
+                "test/acceptance/loops/while/without-body2x.out");
+}
+
+static void acceptance_test_do_while_with_body2x() {
+  _test_codegen("test/acceptance/loops/while/with-body2x.ifj17",
+                "test/acceptance/loops/while/with-body2x.out");
+}
+
+static void acceptance_test_do_while_nested2x() {
+  _test_codegen("test/acceptance/loops/while/nested-loop2x.ifj17",
+                "test/acceptance/loops/while/nested-loop2x.out");
+}
+
 
 // NOTE: INTEGRATION TESTS
 static void integration_test_factorial() {
@@ -781,6 +813,13 @@ int main(int argc, const char **argv) {
   acceptance_test(if_elseif2x);
   acceptance_test(if_elseif_else2x);
 
+  suite("loops");
+  acceptance_test(do_while_empty);
+  acceptance_test(do_while_with_body);
+  acceptance_test(do_while_nested);
+  acceptance_test(do_while_empty2x);
+  acceptance_test(do_while_with_body2x);
+  acceptance_test(do_while_nested2x);
 
   printf("\n");
   printf("  \e[90mcompleted in \e[32m%.5fs\e[0m\n",
