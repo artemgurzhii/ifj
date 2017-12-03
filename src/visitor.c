@@ -5,6 +5,7 @@
 //
 
 #include "visitor.h"
+#include <stdio.h>
 
 /*
  * Visit the node when a `type` callback is present.
@@ -50,8 +51,12 @@ void ifj17_visit(ifj17_visitor_t *self, ifj17_node_t *node) {
     VISIT(unary_op);
   case IFJ17_NODE_BINARY_OP:
     VISIT(binary_op);
+  case IFJ17_NODE_DECLARE:
+    VISIT(declare);
   case IFJ17_NODE_FUNCTION:
     VISIT(function);
+  case IFJ17_NODE_SCOPE:
+    VISIT(scope);
   case IFJ17_NODE_TYPE:
     VISIT(type);
   case IFJ17_NODE_ARRAY:

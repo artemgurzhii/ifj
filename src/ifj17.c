@@ -159,9 +159,10 @@ int eval(char *source, const char *path) {
 
   // evaluate
   ifj17_vm_t *vm = ifj17_gen((ifj17_node_t *)root);
-  ifj17_object_t *obj = ifj17_eval(vm);
-  ifj17_object_inspect(obj);
-  ifj17_object_free(obj);
+  // ifj17_object_t *obj = ifj17_eval(vm);
+  // ifj17_object_inspect(obj);
+  //
+  // ifj17_object_free(obj);
   ifj17_vm_free(vm);
 
   return 0;

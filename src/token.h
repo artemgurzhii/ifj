@@ -20,11 +20,17 @@
   t(INT, "int") \
   t(DOUBLE, "double") \
   t(STRING, "string") \
+  t(DECLARE, "declare") \
   t(FUNCTION, "function") \
+  t(SCOPE, "scope") \
   t(TYPE, "type") \
   t(AS, "as") \
+  t(DO, "do") \
+  t(LOOP, "loop") \
   t(WHILE, "while") \
   t(IF, "if") \
+  t(THEN, "then") \
+  t(ELSEIF, "elseif") \
   t(ELSE, "else") \
   t(FOR, "for") \
   t(DIM, "dim") \

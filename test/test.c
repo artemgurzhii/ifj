@@ -9,6 +9,7 @@
 #include "state.h"
 #include "utils.h"
 #include "vec.h"
+#include "vm.h"
 #include <assert.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -30,6 +31,10 @@
 #define integration_test(fn)                                                        \
   printf("    \e[92m✓ \e[90m%s\e[0m\n", #fn);                                       \
   integration_test_##fn();
+
+#define acceptance_test(fn)                                                        \
+  printf("    \e[92m✓ \e[90m%s\e[0m\n", #fn);                                       \
+  acceptance_test_##fn();
 
 /*
  * Test suite title.
@@ -363,6 +368,10 @@ static void _test_parser(const char *source_path, const char *out_path) {
   ifj17_set_prettyprint_func(bprintf);
   ifj17_prettyprint((ifj17_node_t *)root);
 
+  // DEBUG
+  // printf("%s\n", print_buf);
+  // printf("%s\n", expected);
+
   size_t ln = strlen(print_buf) - 1;
   if (*print_buf && print_buf[ln] == '\n') {
     strcat(expected, "\n");
@@ -371,93 +380,279 @@ static void _test_parser(const char *source_path, const char *out_path) {
   assert(strcmp(expected, print_buf) == 0);
 }
 
+// Test code generator
+
+static void _test_codegen(const char *source_path, const char *out_path) {
+  ifj17_lexer_t lexer;
+  ifj17_parser_t parser;
+  ifj17_block_node_t *root;
+
+  char *source = file_read(source_path);
+  assert(source != NULL);
+  char *expected = file_read(out_path);
+  assert(expected != NULL);
+
+  ifj17_lexer_init(&lexer, source, source_path);
+  ifj17_parser_init(&parser, &lexer);
+
+  if (!(root = ifj17_parse(&parser))) {
+    ifj17_report_error(&parser);
+    exit(1);
+  }
+
+  char buf[1024] = {0};
+  print_buf = buf;
+  ifj17_vm_t *vm = ifj17_gen((ifj17_node_t *)root);
+
+  // ifj17_object_t *obj = ifj17_eval(vm);
+  //
+  // ifj17_object_inspect(obj);
+  // ifj17_object_free(obj);
+  // ifj17_vm_free(vm);
+
+  // DEBUG
+  // printf("%s\n", print_buf);
+  // printf("%s\n", expected);
+
+  size_t ln = strlen(print_buf) - 1;
+  if (
+    *print_buf &&
+    print_buf[ln] == '\n' &&
+    print_buf[ln - 1] == '\n'
+  ) {
+    strcat(expected, "\n");
+  }
+
+  assert(strcmp(expected, print_buf) == 0);
+}
+
+
 // NOTE: UNIT TESTS
+
+// PARSER
+
+// VARIABLES
 static void unit_test_variable_declaration() {
-  _test_parser("test/parser/variables/declaration.ifj17",
-               "test/parser/variables/declaration.out");
+  _test_parser("test/unit/parser/variables/declaration.ifj17",
+               "test/unit/parser/variables/declaration.out");
 }
 
 static void unit_test_variable_declaration_and_assignment() {
-  _test_parser("test/parser/variables/declaration-and-assignment.ifj17",
-               "test/parser/variables/declaration-and-assignment.out");
+  _test_parser("test/unit/parser/variables/declaration-and-assignment.ifj17",
+               "test/unit/parser/variables/declaration-and-assignment.out");
 }
 
+static void unit_test_variable_assign() {
+  _test_parser("test/unit/parser/variables/assign.ifj17",
+               "test/unit/parser/variables/assign.out");
+}
+
+static void unit_test_variable_assign_chain() {
+  _test_parser("test/unit/parser/variables/assign-chain.ifj17",
+               "test/unit/parser/variables/assign-chain.out");
+}
+
+// FUNCTIONS
 static void unit_test_function_declaration_without_arguments() {
-  _test_parser("test/parser/function/declaration/without-arguments.ifj17",
-               "test/parser/function/declaration/without-arguments.out");
+  _test_parser("test/unit/parser/function/declaration/without-arguments.ifj17",
+               "test/unit/parser/function/declaration/without-arguments.out");
 }
 
 static void unit_test_function_declaration_with_argument() {
-  _test_parser("test/parser/function/declaration/with-argument.ifj17",
-               "test/parser/function/declaration/with-argument.out");
+  _test_parser("test/unit/parser/function/declaration/with-argument.ifj17",
+               "test/unit/parser/function/declaration/with-argument.out");
 }
 
 static void unit_test_function_declaration_with_arguments() {
-  _test_parser("test/parser/function/declaration/with-arguments.ifj17",
-               "test/parser/function/declaration/with-arguments.out");
+  _test_parser("test/unit/parser/function/declaration/with-arguments.ifj17",
+               "test/unit/parser/function/declaration/with-arguments.out");
 }
 
-static void unit_test_function_declaration_with_body() {
-  _test_parser("test/parser/function/declaration/with-body.ifj17",
-               "test/parser/function/declaration/with-body.out");
+static void unit_test_function_initialization_without_arguments() {
+  _test_parser("test/unit/parser/function/initialization/without-arguments.ifj17",
+               "test/unit/parser/function/initialization/without-arguments.out");
+}
+
+static void unit_test_function_initialization_with_argument() {
+  _test_parser("test/unit/parser/function/initialization/with-argument.ifj17",
+               "test/unit/parser/function/initialization/with-argument.out");
+}
+
+static void unit_test_function_initialization_with_arguments() {
+  _test_parser("test/unit/parser/function/initialization/with-arguments.ifj17",
+               "test/unit/parser/function/initialization/with-arguments.out");
+}
+
+static void unit_test_function_initialization_with_body() {
+  _test_parser("test/unit/parser/function/initialization/with-body.ifj17",
+               "test/unit/parser/function/initialization/with-body.out");
+}
+
+// SCOPE
+static void unit_test_scope_empty_declaration() {
+  _test_parser("test/unit/parser/scope/declaration/empty.ifj17",
+               "test/unit/parser/scope/declaration/empty.out");
+}
+
+static void unit_test_scope_with_body() {
+  _test_parser("test/unit/parser/scope/declaration/with-body.ifj17",
+               "test/unit/parser/scope/declaration/with-body.out");
+}
+
+// COMMENTS
+static void unit_test_comments_inline() {
+  _test_parser("test/unit/parser/comments/inline.ifj17",
+               "test/unit/parser/comments/inline.out");
+}
+
+static void unit_test_comments_multiline_with_code() {
+  _test_parser("test/unit/parser/comments/multiline-with-code.ifj17",
+               "test/unit/parser/comments/multiline-with-code.out");
+}
+
+static void unit_test_comments_multiline_only_comments() {
+  _test_parser("test/unit/parser/comments/multiline-only-comments.ifj17",
+               "test/unit/parser/comments/multiline-only-comments.out");
+}
+
+static void unit_test_comments_only_comments() {
+  _test_parser("test/unit/parser/comments/only-comments.ifj17",
+               "test/unit/parser/comments/only-comments.out");
+}
+
+static void unit_test_comments_without_spaces() {
+  _test_parser("test/unit/parser/comments/without-spaces.ifj17",
+               "test/unit/parser/comments/without-spaces.out");
+}
+
+// CONDITIONS
+static void unit_test_if_single() {
+  _test_parser("test/unit/parser/conditions/if-single.ifj17",
+               "test/unit/parser/conditions/if-single.out");
+}
+
+static void unit_test_if_else() {
+  _test_parser("test/unit/parser/conditions/if-else.ifj17",
+               "test/unit/parser/conditions/if-else.out");
+}
+
+static void unit_test_if_elseif() {
+  _test_parser("test/unit/parser/conditions/if-elseif.ifj17",
+               "test/unit/parser/conditions/if-elseif.out");
+}
+
+static void unit_test_if_elseif_else() {
+  _test_parser("test/unit/parser/conditions/if-elseif-else.ifj17",
+               "test/unit/parser/conditions/if-elseif-else.out");
+}
+
+// STRINGS
+static void unit_test_empty_string() {
+  _test_parser("test/unit/parser/string/empty-string.ifj17",
+               "test/unit/parser/string/empty-string.out");
+}
+
+static void unit_test_escape_new_line() {
+  _test_parser("test/unit/parser/string/escape-new-line.ifj17",
+               "test/unit/parser/string/escape-new-line.out");
+}
+
+static void unit_test_escape_quote() {
+  _test_parser("test/unit/parser/string/escape-quote.ifj17",
+               "test/unit/parser/string/escape-quote.out");
+}
+
+static void unit_test_escape_sequence() {
+  _test_parser("test/unit/parser/string/escape-sequence.ifj17",
+               "test/unit/parser/string/escape-sequence.out");
+}
+
+static void unit_test_simple_string() {
+  _test_parser("test/unit/parser/string/simple-string.ifj17",
+               "test/unit/parser/string/simple-string.out");
+}
+
+static void unit_test_long_string() {
+  _test_parser("test/unit/parser/string/long-string.ifj17",
+               "test/unit/parser/string/long-string.out");
+}
+
+static void unit_test_escape_line_break() {
+  _test_parser("test/unit/parser/string/escape-line-break.ifj17",
+               "test/unit/parser/string/escape-line-break.out");
+}
+
+// CASE insensitive
+
+static void unit_test_case_insensitive_variable_declaration() {
+  _test_parser("test/unit/parser/case-insensitive/variable-declaration.ifj17",
+               "test/unit/parser/case-insensitive/variable-declaration.out");
+}
+
+static void unit_test_case_insensitive_if_elseif_else() {
+  _test_parser("test/unit/parser/case-insensitive/if-elseif-else.ifj17",
+               "test/unit/parser/case-insensitive/if-elseif-else.out");
+}
+
+static void unit_test_case_insensitive_function_initialization_with_body() {
+  _test_parser("test/unit/parser/case-insensitive/function-with-body.ifj17",
+               "test/unit/parser/case-insensitive/function-with-body.out");
+}
+
+static void unit_test_case_insensitive_scope_with_body() {
+  _test_parser("test/unit/parser/case-insensitive/scope-with-body.ifj17",
+               "test/unit/parser/case-insensitive/scope-with-body.out");
+}
+
+static void unit_test_case_insensitive_string() {
+  _test_parser("test/unit/parser/case-insensitive/string.ifj17",
+               "test/unit/parser/case-insensitive/string.out");
+}
+
+// LOOPS
+static void unit_test_do_while_empty() {
+  _test_parser("test/unit/parser/loops/empty.ifj17",
+               "test/unit/parser/loops/empty.out");
+}
+
+static void unit_test_do_while_with_body() {
+  _test_parser("test/unit/parser/loops/with-body.ifj17",
+               "test/unit/parser/loops/with-body.out");
+}
+
+// CODEGEN
+
+// OPERATIONS
+static void acceptance_test_if_single(){
+  _test_codegen("test/acceptance/conditions/if-single.ifj17",
+                "test/acceptance/conditions/if-single.out");
+}
+
+static void acceptance_test_if_else(){
+  _test_codegen("test/acceptance/conditions/if-else.ifj17",
+                "test/acceptance/conditions/if-else.out");
+}
+
+static void acceptance_test_if_elseif(){
+  _test_codegen("test/acceptance/conditions/if-elseif.ifj17",
+                "test/acceptance/conditions/if-elseif.out");
+}
+
+static void acceptance_test_if_elseif_else(){
+  _test_codegen("test/acceptance/conditions/if-elseif-else.ifj17",
+                "test/acceptance/conditions/if-elseif-else.out");
 }
 
 // NOTE: INTEGRATION TESTS
-static void integration_test_function_initialization() {
-  _test_parser("test/integration/parser/function-initialization.ifj17",
-               "test/integration/parser/function-initialization.out");
+static void integration_test_factorial() {
+  _test_parser("test/integration/parser/factorial.ifj17",
+               "test/integration/parser/factorial.out");
 }
 
-// static void unit_test_assign() {
-//   _test_parser("test/parser/assign.ifj17", "test/parser/assign.out");
-// }
-//
-// static void unit_test_assign_chain() {
-//   _test_parser("test/parser/assign.chain.ifj17", "test/parser/assign.chain.out");
-// }
-//
-// static void unit_test_subscript() {
-//   _test_parser("test/parser/subscript.ifj17", "test/parser/subscript.out");
-// }
-//
-// static void unit_test_return() {
-//   _test_parser("test/parser/return.ifj17", "test/parser/return.out");
-// }
-// static void test_err_expr(){
-//   _test_parser("test/parser/err_parser/expr.ifj", "test/parser/err_parser/expr.out");
-// }
-// static void test_err_paren_expr(){
-//   _test_parser("test/parser/err_parser/paren_expr.ifj", "test/parser/err_parser/paren_expr.out");
-// }
-// static void test_err_as(){
-//   _test_parser("test/parser/err_parser/decl_expr/as.ifj", "test/parser/err_parser/decl_expr/as.out");
-// }
-// static void test_err_dim(){
-//   _test_parser("test/parser/err_parser/decl_expr/dim.ifj", "test/parser/err_parser/decl_expr/dim.out");
-// }
-// static void test_err_var_id(){
-//   _test_parser("test/parser/err_parser/decl_expr/var_id.ifj", "test/parser/err_parser/decl_expr/var_id.out");
-// }
-// static void test_err_var_type(){
-//   _test_parser("test/parser/err_parser/decl_expr/var_type.ifj", "test/parser/err_parser/decl_expr/var_type.out");
-// }
-// static void test_err_func_id(){
-//   _test_parser("test/parser/err_parser/function_stmt/func_id.ifj", "test/parser/err_parser/function_stmt/func_id.out");
-// }
-// static void test_err_rparen(){
-//   _test_parser("test/parser/err_parser/function_stmt/rparen.ifj", "test/parser/err_parser/function_stmt/rparen.out");
-// }
-// static void test_err_chr(){
-//    _test_parser("test/lexer/error_chr.ifj", "test/lexer/error_chr.out");
-// }
-//
-// static void test_err_hex(){
-//    _test_parser("test/lexer/hex/error_hex.ifj", "test/lexer/hex/error_hex.out");
-// }
-//
-// static void test_err_hex1(){
-//    _test_parser("test/lexer/hex/error_hex1.ifj", "test/lexer/hex/error_hex1.out");
-// }
+static void integration_test_case_insensitive_factorial() {
+  _test_parser("test/integration/parser/case-insensitive-factorial.ifj17",
+               "test/integration/parser/case-insensitive-factorial.out");
+}
 
 /*
  * Run all test suites.
@@ -492,46 +687,75 @@ int main(int argc, const char **argv) {
 
   suite("parser");
   
-  test(string);
+  // NOTE: Comment tests
+  unit_test(comments_only_comments);
+  unit_test(comments_multiline_only_comments);
+  unit_test(comments_inline);
+  unit_test(comments_without_spaces);
+  unit_test(comments_multiline_with_code);
 
-  // test(assign);
-  // test(assign_chain);
-  // test(subscript);
-  // test(declaration);
-  // test(return );
-  
-  // test(err_chr);
-  // test(err_hex);
-  // test(err_hex1);
-  
-  // test(err_expr);
-  // test(err_paren_expr);
-  // test(err_as);
-  // test(err_dim);
-  // test(err_var_type);
-  // test(err_func_id);
-  // test(err_var_id);
-  // test(err_rparen);
-  
   // NOTE: Variable tests
   unit_test(variable_declaration);
   unit_test(variable_declaration_and_assignment);
+  unit_test(variable_assign);
+  unit_test(variable_assign_chain);
 
   // NOTE: Function tests
+  // Declaration
   unit_test(function_declaration_without_arguments);
   unit_test(function_declaration_with_argument);
   unit_test(function_declaration_with_arguments);
-  unit_test(function_declaration_with_body);
 
-  // unit_test(assign);
-  // unit_test(assign_chain);
-  // unit_test(subscript);
-  // unit_test(return );
+  // Initialization
+  unit_test(function_initialization_without_arguments);
+  unit_test(function_initialization_with_argument);
+  unit_test(function_initialization_with_arguments);
+  unit_test(function_initialization_with_body);
+
+  // NOTE: Scope tests
+  unit_test(scope_empty_declaration);
+  unit_test(scope_with_body);
+
+  // NOTE: Conditions test
+  unit_test(if_single);
+  unit_test(if_else);
+  unit_test(if_elseif);
+  unit_test(if_elseif_else);
+
+  // NOTE: Loop tests
+  unit_test(do_while_empty);
+  unit_test(do_while_with_body);
+
+  // NOTE: String test
+  unit_test(empty_string);
+  unit_test(escape_new_line);
+  unit_test(escape_quote);
+  unit_test(escape_sequence);
+  // unit_test(long_string);
+  unit_test(simple_string);
+  unit_test(escape_line_break);
+
+  // NOTE: Case insensitive tests
+  unit_test(case_insensitive_variable_declaration);
+  unit_test(case_insensitive_if_elseif_else);
+  unit_test(case_insensitive_function_initialization_with_body);
+  unit_test(case_insensitive_scope_with_body);
+  unit_test(case_insensitive_string);
 
   type("INTEGRATION TESTS");
 
   suite("parser");
-  integration_test(function_initialization);
+  integration_test(factorial);
+  integration_test(case_insensitive_factorial);
+
+  type("ACCEPTANCE TESTS");
+
+  suite("conditions");
+  acceptance_test(if_single);
+  acceptance_test(if_else);
+  acceptance_test(if_elseif);
+  acceptance_test(if_elseif_else);
+
 
   printf("\n");
   printf("  \e[90mcompleted in \e[32m%.5fs\e[0m\n",

@@ -1,0 +1,15 @@
+' foo
+' bar
+' baz
+
+dim foo as string
+
+' foo
+' bar
+' baz
+
+dim bar as integer
+
+' foo
+' bar
+' baz

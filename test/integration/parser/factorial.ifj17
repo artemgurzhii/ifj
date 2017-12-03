@@ -1,0 +1,15 @@
+function factorial(n as integer) as integer
+  dim temp_result as integer
+  dim decremented_n as integer
+  dim result as integer
+
+  if n < 2 then
+    result = 1
+  else
+    decremented_n = n - 1
+    temp_result = factorial(decremented_n)
+    result = n * temp_result
+  end if
+
+  return result
+end function

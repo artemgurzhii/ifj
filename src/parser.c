@@ -71,7 +71,7 @@
 
 // forward declarations
 
-static ifj17_block_node_t *block(ifj17_parser_t *self, bool isFunctionBlock);
+static ifj17_block_node_t *block(ifj17_parser_t *self);
 static ifj17_node_t *expr(ifj17_parser_t *self);
 static ifj17_node_t *call_expr(ifj17_parser_t *self, ifj17_node_t *left);
 static ifj17_node_t *not_expr(ifj17_parser_t *self);
@@ -228,7 +228,7 @@ static ifj17_node_t *type_expr(ifj17_parser_t *self) {
  * id (',' id)* ':' type_expr
  */
 
-static ifj17_node_t *decl_expr(ifj17_parser_t *self, bool need_type) {
+static ifj17_node_t *decl_expr(ifj17_parser_t *self) {
   debug("decl_expr");
   context("declaration");
 
@@ -250,14 +250,6 @@ static ifj17_node_t *decl_expr(ifj17_parser_t *self, bool need_type) {
       break;
     }
   }
-
-  // 'as'
-  if (!accept(AS)) {
-    if (need_type) {
-      return error("expecting 'type'", SYNTAX_ERROR);
-    } else {
-      return (ifj17_node_t *)ifj17_decl_node_new(vec, NULL, decl_line);
-    }
 
   if (!accept(AS)) {
     return error("expecting 'as'", SYNTAX_ERROR);
@@ -632,7 +624,7 @@ static ifj17_vec_t *function_params(ifj17_parser_t *self) {
 
   do {
     int line = lineno;
-    ifj17_node_t *decl = decl_expr(self, false);
+    ifj17_node_t *decl = decl_expr(self);
     if (!decl)
       return NULL;
 
@@ -677,7 +669,7 @@ static ifj17_node_t *function_expr(ifj17_parser_t *self) {
     context("function");
 
     // block
-    if (body = block(self, false)) {
+    if (body = block(self)) {
       // return (ifj17_node_t *) ifj17_function_node_new(body, params);
     }
   }
@@ -858,7 +850,7 @@ static ifj17_node_t *dim_expr(ifj17_parser_t *self) {
 
   do {
     int line = lineno;
-    ifj17_node_t *decl = decl_expr(self, false);
+    ifj17_node_t *decl = decl_expr(self);
     ifj17_node_t *val = NULL;
 
     context("dim expression");
@@ -989,7 +981,7 @@ static ifj17_node_t *type_stmt(ifj17_parser_t *self) {
 
   // type fields
   do {
-    ifj17_node_t *decl = decl_expr(self, true);
+    ifj17_node_t *decl = decl_expr(self);
     if (!decl)
      return error("expecting field", SYNTAX_ERROR);
     // semicolon might have been inserted here
@@ -999,6 +991,91 @@ static ifj17_node_t *type_stmt(ifj17_parser_t *self) {
   } while (!accept(END));
 
   return (ifj17_node_t *)type;
+}
+
+/*
+ * 'scope' expr block
+ */
+
+static ifj17_node_t *scope_stmt(ifj17_parser_t *self) {
+  ifj17_block_node_t *body;
+  int line = lineno;
+  debug("scope_stmt");
+  context("scope statement");
+
+  // 'scope'
+  if (!accept(SCOPE)) {
+    return NULL;
+  }
+
+  // block
+  if (body = block(self)) {
+    return (ifj17_node_t *)ifj17_scope_node_new(body, line);
+  }
+
+  return NULL;
+}
+
+/*
+ * Function declaration
+ */
+
+static ifj17_node_t *func_declare(ifj17_parser_t *self) {
+  // declare already consumed
+  ifj17_vec_t *params;
+  ifj17_node_t *type = NULL;
+  int line = lineno;
+
+  debug("function_decl");
+
+  if (!accept(DECLARE)) {
+    return NULL;
+  }
+
+  context("function declaration");
+  // 'function'
+  if (!accept(FUNCTION)) {
+    return error("expecting 'function'");
+  }
+
+  // id
+  if (!is(ID)) {
+    return error("missing function name");
+  }
+
+  const char *name = self->tok->value.as_string;
+  next;
+
+  // '('
+  if (accept(LPAREN)) {
+    // params?
+    if (!(params = function_params(self)))
+      return NULL;
+
+    // ')'
+    context("function declaration");
+    if (!accept(RPAREN)) {
+      return error("missing closing ')'");
+    }
+  } else {
+    params = ifj17_vec_new();
+  }
+
+  context("function declaration");
+
+  // (':' type_expr)?
+  if (accept(AS)) {
+    type = type_expr(self);
+
+    if (!type) {
+      return error("missing type after ':'");
+    }
+  }
+
+  // semicolon might have been inserted here
+  accept(SEMICOLON);
+
+  return (ifj17_node_t *)ifj17_declare_node_new(name, type, params, line);
 }
 
 /*
@@ -1056,7 +1133,7 @@ static ifj17_node_t *function_stmt(ifj17_parser_t *self) {
   accept(SEMICOLON);
 
   // block
-  if (body = block(self, true)) {
+  if (body = block(self)) {
     return (ifj17_node_t *)ifj17_function_node_new(name, type, body, params, line);
   }
 
@@ -1065,7 +1142,7 @@ static ifj17_node_t *function_stmt(ifj17_parser_t *self) {
 
 /*
  *  ('if') expr block
- *  ('else' 'if' block)*
+ *  ('elseif' block)*
  *  ('else' block)?
  */
 
@@ -1088,52 +1165,48 @@ static ifj17_node_t *if_stmt(ifj17_parser_t *self) {
     return NULL;
   }
 
-  // semicolon might have been inserted here
-  accept(SEMICOLON);
-  // if (!accept(COLON)) {
-  //   return error("missing `:`");
-  // }
+  if (!accept(THEN)) {
+    return error("missing 'then'");
+  }
 
   // block
   context("if statement");
-  if (!(body = block(self, false))) {
+  if (!(body = block(self))) {
     return NULL;
   }
 
   ifj17_if_node_t *node = ifj17_if_node_new(cond, body, line);
 
-// 'else'
+// 'elseif' || 'else'
 loop:
   if (accept(ELSE)) {
-    ifj17_block_node_t *body;
+    context("else statement");
 
-    // ('else' 'if' block)*
-    if (accept(IF)) {
-      int line = lineno;
-      context("else if statement condition");
-      if (!(cond = expr(self))) {
-        return NULL;
-      }
-
-      // semicolon might have been inserted here
-      accept(SEMICOLON);
-      // if (!accept(COLON)) {
-      //   return error("missing `:`");
-      // }
-
-      context("else if statement");
-      if (!(body = block(self, false)))
-        return NULL;
-      ifj17_vec_push(node->else_ifs, ifj17_node((ifj17_node_t *)ifj17_if_node_new(
-                                         cond, body, line)));
-      goto loop;
-      // 'else'
-    } else {
-      context("else statement");
-      if (!(body = block(self, false)))
-        return NULL;
-      node->else_block = body;
+    if (!(body = block(self))) {
+      return NULL;
     }
+
+    node->else_block = body;
+  } else if (accept(ELSEIF)) {
+    context("elseif statement condition");
+
+    if (!(cond = expr(self))) {
+      return NULL;
+    }
+
+    if (!accept(THEN)) {
+      return error("missing 'then'");
+    }
+
+    // block
+    context("if statement");
+    if (!(body = block(self))) {
+      return NULL;
+    }
+
+    ifj17_vec_push(node->else_ifs,
+                   ifj17_node((ifj17_node_t *)ifj17_if_node_new(cond, body, line)));
+    goto loop;
   }
 
   return (ifj17_node_t *)node;
@@ -1147,28 +1220,35 @@ static ifj17_node_t *while_stmt(ifj17_parser_t *self) {
   ifj17_node_t *cond;
   ifj17_block_node_t *body;
   int line = lineno;
-  debug("while_stmt");
+  debug("do_while_stmt");
 
-  // 'while'
-  if (!is(WHILE)) {
+  // 'do'
+  if (!accept(DO)) {
     return NULL;
   }
 
+  if (!accept(WHILE)) {
+    return error("missing 'while'");
+  }
+
   context("while statement condition");
-  next;
+
+  // BUG: From what I have seen in our language docs
+  // there is 2 ways of `do while` loop
+  // 1. do while ${condition}
+  // 1. do while ( ${condition} )
+  // Need to find out which is correct or both of them
 
   // expr
   if (!(cond = expr(self))) {
     return NULL;
   }
 
-  context("while statement");
-
   // semicolon might have been inserted here
   accept(SEMICOLON);
 
   // block
-  if (!(body = block(self, false))) {
+  if (!(body = block(self))) {
     return NULL;
   }
 
@@ -1186,8 +1266,9 @@ static ifj17_node_t *return_stmt(ifj17_parser_t *self) {
   context("return statement");
 
   // 'return'
-  if (!accept(RETURN))
+  if (!accept(RETURN)) {
     return NULL;
+  }
 
   // 'return' expr
   ifj17_node_t *node = NULL;
@@ -1196,6 +1277,7 @@ static ifj17_node_t *return_stmt(ifj17_parser_t *self) {
     if (!(node = expr(self)))
       return NULL;
   }
+
   return (ifj17_node_t *)ifj17_return_node_new(node, line);
 }
 
@@ -1203,6 +1285,7 @@ static ifj17_node_t *return_stmt(ifj17_parser_t *self) {
  *   if_stmt
  * | while_stmt
  * | return_stmt
+ * | scope_stmts
  * | function_stmt
  * | type_stmt
  * | expr
@@ -1215,12 +1298,20 @@ static ifj17_node_t *stmt(ifj17_parser_t *self) {
     return if_stmt(self);
   }
 
-  if (is(WHILE)) {
+  if (is(DO)) {
     return while_stmt(self);
   }
 
   if (is(RETURN)) {
     return return_stmt(self);
+  }
+
+  if (is(SCOPE)) {
+    return scope_stmt(self);
+  }
+
+  if (is(DECLARE)) {
+    return func_declare(self);
   }
 
   if (is(FUNCTION)) {
@@ -1238,27 +1329,26 @@ static ifj17_node_t *stmt(ifj17_parser_t *self) {
  * stmt* 'end'
  */
 
-static ifj17_block_node_t *block(ifj17_parser_t *self, bool isFunctionBlock) {
+static ifj17_block_node_t *block(ifj17_parser_t *self) {
   debug("block");
   ifj17_node_t *node;
   ifj17_block_node_t *block = ifj17_block_node_new(lineno);
 
-  // If `end` keyword is received
-  // We need to check if this is a `function statement` or any other
-  // As `function statement` requires `end function` for function closing
-  if (accept(END)) {
-    // if (isFunctionBlock) {
-    //   if (is(FUNCTION)) {
-    //     return block;
-    //   }
-    //
-    //   return error("missing closing statement");
-    // } else {
-    return block;
-    // }
-  }
-
   do {
+    // if `ELSEIF` or `ELSE` break to return block
+    if (is(ELSEIF) || is(ELSE) || accept(LOOP)) {
+      break;
+    }
+
+    // if `END` then after we can see `FUNCTION/SCOPE/IF`
+    if (accept(END)) {
+      if (!accept(FUNCTION) && !accept(SCOPE) && !accept(IF)) {
+        return error("expecting closing statement");
+      }
+
+      break;
+    }
+
     if (!(node = stmt(self))) {
       return NULL;
     }
@@ -1266,7 +1356,7 @@ static ifj17_block_node_t *block(ifj17_parser_t *self, bool isFunctionBlock) {
     accept(SEMICOLON);
 
     ifj17_vec_push(block->stmts, ifj17_node(node));
-  } while (!accept(END) && !is(ELSE));
+  } while (true);
 
   return block;
 }

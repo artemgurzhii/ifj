@@ -101,6 +101,11 @@ static int scan_ident(ifj17_lexer_t *self, int c) {
   } while (isalpha(c = next) || isdigit(c) || '_' == c);
   undo;
 
+  // transform all keywords to the lower case
+  for (unsigned int i = 0; buf[i]; i++) {
+    buf[i] = tolower(buf[i]);
+  }
+
   buf[len++] = 0;
   switch (len - 1) {
   case 2:
@@ -108,6 +113,8 @@ static int scan_ident(ifj17_lexer_t *self, int c) {
       return token(IF);
     if (strcmp("as", buf) == 0)
       return token(AS);
+    if (strcmp("do", buf) == 0)
+      return token(DO);
     break;
   case 3:
     if (strcmp("for", buf) == 0)
@@ -126,10 +133,26 @@ static int scan_ident(ifj17_lexer_t *self, int c) {
       return token(ELSE);
     if (strcmp("type", buf) == 0)
       return token(TYPE);
+    if (strcmp("then", buf) == 0)
+      return token(THEN);
+    if (strcmp("loop", buf) == 0)
+      return token(LOOP);
     break;
   case 5:
     if (strcmp("while", buf) == 0)
       return token(WHILE);
+    if (strcmp("scope", buf) == 0)
+      return token(SCOPE);
+    break;
+  case 6:
+    if (strcmp("elseif", buf) == 0)
+      return token(ELSEIF);
+    if (strcmp("return", buf) == 0)
+      return token(RETURN);
+    break;
+  case 7:
+    if (strcmp("declare", buf) == 0)
+      return token(DECLARE);
     break;
   case 8:
     if (strcmp("function", buf) == 0)
@@ -160,12 +183,12 @@ static int hex_literal(ifj17_lexer_t *self) {
  * Scan string.
  */
 
-static int scan_string(ifj17_lexer_t *self, int quote) {
+static int scan_string(ifj17_lexer_t *self) {
   int c, len = 0;
   char buf[128];
   token(STRING);
 
-  while (quote != (c = next)) {
+  while ('"' != (c = next)) {
     switch (c) {
     case '\n':
       ++self->lineno;
@@ -377,7 +400,15 @@ scan:
   case '/':
     return '=' == next ? token(OP_DIV_ASSIGN) : (undo, token(OP_DIV));
   case '!':
-    return '=' == next ? token(OP_NEQ) : (undo, token(OP_NOT));
+    //return '"' == next ? token(OP_NEQ) : (undo, token(OP_NOT));
+    if ('=' == next) {
+      return token(OP_NEQ);
+    }
+    undo;
+    if ('"' == next) {
+      return scan_string(self);
+    }
+    return (undo, token(OP_NOT));
   case '=':
     return '=' == next ? token(OP_EQ) : (undo, token(OP_ASSIGN));
   case '&':
@@ -412,7 +443,7 @@ scan:
     default:
       return undo, token(OP_GT);
     }
-  case '#':
+  case '\'':
     while ((c = next) != '\n' && c)
       ;
     undo;
@@ -426,9 +457,6 @@ scan:
     }
     ++self->lineno;
     goto scan;
-  case '"':
-  case '\'':
-    return scan_string(self, c);
   case 0:
     token(EOS);
     return 0;

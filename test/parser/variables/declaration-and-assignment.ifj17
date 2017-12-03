@@ -1,3 +1,0 @@
-dim foo as string = "hello"
-
-dim  bar  as  string  =  "world"

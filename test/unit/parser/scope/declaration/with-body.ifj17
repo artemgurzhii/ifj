@@ -1,0 +1,4 @@
+scope
+  function foo() as string
+  end function
+end scope

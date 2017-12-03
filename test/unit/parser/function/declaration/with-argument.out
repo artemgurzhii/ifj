@@ -1,0 +1,5 @@
+(declare
+  (function foo -> (id integer)
+    (decl
+      (id bar)
+      : (id integer))))

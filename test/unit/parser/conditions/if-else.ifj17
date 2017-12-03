@@ -1,0 +1,5 @@
+if a then
+  dim a as string
+else
+  dim a as string
+end if
