@@ -21,7 +21,13 @@
 
 #define emit(op, a, b, c) *vm->main->code++ = ABC(op, a, b, c);
 
+static int from_if = 0;
+
 static int else_if_num = 0;
+static int else_num = 0;
+
+static int end_if_num = 0;
+
 
 // print function
 
@@ -42,11 +48,9 @@ static void emit_op(ifj17_visitor_t *self, ifj17_binary_op_node_t *node) {
     break;
   case IFJ17_TOKEN_OP_EQ:
     print_func("EQ ");
-    print_func("RES_IF_%d ", else_if_num);
     break;
   case IFJ17_TOKEN_OP_NEQ:
     print_func("NEQ ");
-    print_func("RES_IF_%d ", else_if_num);
     break;
   // case IFJ17_TOKEN_OP_MINUS:
   //   emit(SUB, 0, l, r);
@@ -72,6 +76,11 @@ static void emit_op(ifj17_visitor_t *self, ifj17_binary_op_node_t *node) {
   //   emit(LOADB, 0, CONST(1), 1);
   //   emit(LOADB, 0, CONST(0), 0);
   //   break;
+  }
+
+  if (from_if == 1) {
+    print_func("RES_IF_%d ", else_if_num);
+    from_if--;
   }
 }
 
@@ -365,15 +374,8 @@ static void visit_function(ifj17_visitor_t *self, ifj17_function_node_t *node) {
  * Visit `while` node.
  */
 
-static void visit_while(ifj17_visitor_t *self, ifj17_while_node_t *node) {
-  // // while
-  // printf("(while ");
-  // visit((ifj17_node_t *) node->expr);
-  // ++indents;
-  // printf("\n");
-  // visit((ifj17_node_t *) node->block);
-  // --indents;
-  // printf(")\n");
+ static void visit_while(ifj17_visitor_t *self, ifj17_while_node_t *node) {
+   printf("while\n");
 }
 
 /*
@@ -397,14 +399,21 @@ static void visit_return(ifj17_visitor_t *self, ifj17_return_node_t *node) {
  */
 
 static void visit_if(ifj17_visitor_t *self, ifj17_if_node_t *node) {
-  else_if_num = 1;
-  
+  // We need these counters to make LABELs in bytecode with
+  // unique name. Should be refactored later if we have enough time
+
+  int mem_else_if_num = else_if_num;
+  else_if_num++;
+  from_if++;
+  end_if_num++;
+
   // if
   print_func("JUMPIF");
   visit((ifj17_node_t *)node->expr);
 
   // else ifs
   ifj17_vec_each(node->else_ifs, {
+    from_if++;
     else_if_num++;
     ifj17_if_node_t *else_if = (ifj17_if_node_t *)val->value.as_pointer;
     print_func("JUMPIF");
@@ -413,32 +422,34 @@ static void visit_if(ifj17_visitor_t *self, ifj17_if_node_t *node) {
 
   // else
   if (node->else_block) {
-    print_func("JUMP RES_ELSE\n");
+    print_func("JUMP RES_ELSE_%d\n", ++else_num);
   }
 
-  else_if_num = 0;
+  if (!node->else_block && ifj17_vec_length(node->else_ifs) == 0) {
+    print_func("JUMP END_IF_%d\n", end_if_num);
+  }
 
-  print_func("LABEL RES_IF_%d\n", ++else_if_num);
+  print_func("LABEL RES_IF_%d\n", ++mem_else_if_num);
 
   visit((ifj17_node_t *)node->block);
 
-  print_func("JUMP END_IF\n");
+  print_func("JUMP END_IF_%d\n", end_if_num);
 
   // else ifs
   ifj17_vec_each(node->else_ifs, {
     ifj17_if_node_t *else_if = (ifj17_if_node_t *)val->value.as_pointer;
-    print_func("LABEL RES_IF_%d\n", ++else_if_num);
+    print_func("LABEL RES_IF_%d\n", ++mem_else_if_num);
     visit((ifj17_node_t *)else_if->block);
-    print_func("JUMP END_IF\n");
+    print_func("JUMP END_IF_%d\n", end_if_num);
   });
 
   if (node->else_block) {
-    print_func("LABEL RES_ELSE\n");
+    print_func("LABEL RES_ELSE_%d\n", else_num);
     visit((ifj17_node_t *)node->else_block);
-    print_func("JUMP END_IF\n");
+    print_func("JUMP END_IF_%d\n", end_if_num);
   }
 
-  print_func("LABEL END_IF\n");
+  print_func("LABEL END_IF_%d\n", end_if_num);
 }
 
 /*
