@@ -397,15 +397,11 @@ scan:
   case '/':
     return '=' == next ? token(OP_DIV_ASSIGN) : (undo, token(OP_DIV));
   case '!':
-    //return '"' == next ? token(OP_NEQ) : (undo, token(OP_NOT));
-    if ('=' == next) {
-      return token(OP_NEQ);
-    }
-    undo;
     if ('"' == next) {
       return scan_string(self);
     }
-    return (undo, token(OP_NOT));
+    undo;
+    return token(OP_NOT);
   case '=':
     return '=' == next ? token(OP_EQ) : (undo, token(OP_ASSIGN));
   case '&':
@@ -424,6 +420,8 @@ scan:
     }
   case '<':
     switch (next) {
+    case '>':
+      return token(OP_NEQ);
     case '=':
       return token(OP_LTE);
     case '<':
