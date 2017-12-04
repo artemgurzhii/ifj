@@ -1333,7 +1333,7 @@ static ifj17_block_node_t *block(ifj17_parser_t *self) {
 
   do {
     // if `ELSEIF` or `ELSE` break to return block
-    if (is(ELSEIF) || is(ELSE) || accept(LOOP)) {
+    if (is(ELSE) || is(ELSEIF) || accept(LOOP)) {
       break;
     }
 

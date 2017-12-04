@@ -1,0 +1,5 @@
+if foo == 0 then
+  if bar == 1 then
+    return 1
+  end if
+end if
