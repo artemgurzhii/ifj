@@ -1,0 +1,11 @@
+Function function_simple (n As Integer) As Integer
+n = n + 5
+return n
+End Function
+
+Scope
+dim a as integer
+dim b as integer
+b = 3
+a = function_simple(b)
+End Scope

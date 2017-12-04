@@ -1,0 +1,19 @@
+.IFJcode17
+
+JUMP Scope
+
+LABEL Function_simple
+ADD GF@result GF@a GF@b
+RETURN
+
+
+LABEL Scope
+
+DEFVAR GF@a
+DEFVAR GF@b
+DEFVAR GF@result
+
+MOVE GF@a int@10
+MOVE GF@b int@2
+
+CALL Function_simple

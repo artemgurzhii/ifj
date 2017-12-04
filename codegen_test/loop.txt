@@ -1,0 +1,15 @@
+.IFJcode17
+DEFVAR GF@a
+DEFVAR GF@b
+DEFVAR GF@c
+
+
+MOVE GF@a int@10
+MOVE GF@b int@2
+MOVE GF@c int@0
+
+LABEL Loop
+
+SUB GF@a GF@a GF@b
+
+JUMPIFNEQ Loop GF@a GF@c

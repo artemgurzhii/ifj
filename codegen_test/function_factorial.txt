@@ -1,0 +1,42 @@
+.IFJcode17
+
+JUMP Scope
+
+
+LABEL Function_factorial
+CREATEFRAME
+
+DEFVAR TF@answer
+DEFVAR TF@n
+
+JUMPIFEQ End_factorial GF@var int@1
+
+PUSHS GF@var
+SUB GF@var GF@var int@1
+CALL Function_factorial
+POPS TF@n
+MUL TF@answer TF@answer TF@n
+JUMP End
+
+
+LABEL End_factorial
+MOVE TF@answer GF@var
+
+
+LABEL End
+MOVE GF@result TF@answer
+
+RETURN
+
+
+
+LABEL Scope
+
+DEFVAR GF@var
+DEFVAR GF@result
+
+MOVE GF@var int@5
+MOVE GF@result int@0
+
+CLEARS
+CALL Function_factorial

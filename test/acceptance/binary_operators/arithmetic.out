@@ -1,0 +1,9 @@
+JUMP Scope
+LABEL Scope
+DEFVAR GF@a
+DEFVAR GF@b
+DEFVAR GF@c
+ADD GF@c GF@a GF@b
+SUB GF@c GF@a GF@b
+MUL GF@c GF@a GF@b
+DIV GF@c GF@a GF@b
