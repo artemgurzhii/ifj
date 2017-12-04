@@ -460,7 +460,7 @@ static ifj17_node_t *relational_expr(ifj17_parser_t *self) {
 }
 
 /*
- * relational_expr (('==' | '!=') relational_expr)*
+ * relational_expr (('==' | '<>') relational_expr)*
  */
 
 static ifj17_node_t *equality_expr(ifj17_parser_t *self) {

@@ -3,20 +3,20 @@ dim res as integer
 a = 1
 if a == 1 then
   res = 42
-elseif a != 0 then
+elseif a <> 0 then
   res = 24
-elseif a != 1 then
+elseif a <> 1 then
   res = 24
-elseif a != 4 then
+elseif a <> 4 then
   res = 24
 end if
 
 if a == 1 then
   res = 42
-elseif a != 0 then
+elseif a <> 0 then
   res = 24
-elseif a != 1 then
+elseif a <> 1 then
   res = 24
-elseif a != 4 then
+elseif a <> 4 then
   res = 24
 end if

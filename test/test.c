@@ -520,6 +520,47 @@ static void unit_test_comments_without_spaces() {
   _test_parser("test/unit/parser/comments/without-spaces");
 }
 
+// OPERATIONS
+static void unit_test_operation_plus() {
+  _test_parser("test/unit/parser/operations/plus");
+}
+
+static void unit_test_operation_minus() {
+  _test_parser("test/unit/parser/operations/minus");
+}
+
+static void unit_test_operation_multiplication() {
+  _test_parser("test/unit/parser/operations/multiplication");
+}
+
+static void unit_test_operation_division() {
+  _test_parser("test/unit/parser/operations/division");
+}
+
+static void unit_test_operation_equal() {
+  _test_parser("test/unit/parser/operations/equal");
+}
+
+static void unit_test_operation_not_equal() {
+  _test_parser("test/unit/parser/operations/not-equal");
+}
+
+static void unit_test_operation_greater_then() {
+  _test_parser("test/unit/parser/operations/greater-then");
+}
+
+static void unit_test_operation_less_then() {
+  _test_parser("test/unit/parser/operations/less-then");
+}
+
+static void unit_test_operation_greater_then_or_equal() {
+  _test_parser("test/unit/parser/operations/greater-then-or-equal");
+}
+
+static void unit_test_operation_less_then_or_equal() {
+  _test_parser("test/unit/parser/operations/less-then-or-equal");
+}
+
 // CONDITIONS
 static void unit_test_if_single() {
   _test_parser("test/unit/parser/conditions/if-single");
@@ -575,7 +616,6 @@ static void unit_test_escape_line_break() {
 }
 
 // CASE insensitive
-
 static void unit_test_case_insensitive_variable_declaration() {
   _test_parser("test/unit/parser/case-insensitive/variable-declaration");
 }
@@ -694,6 +734,18 @@ int main(int argc, const char **argv) {
   unit_test(variable_declaration_and_assignment);
   unit_test(variable_assign);
   unit_test(variable_assign_chain);
+
+  // NOTE: Operations tests
+  unit_test(operation_plus);
+  unit_test(operation_minus);
+  unit_test(operation_multiplication);
+  unit_test(operation_division);
+  unit_test(operation_equal);
+  unit_test(operation_not_equal);
+  unit_test(operation_greater_then);
+  unit_test(operation_less_then);
+  unit_test(operation_greater_then_or_equal);
+  unit_test(operation_less_then_or_equal);
 
   // NOTE: Function tests
   // Declaration

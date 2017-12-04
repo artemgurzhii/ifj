@@ -63,7 +63,7 @@
   t(OP_GTE, ">=") \
   t(OP_LTE, "<=") \
   t(OP_EQ, "==") \
-  t(OP_NEQ, "!=") \
+  t(OP_NEQ, "<>") \
   t(OP_AND, "&&") \
   t(OP_OR, "||") \
   t(OP_ASSIGN, "=") \
