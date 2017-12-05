@@ -730,95 +730,95 @@ int main(int argc, const char **argv) {
 
   type("UNIT TESTS");
 
-  // suite("value");
-  // unit_test(value_is);
-  //
-  // suite("array");
-  // unit_test(array_length);
-  // unit_test(array_push);
-  // unit_test(array_at);
-  // unit_test(array_iteration);
-  //
-  // suite("hash");
-  // unit_test(hash_set);
-  // unit_test(hash_has);
-  // unit_test(hash_remove);
-  // unit_test(hash_iteration);
-  // unit_test(hash_mixins);
-  //
-  // suite("string");
-  // unit_test(string);
-  //
-  // suite("parser");
-  //
-  // // NOTE: Comment tests
-  // unit_test(comments_only_comments);
-  // unit_test(comments_multiline_only_comments);
-  // unit_test(comments_inline);
-  // unit_test(comments_without_spaces);
-  // unit_test(comments_multiline_with_code);
-  //
-  // // NOTE: Variable tests
-  // unit_test(variable_declaration);
-  // unit_test(variable_declaration_and_assignment);
-  // unit_test(variable_assign);
-  // unit_test(variable_assign_chain);
-  //
-  // // NOTE: Operations tests
-  // unit_test(operation_plus);
-  // unit_test(operation_minus);
-  // unit_test(operation_multiplication);
-  // unit_test(operation_division);
-  // unit_test(operation_equal);
-  // unit_test(operation_not_equal);
-  // unit_test(operation_greater_then);
-  // unit_test(operation_less_then);
-  // unit_test(operation_greater_then_or_equal);
-  // unit_test(operation_less_then_or_equal);
-  //
-  // // NOTE: Function tests
-  // // Declaration
-  // unit_test(function_declaration_without_arguments);
-  // unit_test(function_declaration_with_argument);
-  // unit_test(function_declaration_with_arguments);
-  //
-  // // Initialization
-  // unit_test(function_initialization_without_arguments);
-  // unit_test(function_initialization_with_argument);
-  // unit_test(function_initialization_with_arguments);
-  // unit_test(function_initialization_with_body);
-  //
-  // // NOTE: Scope tests
-  // unit_test(scope_empty_declaration);
-  // unit_test(scope_with_body);
-  //
-  // // NOTE: Conditions test
-  // unit_test(if_single);
-  // unit_test(if_else);
-  // unit_test(if_elseif);
-  // unit_test(if_elseif_else);
-  // unit_test(if_nested);
-  // // unit_test(if_else_if_nested);
-  //
-  // // NOTE: Loop tests
-  // unit_test(do_while_empty);
-  // unit_test(do_while_with_body);
-  //
-  // // NOTE: String test
-  // unit_test(empty_string);
-  // unit_test(escape_new_line);
-  // unit_test(escape_quote);
-  // unit_test(escape_sequence);
-  // // unit_test(long_string);
-  // unit_test(simple_string);
-  // unit_test(escape_line_break);
-  //
-  // // NOTE: Case insensitive tests
-  // unit_test(case_insensitive_variable_declaration);
-  // unit_test(case_insensitive_if_elseif_else);
-  // unit_test(case_insensitive_function_initialization_with_body);
-  // unit_test(case_insensitive_scope_with_body);
-  // unit_test(case_insensitive_string);
+  suite("value");
+  unit_test(value_is);
+
+  suite("array");
+  unit_test(array_length);
+  unit_test(array_push);
+  unit_test(array_at);
+  unit_test(array_iteration);
+
+  suite("hash");
+  unit_test(hash_set);
+  unit_test(hash_has);
+  unit_test(hash_remove);
+  unit_test(hash_iteration);
+  unit_test(hash_mixins);
+
+  suite("string");
+  unit_test(string);
+
+  suite("parser");
+
+  // NOTE: Comment tests
+  unit_test(comments_only_comments);
+  unit_test(comments_multiline_only_comments);
+  unit_test(comments_inline);
+  unit_test(comments_without_spaces);
+  unit_test(comments_multiline_with_code);
+
+  // NOTE: Variable tests
+  unit_test(variable_declaration);
+  unit_test(variable_declaration_and_assignment);
+  unit_test(variable_assign);
+  unit_test(variable_assign_chain);
+
+  // NOTE: Operations tests
+  unit_test(operation_plus);
+  unit_test(operation_minus);
+  unit_test(operation_multiplication);
+  unit_test(operation_division);
+  unit_test(operation_equal);
+  unit_test(operation_not_equal);
+  unit_test(operation_greater_then);
+  unit_test(operation_less_then);
+  unit_test(operation_greater_then_or_equal);
+  unit_test(operation_less_then_or_equal);
+
+  // NOTE: Function tests
+  // Declaration
+  unit_test(function_declaration_without_arguments);
+  unit_test(function_declaration_with_argument);
+  unit_test(function_declaration_with_arguments);
+
+  // Initialization
+  unit_test(function_initialization_without_arguments);
+  unit_test(function_initialization_with_argument);
+  unit_test(function_initialization_with_arguments);
+  unit_test(function_initialization_with_body);
+
+  // NOTE: Scope tests
+  unit_test(scope_empty_declaration);
+  unit_test(scope_with_body);
+
+  // NOTE: Conditions test
+  unit_test(if_single);
+  unit_test(if_else);
+  unit_test(if_elseif);
+  unit_test(if_elseif_else);
+  unit_test(if_nested);
+  // unit_test(if_else_if_nested);
+
+  // NOTE: Loop tests
+  unit_test(do_while_empty);
+  unit_test(do_while_with_body);
+
+  // NOTE: String test
+  unit_test(empty_string);
+  unit_test(escape_new_line);
+  unit_test(escape_quote);
+  unit_test(escape_sequence);
+  // unit_test(long_string);
+  unit_test(simple_string);
+  unit_test(escape_line_break);
+
+  // NOTE: Case insensitive tests
+  unit_test(case_insensitive_variable_declaration);
+  unit_test(case_insensitive_if_elseif_else);
+  unit_test(case_insensitive_function_initialization_with_body);
+  unit_test(case_insensitive_scope_with_body);
+  unit_test(case_insensitive_string);
 
   // NOTE: Build in tests
   unit_test(built_in_print_single_int);

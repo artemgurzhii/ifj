@@ -18,10 +18,10 @@
   t(EOS, "end-of-source") \
   t(ID, "id") \
   t(INT, "int") \
+  t(PRINT, "print") \
   t(DOUBLE, "double") \
   t(STRING, "string") \
   t(DECLARE, "declare") \
-  t(PRINT, "print") \
   t(FUNCTION, "function") \
   t(SCOPE, "scope") \
   t(TYPE, "type") \
