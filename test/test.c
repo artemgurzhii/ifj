@@ -615,6 +615,10 @@ static void unit_test_escape_line_break() {
   _test_parser("test/unit/parser/string/escape-line-break");
 }
 
+static void unit_test_new_line() {
+  _test_parser("test/unit/parser/string/new-line");
+}
+
 // CASE insensitive
 static void unit_test_case_insensitive_variable_declaration() {
   _test_parser("test/unit/parser/case-insensitive/variable-declaration");
@@ -783,6 +787,7 @@ int main(int argc, const char **argv) {
   // unit_test(long_string);
   unit_test(simple_string);
   unit_test(escape_line_break);
+  // unit_test(new_line);
 
   // NOTE: Case insensitive tests
   unit_test(case_insensitive_variable_declaration);
