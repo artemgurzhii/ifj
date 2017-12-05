@@ -62,6 +62,10 @@ static void emit_op(ifj17_visitor_t *self, ifj17_binary_op_node_t *node) {
      break;
   case IFJ17_TOKEN_OP_EQ:
     print_func("EQ ");
+    if (from_if == 1) {
+      print_func("RES_IF_%d ", else_if_num);
+      from_if--;
+    }
     break;
   case IFJ17_TOKEN_OP_NEQ:
     print_func("NEQ ");
@@ -89,10 +93,10 @@ static void emit_op(ifj17_visitor_t *self, ifj17_binary_op_node_t *node) {
   //   break;
   }
 
-  if (from_if == 1) {
-    print_func("RES_IF_%d ", else_if_num);
-    from_if--;
-  }
+  // if (from_if == 1) {
+  //   print_func("RES_IF_%d ", else_if_num);
+  //   from_if--;
+  // }
 }
 
 /*
@@ -297,8 +301,9 @@ static void visit_binary_op(ifj17_visitor_t *self, ifj17_binary_op_node_t *node)
         bin_op = bin_op -2;
         return;
       }
+    }
 
-      }
+
     else if (!strcmp(ifj17_token_type_string(node->op), "*")) {
       if (bin_op == 1) {
         printf("MUL ");
@@ -327,6 +332,14 @@ static void visit_binary_op(ifj17_visitor_t *self, ifj17_binary_op_node_t *node)
         return;
       }
      }
+     else if (!strcmp(ifj17_token_type_string(node->op), "==")) {
+       emit_op(self, node);
+       visit(node->left);
+       print_func(" ");
+       visit(node->right);
+       print_func("\n");
+       return;
+     }
     // } else if (!strcmp(ifj17_token_type_string(node->op), ">")) {
     //   printf("GT ");
     //   printf("GF@bool");
@@ -340,6 +353,7 @@ static void visit_binary_op(ifj17_visitor_t *self, ifj17_binary_op_node_t *node)
     bin_op++;
     visit(node->right);
   }
+
 
 /*
  * Visit array `node`.
@@ -538,7 +552,7 @@ static void visit_if(ifj17_visitor_t *self, ifj17_if_node_t *node) {
   end_if_num++;
 
   // if
-  print_func("JUMPIF ");
+  print_func("JUMPIF");
 
   emit_op(self, node);
   visit((ifj17_node_t *)node->expr);

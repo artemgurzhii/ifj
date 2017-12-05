@@ -1,0 +1,19 @@
+Function recursive (n As Integer) As Integer
+dim answer as integer
+
+if (n == 1) then
+  return 1
+else
+  n = n - 1
+  answer = recursive(n)
+  answer = answer * n
+end if
+
+return answer
+End Function
+
+
+Scope
+dim a as integer
+a = recursive(a)
+End Scope

@@ -1,0 +1,35 @@
+.IFJcode17
+JUMP Scope
+
+LABEL recursive
+CREATEFRAME
+DEFVAR TF@n
+POPS TF@n
+DEFVAR TF@answer
+
+JUMPIFEQ RES_IF_1 TF@n int@1
+JUMP RES_ELSE_1
+
+LABEL RES_IF_1
+PUSHS int@1
+RETURN
+JUMP END_IF_1
+
+LABEL RES_ELSE_1
+SUB TF@n TF@n int@1
+PUSHS TF@n
+CALL recursive
+POPS TF@answer
+MUL TF@answer TF@answer TF@n
+JUMP END_IF_1
+
+LABEL END_IF_1
+RETURN
+
+
+LABEL Scope
+DEFVAR GF@a
+
+PUSHS GF@a
+CALL recursive
+POPS GF@a
