@@ -41,6 +41,11 @@ static int glob_var = 0;
 static int loc_var = 0;
 static int scope = 0;
 
+// LOOPS
+static int from_loop = 0;
+static int loop_num = 0;
+static int mem_loop_num = 0;
+
 
 // print function
 
@@ -72,7 +77,7 @@ static void emit_op(ifj17_visitor_t *self, ifj17_binary_op_node_t *node) {
         break;
 
   case IFJ17_TOKEN_OP_EQ:
-     print_func("EQ ");
+     print_func("JUMPIFEQ ");
       if (from_if == 1) {
         print_func("RES_IF_%d ", else_if_num);
         from_if--;
@@ -80,7 +85,7 @@ static void emit_op(ifj17_visitor_t *self, ifj17_binary_op_node_t *node) {
      break;
 
   case IFJ17_TOKEN_OP_NEQ:
-     print_func("NEQ ");
+     print_func("JUMPIFNEQ ");
       if (from_if == 1) {
         print_func("RES_IF_%d ", else_if_num);
         from_if--;
@@ -115,10 +120,10 @@ static void emit_op(ifj17_visitor_t *self, ifj17_binary_op_node_t *node) {
   //   break;
   }
 
-  // if (from_if == 1) {
-  //   print_func("RES_IF_%d ", else_if_num);
-  //   from_if--;
-  // }
+    if (from_loop == 1) {
+       print_func("LOOP_%d ", loop_num--);
+      from_loop--;
+  }
 }
 
 /*
@@ -557,7 +562,14 @@ static void visit_function(ifj17_visitor_t *self, ifj17_function_node_t *node) {
  */
 
  static void visit_while(ifj17_visitor_t *self, ifj17_while_node_t *node) {
-   printf("while\n");
+   loop_num = mem_loop_num;
+    printf("LABEL LOOP_%d\n", ++loop_num);
+   mem_loop_num++;
+   visit((ifj17_node_t *) node->block);
+
+   from_loop++;
+   //printf("JUMPIF");
+   visit((ifj17_node_t *) node->expr);
 }
 
 /*
@@ -598,10 +610,9 @@ static void visit_if(ifj17_visitor_t *self, ifj17_if_node_t *node) {
   end_if_num++;
 
   // if
-  rel++;
-  if (rel != 1) {
-  print_func("JUMPIF");
-}
+//   if (rel != 1) {
+//   print_func("JUMPIF");
+// }
 
   emit_op(self, node);
   visit((ifj17_node_t *)node->expr);
@@ -612,7 +623,7 @@ static void visit_if(ifj17_visitor_t *self, ifj17_if_node_t *node) {
     from_if++;
     else_if_num++;
     ifj17_if_node_t *else_if = (ifj17_if_node_t *)val->value.as_pointer;
-    print_func("JUMPIF");
+    //print_func("JUMPIF");
     visit((ifj17_node_t *)else_if->expr);
   });
 
@@ -695,5 +706,6 @@ ifj17_vm_t *ifj17_gen(ifj17_node_t *node) {
 
   // Reset code so we can free it later
   vm->main->code = vm->main->ip;
+  print_func("\n");
   return vm;
 }

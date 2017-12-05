@@ -637,6 +637,43 @@ static void acceptance_test_boolean_operators(){
                 "test/acceptance/binary_operators/boolean.out");
 }
 
+static void acceptance_test_relation_operators(){
+  _test_codegen("test/acceptance/binary_operators/relations.ifj17",
+                "test/acceptance/binary_operators/relations.out");
+}
+
+// LOOPS
+
+ static void acceptance_test_do_while_whithout_body() {
+   _test_codegen("test/acceptance/loops/while/without-body.ifj17",
+                 "test/acceptance/loops/while/without-body.out");
+ }
+
+ static void acceptance_test_do_while_with_body() {
+   _test_codegen("test/acceptance/loops/while/with-body.ifj17",
+                 "test/acceptance/loops/while/with-body.out");
+ }
+
+ static void acceptance_test_do_while_nested() {
+   _test_codegen("test/acceptance/loops/while/nested-loop.ifj17",
+                 "test/acceptance/loops/while/nested-loop.out");
+ }
+
+ static void acceptance_test_do_while_empty2x() {
+   _test_codegen("test/acceptance/loops/while/without-body2x.ifj17",
+                 "test/acceptance/loops/while/without-body2x.out");
+ }
+
+ static void acceptance_test_do_while_with_body2x() {
+   _test_codegen("test/acceptance/loops/while/with-body2x.ifj17",
+                 "test/acceptance/loops/while/with-body2x.out");
+ }
+
+ static void acceptance_test_do_while_nested2x() {
+   _test_codegen("test/acceptance/loops/while/nested-loop2x.ifj17",
+                 "test/acceptance/loops/while/nested-loop2x.out");
+ }
+
 // CONDITIONS
 static void acceptance_test_if_single(){
   _test_codegen("test/acceptance/conditions/if-single.ifj17",
@@ -744,59 +781,59 @@ int main(int argc, const char **argv) {
   suite("parser");
 
   // NOTE: Comment tests
-  unit_test(comments_only_comments);
-  unit_test(comments_multiline_only_comments);
-  unit_test(comments_inline);
-  unit_test(comments_without_spaces);
-  unit_test(comments_multiline_with_code);
-
-  // NOTE: Variable tests
-  unit_test(variable_declaration);
-  unit_test(variable_declaration_and_assignment);
-  unit_test(variable_assign);
-  unit_test(variable_assign_chain);
-
-  // NOTE: Function tests
-  // Declaration
-  unit_test(function_declaration_without_arguments);
-  unit_test(function_declaration_with_argument);
-  unit_test(function_declaration_with_arguments);
-
-  // Initialization
-  unit_test(function_initialization_without_arguments);
-  unit_test(function_initialization_with_argument);
-  unit_test(function_initialization_with_arguments);
-  unit_test(function_initialization_with_body);
-
-  // NOTE: Scope tests
-  unit_test(scope_empty_declaration);
-  unit_test(scope_with_body);
-
-  // NOTE: Conditions test
-  unit_test(if_single);
-  unit_test(if_else);
-  unit_test(if_elseif);
-  unit_test(if_elseif_else);
-
-  // NOTE: Loop tests
-  unit_test(do_while_empty);
-  unit_test(do_while_with_body);
-
-  // NOTE: String test
-  unit_test(empty_string);
-  unit_test(escape_new_line);
-  unit_test(escape_quote);
-  unit_test(escape_sequence);
-  // unit_test(long_string);
-  unit_test(simple_string);
-  unit_test(escape_line_break);
-
-  // NOTE: Case insensitive tests
-  unit_test(case_insensitive_variable_declaration);
-  unit_test(case_insensitive_if_elseif_else);
-  unit_test(case_insensitive_function_initialization_with_body);
-  unit_test(case_insensitive_scope_with_body);
-  unit_test(case_insensitive_string);
+  // unit_test(comments_only_comments);
+  // unit_test(comments_multiline_only_comments);
+  // unit_test(comments_inline);
+  // unit_test(comments_without_spaces);
+  // unit_test(comments_multiline_with_code);
+  //
+  // // NOTE: Variable tests
+  // unit_test(variable_declaration);
+  // unit_test(variable_declaration_and_assignment);
+  // unit_test(variable_assign);
+  // unit_test(variable_assign_chain);
+  //
+  // // NOTE: Function tests
+  // // Declaration
+  // unit_test(function_declaration_without_arguments);
+  // unit_test(function_declaration_with_argument);
+  // unit_test(function_declaration_with_arguments);
+  //
+  // // Initialization
+  // unit_test(function_initialization_without_arguments);
+  // unit_test(function_initialization_with_argument);
+  // unit_test(function_initialization_with_arguments);
+  // unit_test(function_initialization_with_body);
+  //
+  // // NOTE: Scope tests
+  // unit_test(scope_empty_declaration);
+  // unit_test(scope_with_body);
+  //
+  // // NOTE: Conditions test
+  // unit_test(if_single);
+  // unit_test(if_else);
+  // unit_test(if_elseif);
+  // unit_test(if_elseif_else);
+  //
+  // // NOTE: Loop tests
+  // unit_test(do_while_empty);
+  // unit_test(do_while_with_body);
+  //
+  // // NOTE: String test
+  // unit_test(empty_string);
+  // unit_test(escape_new_line);
+  // unit_test(escape_quote);
+  // unit_test(escape_sequence);
+  // // unit_test(long_string);
+  // unit_test(simple_string);
+  // unit_test(escape_line_break);
+  //
+  // // NOTE: Case insensitive tests
+  // unit_test(case_insensitive_variable_declaration);
+  // unit_test(case_insensitive_if_elseif_else);
+  // unit_test(case_insensitive_function_initialization_with_body);
+  // unit_test(case_insensitive_scope_with_body);
+  // unit_test(case_insensitive_string);
 
   type("INTEGRATION TESTS");
 
@@ -809,16 +846,26 @@ int main(int argc, const char **argv) {
   suite("operations");
   acceptance_test(arithmetic_operators);
   acceptance_test(boolean_operators);
+  //acceptance_test(relation_operators);
+
 
   suite("conditions");
-  // acceptance_test(if_single);
-  // acceptance_test(if_else);
-  // acceptance_test(if_elseif);
-  // acceptance_test(if_elseif_else);
-  // acceptance_test(if_single2x);
-  // acceptance_test(if_else2x);
-  // acceptance_test(if_elseif2x);
-  // acceptance_test(if_elseif_else2x);
+  acceptance_test(if_single);
+  acceptance_test(if_else);
+  acceptance_test(if_elseif);
+  acceptance_test(if_elseif_else);
+  acceptance_test(if_single2x);
+  acceptance_test(if_else2x);
+  acceptance_test(if_elseif2x);
+  acceptance_test(if_elseif_else2x);
+
+  suite("loops");
+  acceptance_test(do_while_whithout_body);
+  acceptance_test(do_while_with_body);
+  acceptance_test(do_while_nested);
+  acceptance_test(do_while_empty2x);
+  acceptance_test(do_while_with_body2x);
+  acceptance_test(do_while_nested2x);
 
   suite("functions");
   acceptance_test(function_simple);
