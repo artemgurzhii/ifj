@@ -663,15 +663,15 @@ static void unit_test_built_in_print_multiple_of_random_types() {
 }
 
 static void unit_test_built_in_print_single_int() {
-  _test_parser("test/unit/parser/built-in/single-int");
+  _test_parser("test/unit/parser/built-in/print/single-int");
 }
 
 static void unit_test_built_in_print_single_string() {
-  _test_parser("test/unit/parser/built-in/single-string");
+  _test_parser("test/unit/parser/built-in/print/single-string");
 }
 
 static void unit_test_built_in_print_single_variable() {
-  _test_parser("test/unit/parser/built-in/single-variable");
+  _test_parser("test/unit/parser/built-in/print/single-variable");
 }
 
 // NOTE: INTEGRATION TESTS

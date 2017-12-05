@@ -138,6 +138,8 @@ static int scan_ident(ifj17_lexer_t *self, int c) {
       return token(WHILE);
     if (strcmp("scope", buf) == 0)
       return token(SCOPE);
+    if (strcmp("print", buf) == 0)
+      return token(PRINT);
     break;
   case 6:
     if (strcmp("elseif", buf) == 0)
