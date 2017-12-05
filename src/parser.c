@@ -1076,6 +1076,45 @@ static ifj17_node_t *func_declare(ifj17_parser_t *self) {
 }
 
 /*
+ * Print statement
+ */
+
+static ifj17_node_t *print_stmt(ifj17_parser_t *self) {
+  // declare already consumed
+  ifj17_node_t *node;
+  ifj17_vec_t *params;
+  ifj17_node_t *type = NULL;
+  int line = lineno;
+
+  debug("print_stmt");
+
+  if (!accept(PRINT)) {
+    return NULL;
+  }
+
+  context("print statement");
+
+  int decl_line = lineno;
+
+  // do {
+  if (node = expr(self)) {
+    ifj17_vec_push(params, ifj17_node(node));
+  } else {
+    return NULL;
+  }
+  // } while (accept(SEMICOLON));
+
+  // do {
+  //   ifj17_node_t *id =
+  //       (ifj17_node_t *)ifj17_id_node_new(self->tok->value.as_string, lineno);
+  //   ifj17_vec_push(params, ifj17_node(id));
+  //   next;
+  // } while (accept(SEMICOLON));
+
+  return (ifj17_node_t *)ifj17_print_node_new(params, line);
+}
+
+/*
  * 'function' id '(' args? ')' (':' type_expr)? block
  */
 
@@ -1310,6 +1349,10 @@ static ifj17_node_t *stmt(ifj17_parser_t *self) {
   if (is(DECLARE)) {
     return func_declare(self);
   }
+
+  // if (is(PRINT)) {
+  //   return print_stmt(self);
+  // }
 
   if (is(FUNCTION)) {
     return function_stmt(self);

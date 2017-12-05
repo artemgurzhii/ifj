@@ -353,6 +353,19 @@ static void visit_declare(ifj17_visitor_t *self, ifj17_declare_node_t *node) {
   print_func("))");
 }
 
+static void visit_print(ifj17_visitor_t *self, ifj17_print_node_t *node) {
+  print_func("(print ");
+
+  ifj17_vec_each(node->params, {
+    print_func("\n");
+    ++indents;
+    INDENT;
+    visit((ifj17_node_t *)val->value.as_pointer);
+    --indents;
+  });
+  print_func(")");
+}
+
 /*
  * Visit function `node`.
  */
@@ -485,6 +498,7 @@ void ifj17_prettyprint(ifj17_node_t *node) {
                              .visit_string = visit_string,
                              .visit_return = visit_return,
                              .visit_declare = visit_declare,
+                             .visit_print = visit_print,
                              .visit_function = visit_function,
                              .visit_scope = visit_scope,
                              .visit_unary_op = visit_unary_op,
