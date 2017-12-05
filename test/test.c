@@ -678,7 +678,7 @@ static void acceptance_test_function_simple(){
                 "test/acceptance/functions/function-simple.out");
 }
 
-static void acceptance_test_function_simple(){
+static void acceptance_test_function_simple_with_args(){
   _test_codegen("test/acceptance/functions/function-simple-with-args.ifj17",
                 "test/acceptance/functions/function-simple-with-args.out");
 }
@@ -688,15 +688,10 @@ static void acceptance_test_function_local_vars(){
                 "test/acceptance/functions/function-local-vars.out");
 }
 
-static void acceptance_test_function_simple_recursive(){
-  _test_codegen("test/acceptance/functions/function-local-vars.ifj17",
-                "test/acceptance/functions/function-local-vars.out");
+static void acceptance_test_factorial(){
+  _test_codegen("test/acceptance/functions/function-factorial.ifj17",
+                "test/acceptance/functions/function-factorial.out");
 }
-
-// static void acceptance_test_function_fuctorial(){
-//   _test_codegen("test/acceptance/functions/factorial.ifj17",
-//                 "test/acceptance/functions/factorial.out");
-// }
 
 
 // NOTE: INTEGRATION TESTS
@@ -820,9 +815,8 @@ int main(int argc, const char **argv) {
 
   suite("functions");
   acceptance_test(function_simple);
-  acceptance_test(function-simple-with-args);
+  acceptance_test(function_simple_with_args);
   acceptance_test(function_local_vars);
-  acceptance_test(simple_recursive);
   acceptance_test(factorial);
 
 
