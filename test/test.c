@@ -632,6 +632,11 @@ static void acceptance_test_arithmetic_operators(){
                 "test/acceptance/binary_operators/arithmetic.out");
 }
 
+static void acceptance_test_boolean_operators(){
+  _test_codegen("test/acceptance/binary_operators/boolean.ifj17",
+                "test/acceptance/binary_operators/boolean.out");
+}
+
 // CONDITIONS
 static void acceptance_test_if_single(){
   _test_codegen("test/acceptance/conditions/if-single.ifj17",
@@ -803,6 +808,7 @@ int main(int argc, const char **argv) {
 
   suite("operations");
   acceptance_test(arithmetic_operators);
+  acceptance_test(boolean_operators);
 
   suite("conditions");
   // acceptance_test(if_single);

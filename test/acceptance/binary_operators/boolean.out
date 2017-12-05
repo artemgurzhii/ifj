@@ -1,0 +1,9 @@
+.IFJcode17
+JUMP Scope
+LABEL Scope
+DEFVAR GF@a
+DEFVAR GF@b
+DEFVAR GF@c
+AND GF@c GF@a GF@b
+OR GF@c GF@a GF@b
+NOT GF@c GF@a
