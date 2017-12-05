@@ -178,7 +178,7 @@ static void visit_decl(ifj17_visitor_t *self, ifj17_decl_node_t *node) {
   //   print_func("CREATEFRAME\n");
   // }
   ifj17_vec_each(node->vec, {
-    
+
     if (params == 1) {
       print_func("DEFVAR ");
       visit((ifj17_node_t *)val->value.as_pointer);
@@ -265,8 +265,9 @@ static void visit_binary_op(ifj17_visitor_t *self, ifj17_binary_op_node_t *node)
             return;
           }
         }
+      }
 
-    }
+    //emit_op(self, node);
 
     if (!strcmp(ifj17_token_type_string(node->op), "+")) {
       if (bin_op == 1) {
@@ -325,15 +326,13 @@ static void visit_binary_op(ifj17_visitor_t *self, ifj17_binary_op_node_t *node)
         bin_op = bin_op -2;
         return;
       }
-  }
+     }
     // } else if (!strcmp(ifj17_token_type_string(node->op), ">")) {
     //   printf("GT ");
     //   printf("GF@bool");
     //   printf(" ");
     // }
 
-    // visit(node->left);
-    // print_func(" ");
     bin_op++;
     visit(node->right);
     visit(node->left);
@@ -543,8 +542,6 @@ static void visit_if(ifj17_visitor_t *self, ifj17_if_node_t *node) {
 
   emit_op(self, node);
   visit((ifj17_node_t *)node->expr);
-  printf("\n");
-
 
 
   // else ifs
