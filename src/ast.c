@@ -362,11 +362,7 @@ ifj17_declare_node_t *ifj17_declare_node_new(const char *name, ifj17_node_t *typ
   return self;
 }
 
-/*
- * Alloc and initialize a new function_declare node with the given `name`,
- * `type` and `params`.
- */
-
+// TODO: Add comments
 ifj17_print_node_t *ifj17_print_node_new(ifj17_vec_t *params, int lineno) {
   ifj17_print_node_t *self = malloc(sizeof(ifj17_print_node_t));
   if (unlikely(!self)) {
