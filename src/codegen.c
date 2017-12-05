@@ -63,17 +63,17 @@ static void emit_op(ifj17_visitor_t *self, ifj17_binary_op_node_t *node) {
      break;
   case IFJ17_TOKEN_OP_EQ:
     print_func("EQ ");
-    if (from_if == 1) {
-      print_func("RES_IF_%d ", else_if_num);
-      from_if--;
-    }
+      if (from_if == 1) {
+        print_func("RES_IF_%d ", else_if_num);
+        from_if--;
+      }
     break;
   case IFJ17_TOKEN_OP_NEQ:
     print_func("NEQ ");
-    if (from_if == 1) {
-      print_func("RES_IF_%d ", else_if_num);
-      from_if--;
-    }
+      if (from_if == 1) {
+        print_func("RES_IF_%d ", else_if_num);
+        from_if--;
+      }
     break;
   // case IFJ17_TOKEN_OP_DIV:
   //   emit(DIV, 0, l, r);
@@ -132,7 +132,6 @@ static void visit_block(ifj17_visitor_t *self, ifj17_block_node_t *node) {
  */
 
 static void visit_int(ifj17_visitor_t *self, ifj17_int_node_t *node) {
-//printf("from_return= %d\n", from_return);
   if(from_return == 1) {
     printf("PUSHS ");
     print_func("int@%d", node->val);
@@ -177,9 +176,9 @@ static void visit_id(ifj17_visitor_t *self, ifj17_id_node_t *node) {
   }
   else {
     print_func("GF@%s", node->val);
-    if (args) {
-      print_func("\n", node->val);
-    }
+      if (args) {
+        print_func("\n", node->val);
+      }
   }
 }
 
@@ -444,18 +443,15 @@ static void visit_call(ifj17_visitor_t *self, ifj17_call_node_t *node) {
   args = ifj17_vec_length(node->args->vec);
 
   if (ifj17_vec_length(node->args->vec)) {
-
     print_func("PUSHS ");
 
     ifj17_vec_each(node->args->vec, {
-      visit((ifj17_node_t *)val->value.as_pointer);
-    });
-    args = 0;
-  }
+      visit((ifj17_node_t *)val->value.as_pointer); });
+      args = 0;
+    }
   if (scope != 1) {
     printf("PUSHFRAME\n");
   }
-  //print_func("\n");
   print_func("CALL ");
   from_call++;
   visit((ifj17_node_t *)node->expr);
@@ -463,8 +459,7 @@ static void visit_call(ifj17_visitor_t *self, ifj17_call_node_t *node) {
   if (scope != 1) {
     printf("\nPOPFRAME");
   }
-
-  }
+}
 
 /*
  * Visit scope `node`.
