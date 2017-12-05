@@ -95,6 +95,23 @@ ifj17_double_node_t *ifj17_double_node_new(double val, int lineno) {
 }
 
 /*
+ * Alloc and initialize a new boolean node with the given `val`.
+ */
+
+ifj17_boolean_node_t *ifj17_boolean_node_new(bool val, int lineno) {
+  ifj17_boolean_node_t *self = malloc(sizeof(ifj17_boolean_node_t));
+  if (unlikely(!self)) {
+    return NULL;
+  }
+
+  self->base.type = IFJ17_NODE_BOOLEAN;
+  self->base.lineno = lineno;
+  self->val = val;
+
+  return self;
+}
+
+/*
  * Alloc and initialize a new id node with the given `val`.
  */
 

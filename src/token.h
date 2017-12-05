@@ -19,6 +19,7 @@
   t(ID, "id") \
   t(INT, "int") \
   t(DOUBLE, "double") \
+  t(BOOLEAN, "boolean") \
   t(STRING, "string") \
   t(DECLARE, "declare") \
   t(FUNCTION, "function") \

@@ -124,6 +124,14 @@ static void visit_double(ifj17_visitor_t *self, ifj17_double_node_t *node) {
 }
 
 /*
+ * Visit boolean `node`.
+ */
+
+static void visit_boolean(ifj17_visitor_t *self, ifj17_boolean_node_t *node) {
+  print_func("(boolean %s)\n", node->val == 1 ? "true" : "false");
+}
+
+/*
  * Visit id `node`.
  */
 
@@ -482,6 +490,7 @@ void ifj17_prettyprint(ifj17_node_t *node) {
                              .visit_decl = visit_decl,
                              .visit_dim = visit_dim,
                              .visit_double = visit_double,
+                             .visit_boolean = visit_boolean,
                              .visit_string = visit_string,
                              .visit_return = visit_return,
                              .visit_declare = visit_declare,

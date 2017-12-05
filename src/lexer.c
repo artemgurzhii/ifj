@@ -52,8 +52,8 @@
  */
 
 #define need_semi(t)                                                                \
-  (t == IFJ17_TOKEN_ID || t == IFJ17_TOKEN_DOUBLE || t == IFJ17_TOKEN_INT ||        \
-   t == IFJ17_TOKEN_STRING || t == IFJ17_TOKEN_RETURN)
+  (t == IFJ17_TOKEN_ID || t == IFJ17_TOKEN_DOUBLE || t == IFJ17_TOKEN_BOOLEAN ||    \
+   t == IFJ17_TOKEN_INT || t == IFJ17_TOKEN_STRING || t == IFJ17_TOKEN_RETURN)
 
 /*
  * Initialize lexer with the given `source` and `filename`.

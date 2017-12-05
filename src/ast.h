@@ -25,7 +25,7 @@
   n(UNARY_OP) \
   n(BINARY_OP) \
   n(TERNARY_OP) \
-  n(BOOL) \
+  n(BOOLEAN) \
   n(NULL) \
   n(ID) \
   n(DECL) \
@@ -143,6 +143,15 @@ typedef struct {
   ifj17_node_t base;
   double val;
 } ifj17_double_node_t;
+
+/*
+ * IFJ17 boolean node.
+ */
+
+typedef struct {
+  ifj17_node_t base;
+  bool val;
+} ifj17_boolean_node_t;
 
 /*
  * IFJ17 id node.
@@ -334,6 +343,8 @@ ifj17_dim_node_t *ifj17_dim_node_new(ifj17_vec_t *vec, int lineno);
 ifj17_int_node_t *ifj17_int_node_new(int val, int lineno);
 
 ifj17_double_node_t *ifj17_double_node_new(double val, int lineno);
+
+ifj17_boolean_node_t *ifj17_boolean_node_new(bool val, int lineno);
 
 ifj17_array_node_t *ifj17_array_node_new(int lineno);
 

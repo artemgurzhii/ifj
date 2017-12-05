@@ -35,6 +35,8 @@ void ifj17_visit(ifj17_visitor_t *self, ifj17_node_t *node) {
     VISIT(int);
   case IFJ17_NODE_DOUBLE:
     VISIT(double);
+  case IFJ17_NODE_BOOLEAN:
+    VISIT(boolean);
   case IFJ17_NODE_STRING:
     VISIT(string);
   case IFJ17_NODE_SUBSCRIPT:
