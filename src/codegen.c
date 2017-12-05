@@ -23,6 +23,7 @@
 
 //BINARY_OP
 static int bin_op = 0;
+static int rel = 0;
 
 //IF
 static int from_if = 0;
@@ -75,12 +76,19 @@ static void emit_op(ifj17_visitor_t *self, ifj17_binary_op_node_t *node) {
         from_if--;
       }
     break;
-  // case IFJ17_TOKEN_OP_DIV:
-  //   emit(DIV, 0, l, r);
-  //   break;
-  // case IFJ17_TOKEN_OP_MUL:
-  //   emit(MUL, 0, l, r);
-  //   break;
+  case IFJ17_TOKEN_OP_GT:
+  print_func("EQ ");
+    if (from_if == 1) {
+      print_func("RES_IF_%d ", else_if_num);
+      from_if--;
+    }
+    break;
+  case IFJ17_TOKEN_OP_MUL:
+    print_func("MUL ");
+    break;
+    case IFJ17_TOKEN_OP_DIV:
+      print_func("DIV ");
+      break;
   // case IFJ17_TOKEN_OP_MOD:
   //   emit(MOD, 0, l, r);
   //   break;
@@ -287,65 +295,24 @@ static void visit_binary_op(ifj17_visitor_t *self, ifj17_binary_op_node_t *node)
 
     //emit_op(self, node);
 
-    if (!strcmp(ifj17_token_type_string(node->op), "+")) {
-      if (bin_op == 1) {
-        printf("ADD ");
-        return;
+    if (!strcmp(ifj17_token_type_string(node->op), "+") ||
+      !strcmp(ifj17_token_type_string(node->op), "-") ||
+      !strcmp(ifj17_token_type_string(node->op), "*") ||
+      !strcmp(ifj17_token_type_string(node->op), "/") ) {
+        if (bin_op == 1) {
+          emit_op(self, node);
+          return;
+        } else if (bin_op == 2) {
+          visit(node->left);
+          print_func(" ");
+          visit(node->right);
+          print_func("\n");
+          bin_op = bin_op - 2;
+          return;
+        }
       }
-      else if (bin_op == 2) {
-        visit(node->left);
-        print_func(" ");
-        visit(node->right);
-        print_func("\n");
-        bin_op = bin_op -2;
-        return;
-      }
-    }
-
-    else if (!strcmp(ifj17_token_type_string(node->op), "-")) {
-      if (bin_op == 1) {
-        printf("SUB ");
-        return;
-      }
-      else if (bin_op == 2) {
-        visit(node->left);
-        print_func(" ");
-        visit(node->right);
-        print_func("\n");
-        bin_op = bin_op -2;
-        return;
-      }
-    }
 
 
-    else if (!strcmp(ifj17_token_type_string(node->op), "*")) {
-      if (bin_op == 1) {
-        printf("MUL ");
-        return;
-      }
-      else if (bin_op == 2) {
-        visit(node->left);
-        print_func(" ");
-        visit(node->right);
-        print_func("\n");
-        bin_op = bin_op -2;
-        return;
-      }
-  }
-    else if (!strcmp(ifj17_token_type_string(node->op), "/")) {
-      if (bin_op == 1) {
-        printf("DIV ");
-        return;
-      }
-      else if (bin_op == 2) {
-        visit(node->left);
-        print_func(" ");
-        visit(node->right);
-        print_func("\n");
-        bin_op = bin_op -2;
-        return;
-      }
-     }
      else if (!strcmp(ifj17_token_type_string(node->op), "==")) {
        emit_op(self, node);
        visit(node->left);
@@ -360,6 +327,34 @@ static void visit_binary_op(ifj17_visitor_t *self, ifj17_binary_op_node_t *node)
        visit(node->left);
        print_func(" ");
        visit(node->right);
+       print_func("\n");
+       return;
+     }
+
+     else if (!strcmp(ifj17_token_type_string(node->op), ">")) {
+       printf("CREATEFRAME\n");
+       printf("DEFVAR TF@temp_bool\n");
+       printf("GT TF@temp_bool ");
+       visit(node->left);
+       printf(" ");
+       visit(node->right);
+       printf("\n");
+       printf("JUMPIFEQ RES_IF_%d TF@temp_bool ", else_if_num);
+       printf("bool@true");
+       print_func("\n");
+       return;
+     }
+
+     else if (!strcmp(ifj17_token_type_string(node->op), "<")) {
+       printf("CREATEFRAME\n");
+       printf("DEFVAR TF@temp_bool\n");
+       printf("LT TF@temp_bool ");
+       visit(node->left);
+       printf(" ");
+       visit(node->right);
+       printf("\n");
+       printf("JUMPIFEQ RES_IF_%d TF@temp_bool ", else_if_num);
+       printf("bool@true");
        print_func("\n");
        return;
      }
@@ -585,7 +580,10 @@ static void visit_if(ifj17_visitor_t *self, ifj17_if_node_t *node) {
   end_if_num++;
 
   // if
+  rel++;
+  if (rel != 1) {
   print_func("JUMPIF");
+}
 
   emit_op(self, node);
   visit((ifj17_node_t *)node->expr);
@@ -630,6 +628,7 @@ static void visit_if(ifj17_visitor_t *self, ifj17_if_node_t *node) {
   }
 
   print_func("LABEL END_IF_%d\n", end_if_num);
+
 }
 
 /*

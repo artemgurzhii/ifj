@@ -1,0 +1,16 @@
+.IFJcode17
+JUMP Scope
+LABEL Scope
+DEFVAR GF@a
+DEFVAR GF@b
+MOVE GF@a int@5
+MOVE GF@b int@1
+CREATEFRAME
+DEFVAR TF@temp_bool
+GT TF@temp_bool GF@a int@1
+JUMPIFEQ RES_IF_1 TF@temp_bool bool@true
+JUMP END_IF_1
+LABEL RES_IF_1
+ADD GF@b GF@b int@1
+JUMP END_IF_1
+LABEL END_IF_1

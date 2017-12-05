@@ -401,7 +401,7 @@ static void _test_codegen(const char *source_path, const char *out_path) {
     exit(1);
   }
 
-  char buf[1024] = {0};
+  char buf[1048] = {0};
   print_buf = buf;
   ifj17_vm_t *vm = ifj17_gen((ifj17_node_t *)root);
 
@@ -413,15 +413,16 @@ static void _test_codegen(const char *source_path, const char *out_path) {
   ifj17_vm_free(vm);
 
   // DEBUG
-  printf("%s\n", print_buf);
-  printf("%s\n", expected);
+   printf("%s\n", print_buf);
+   printf("%s\n", expected);
 
   size_t ln = strlen(print_buf) - 1;
   if (
     *print_buf &&
     print_buf[ln] == '\n' &&
     print_buf[ln - 1] == '\n'
-  ) {
+  )
+  {
     strcat(expected, "\n");
   }
 
