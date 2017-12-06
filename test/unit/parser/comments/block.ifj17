@@ -1,0 +1,13 @@
+do while bar > 0
+  foo = foo * bar
+  /'
+  dim foo as string
+  dim foo as string
+  '/bar = bar - 1
+loop
+
+
+/'
+dim foo as string
+dim foo as string
+'/

@@ -395,6 +395,12 @@ scan:
       return undo, token(OP_MUL);
     }
   case '/':
+    if ('\'' == next) {
+      while ((c = next) != '\'' && c)
+      ;
+      undo;
+      goto scan;
+     }
     return '=' == next ? token(OP_DIV_ASSIGN) : (undo, token(OP_DIV));
   case '!':
     if ('"' == next) {
@@ -439,10 +445,14 @@ scan:
       return undo, token(OP_GT);
     }
   case '\'':
-    while ((c = next) != '\n' && c)
-      ;
-    undo;
-    goto scan;
+    if ((c = next) == '/') {
+      goto scan;
+    } else {
+      while ((c = next) != '\n' && c)
+        ;
+      undo;
+      goto scan;
+    }
   case ';':
     return token(SEMICOLON);
   case '\n':
