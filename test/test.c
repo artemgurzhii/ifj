@@ -520,6 +520,10 @@ static void unit_test_comments_without_spaces() {
   _test_parser("test/unit/parser/comments/without-spaces");
 }
 
+static void unit_test_comments_block() {
+  _test_parser("test/unit/parser/comments/block");
+}
+
 // OPERATIONS
 static void unit_test_operation_plus() {
   _test_parser("test/unit/parser/operations/plus");
@@ -728,6 +732,7 @@ int main(int argc, const char **argv) {
   unit_test(comments_inline);
   unit_test(comments_without_spaces);
   unit_test(comments_multiline_with_code);
+  unit_test(comments_block);
 
   // NOTE: Variable tests
   unit_test(variable_declaration);
