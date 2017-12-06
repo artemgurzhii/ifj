@@ -1,9 +1,0 @@
-Scope
-dim a as boolean
-dim b as boolean
-dim c as boolean
-
-c = a and b
-c = a or b
-c = not a
-End Scope

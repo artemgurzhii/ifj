@@ -1,6 +1,0 @@
-(function foo -> (id string)
-  (decl
-    (id bar)
-    : (id string))
-  (return
-    (+ (string 'hello ') (id bar))))

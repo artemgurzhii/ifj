@@ -1,2 +1,0 @@
-function foo(bar as string, baz as integer) as string
-end function

@@ -1,5 +1,0 @@
-Scope
-Dim a as integer
-a = -4500
-Dim b as integer = -4500
-End Scope

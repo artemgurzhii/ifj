@@ -1,7 +1,0 @@
-iF 1 > 0 theN
-  return 1
-elSEif 2 > 1 tHEn
-  return 2
-eLSe
-  return 3
-eNd IF

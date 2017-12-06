@@ -1,5 +1,0 @@
-(if (== (id foo) (int 0))
-  (if (== (id bar) (int 1))
-    (= (id res) (int 24)))
-(else
-  (= (id res) (int 42))))

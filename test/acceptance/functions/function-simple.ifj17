@@ -1,8 +1,0 @@
-Function function_simple () As Integer
-return 12
-End Function
-
-Scope
-dim a as integer
-a = function_simple()
-End Scope

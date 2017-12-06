@@ -1,7 +1,0 @@
-if foo == 0 then
-  if bar == 1 then
-    res = 24
-  end if
-else
-  res = 42
-end if

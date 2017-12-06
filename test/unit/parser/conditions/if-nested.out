@@ -1,4 +1,0 @@
-(if (== (id foo) (int 0))
-  (if (== (id bar) (int 1))
-    (return
-      (int 1))))

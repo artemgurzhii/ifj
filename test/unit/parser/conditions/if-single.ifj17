@@ -1,3 +1,0 @@
-if a then
-  dim a as string
-end if

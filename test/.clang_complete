@@ -1,4 +1,0 @@
--I../src
--I../deps
--I../deps/linenoise
--std=c99

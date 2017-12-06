@@ -1,3 +1,0 @@
-(while (> (id bar) (int 0))
-  (= (id foo) (* (id foo) (id bar)))
-  (= (id bar) (- (id bar) (int 1))))

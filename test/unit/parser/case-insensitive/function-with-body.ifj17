@@ -1,3 +1,0 @@
-fUnCTion FOo(bAr AS STring) As stRIng
-  reTUrn !"hello " + bAr
-eND fUnCTion
