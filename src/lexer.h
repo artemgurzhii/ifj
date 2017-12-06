@@ -22,6 +22,7 @@
  */
 typedef struct {
   char *error;
+  int exit_code;
   int stash;
   int lineno;
   off_t offset;

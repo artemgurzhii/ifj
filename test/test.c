@@ -722,10 +722,11 @@ int main(int argc, const char **argv) {
   unit_test(hash_mixins);
 
   suite("string");
+
   unit_test(string);
 
   suite("parser");
-
+  
   // NOTE: Comment tests
   unit_test(comments_only_comments);
   unit_test(comments_multiline_only_comments);
