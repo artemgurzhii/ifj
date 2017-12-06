@@ -198,28 +198,59 @@ static int scan_string(ifj17_lexer_t *self) {
     case '\\':
       switch (c = next) {
       case 'a':
-        c = '\a';
+        c = '\035';
+        buf[len++] = '0';
+        buf[len++] = '0';
+        buf[len++] = '7';
         break;
       case 'b':
-        c = '\b';
+        c = '\035';
+        buf[len++] = '\\';
+        buf[len++] = '0';
+        buf[len++] = '0';
+        buf[len++] = '8';
         break;
       case 'e':
-        c = '\e';
+        c = '\035';
+        buf[len++] = '\\';
+        buf[len++] = '0';
+        buf[len++] = '2';
+        buf[len++] = '7';
         break;
       case 'f':
-        c = '\f';
+        c = '\035';
+        buf[len++] = '\\';
+        buf[len++] = '0';
+        buf[len++] = '1';
+        buf[len++] = '2';
         break;
       case 'n':
-        c = '\n';
+        c = '\035';
+        buf[len++] = '\\';
+        buf[len++] = '0';
+        buf[len++] = '3';
+        buf[len++] = '5';
         break;
       case 'r':
-        c = '\r';
+        c = '\035';
+        buf[len++] = '\\';
+        buf[len++] = '0';
+        buf[len++] = '1';
+        buf[len++] = '3';
         break;
       case 't':
-        c = '\t';
+        c = '\035';
+        buf[len++] = '\\';
+        buf[len++] = '0';
+        buf[len++] = '0';
+        buf[len++] = '9';
         break;
       case 'v':
-        c = '\v';
+        c = '\035';
+        buf[len++] = '\\';
+        buf[len++] = '0';
+        buf[len++] = '1';
+        buf[len++] = '1';
         break;
       case 'x':
         if (-1 == (c = hex_literal(self)))
