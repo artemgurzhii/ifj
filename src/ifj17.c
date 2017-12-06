@@ -66,7 +66,6 @@ void version() {
  * Line-noise REPL.
  */
 
-// TODO: Delete this(WHEN ALL IS FINISHED!) with `linenoise` as this is not required
 // By our task
 void repl() {
   ifj17_set_prettyprint_func(printf);

@@ -690,21 +690,6 @@ static ifj17_node_t *slot_access_expr(ifj17_parser_t *self, ifj17_node_t *left) 
       return NULL;
   }
 
-  // TODO: Remove this, array
-  // subscript
-  if (accept(LBRACK)) {
-    ifj17_node_t *right;
-
-    if (!(right = expr(self))) {
-      return error("missing index in subscript");
-    }
-    context("subscript");
-    if (!accept(RBRACK))
-      return error("missing closing ']'");
-    left = (ifj17_node_t *)ifj17_subscript_node_new(left, right, line);
-    return call_expr(self, left);
-  }
-
   return left;
 }
 
