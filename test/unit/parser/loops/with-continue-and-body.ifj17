@@ -1,0 +1,7 @@
+do while foo > 0
+  if foo < 10
+    continue
+  else
+    foo = foo + 1
+  end if
+loop
