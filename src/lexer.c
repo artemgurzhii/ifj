@@ -47,7 +47,7 @@
  * Set error `msg` and assign ILLEGAL token.
  */
 
- #define error(str, code)                                                           \ 
+ #define error(str, code)                                                           \
    self->error = str, self->exit_code = code,                                       \
    exit(self->exit_code)
 
