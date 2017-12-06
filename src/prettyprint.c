@@ -385,14 +385,13 @@ static void visit_function(ifj17_visitor_t *self, ifj17_function_node_t *node) {
 static void visit_print(ifj17_visitor_t *self, ifj17_print_node_t *node) {
   print_func("(print");
   ++indents;
-
   ifj17_vec_each(node->params, {
     print_func("\n");
     INDENT;
     visit((ifj17_node_t *)val->value.as_pointer);
   });
   --indents;
-  print_func(")\n");
+  print_func(")");
 }
 
 /*

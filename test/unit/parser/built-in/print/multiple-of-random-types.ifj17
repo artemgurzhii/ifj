@@ -1,1 +1,1 @@
-print 42; "foo"; bar;
+print 42; !"foo"; bar;

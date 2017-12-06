@@ -1241,16 +1241,13 @@ static ifj17_node_t *print_stmt(ifj17_parser_t *self) {
   debug("print");
   context("print statement");
 
-  printf("asfdgshdgjfhkgjlhkfjgdhfsgdf\n");
-
-  // 'return'
+  // 'print'
   if (!accept(PRINT)) {
     return NULL;
   }
 
   // 'print' expr
-
-  ifj17_object_t *param;
+  ifj17_node_t *param;
   ifj17_vec_t *params = ifj17_vec_new();
 
   do {
@@ -1258,32 +1255,11 @@ static ifj17_node_t *print_stmt(ifj17_parser_t *self) {
       break;
     }
 
-    ifj17_vec_push(params, param);
+    ifj17_vec_push(params, ifj17_node(param));
   } while (accept(SEMICOLON));
 
   return (ifj17_node_t *)ifj17_print_node_new(params, line);
 }
-
-// static ifj17_node_t *print_stmt(ifj17_parser_t *self) {
-//   int line = lineno;
-//
-//   debug("print");
-//   context("print statement");
-//
-//   // 'return'
-//   if (!accept(PRINT)) {
-//     return NULL;
-//   }
-//
-//   // 'print' expr
-//   ifj17_node_t *node = NULL;
-//
-//   if (!accept(SEMICOLON)) {
-//     node = expr(self);
-//   }
-//
-//   return (ifj17_node_t *)ifj17_return_node_new(node, line);
-// }
 
 /*
  *   if_stmt
@@ -1299,9 +1275,9 @@ static ifj17_node_t *stmt(ifj17_parser_t *self) {
   debug("stmt");
   context("statement");
 
-  // if (is(PRINT)) {
-  //   return print_stmt(self);
-  // }
+  if (is(PRINT)) {
+    return print_stmt(self);
+  }
 
   if (is(IF)) {
     return if_stmt(self);
