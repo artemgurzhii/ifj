@@ -1,0 +1,14 @@
+Scope
+dim a as integer
+dim b as integer
+dim c as integer
+
+a = 1
+b = 3
+
+c = a + b
+c = a - b
+c = a * b
+c = a / b
+
+End Scope

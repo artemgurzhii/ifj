@@ -1,0 +1,8 @@
+Scope
+dim a as integer
+a = 5
+
+if a > 1 then
+  a = 1
+end if
+End Scope

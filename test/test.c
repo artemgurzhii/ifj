@@ -647,6 +647,22 @@ static void acceptance_test_assignment_vars() {
                 "test/acceptance/decl_vars/assignment.out");
 }
 
+// TYPES CONTROL
+static void acceptance_test_types_control_arithmetic() {
+  _test_codegen("test/acceptance/types_control/add_sub_mul.ifj17",
+                "test/acceptance/types_control/add_sub_mul.out");
+}
+
+static void acceptance_test_types_control_relation() {
+  _test_codegen("test/acceptance/types_control/relation_op.ifj17",
+                "test/acceptance/types_control/relation_op.out");
+}
+
+static void acceptance_test_types_control_jump_if() {
+  _test_codegen("test/acceptance/types_control/jump_if.ifj17",
+                "test/acceptance/types_control/jump_if.out");
+}
+
 // LOOPS
 
 static void acceptance_test_do_while_whithout_body() {
@@ -852,6 +868,11 @@ int main(int argc, const char **argv) {
   acceptance_test(boolean_operators);
   acceptance_test(unary_minus);
   acceptance_test(relation_operators);
+
+  suite("types_control");
+  acceptance_test(types_control_arithmetic);
+  acceptance_test(types_control_relation);
+  acceptance_test(types_control_jump_if);
 
   suite("assignment");
   acceptance_test(assignment_vars);

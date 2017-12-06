@@ -65,21 +65,48 @@ void ifj17_set_codegenprint_func(int (*func)(const char *format, ...)) {
 static void emit_op(ifj17_visitor_t *self, ifj17_binary_op_node_t *node) {
   switch (node->op) {
   case IFJ17_TOKEN_OP_PLUS:
+    print_func("TYPE TF@temp_bool_1 ");
+    visit(node->left);
+    print_func("\n");
+    print_func("TYPE TF@temp_bool_2 ");
+    visit(node->right);
+    print_func("\n");
+    print_func("JUMPIFNEQ END_IF_0 TF@temp_bool_1 TF@temp_bool_2\n");
     print_func("ADD ");
     break;
 
   case IFJ17_TOKEN_OP_MINUS:
+    print_func("TYPE TF@temp_bool_1 ");
+    visit(node->left);
+    print_func("\n");
+    print_func("TYPE TF@temp_bool_2 ");
+    visit(node->right);
+    print_func("\n");
+    print_func("JUMPIFNEQ END_IF_0 TF@temp_bool_1 TF@temp_bool_2\n");
     print_func("SUB ");
     break;
-
   case IFJ17_TOKEN_OP_MUL:
+    print_func("TYPE TF@temp_bool_1 ");
+    visit(node->left);
+    print_func("\n");
+    print_func("TYPE TF@temp_bool_2 ");
+    visit(node->right);
+    print_func("\n");
+    print_func("JUMPIFNEQ END_IF_0 TF@temp_bool_1 TF@temp_bool_2\n");
     print_func("MUL ");
     break;
   case IFJ17_TOKEN_OP_DIV:
     print_func("DIV ");
     break;
-
   case IFJ17_TOKEN_OP_EQ:
+    print_func("TYPE TF@temp_bool_1 ");
+    visit(node->left);
+    print_func("\n");
+    print_func("TYPE TF@temp_bool_2 ");
+    visit(node->right);
+    print_func("\n");
+    print_func("JUMPIFNEQ END_IF_0 TF@temp_bool_1 TF@temp_bool_2\n");
+
     print_func("JUMPIFEQ ");
     if (from_if == 1) {
       print_func("RES_IF_%d ", else_if_num);
@@ -88,6 +115,14 @@ static void emit_op(ifj17_visitor_t *self, ifj17_binary_op_node_t *node) {
     break;
 
   case IFJ17_TOKEN_OP_NEQ:
+    print_func("TYPE TF@temp_bool_1 ");
+    visit(node->left);
+    print_func("\n");
+    print_func("TYPE TF@temp_bool_2 ");
+    visit(node->right);
+    print_func("\n");
+    print_func("JUMPIFNEQ END_IF_0 TF@temp_bool_1 TF@temp_bool_2\n");
+
     print_func("JUMPIFNEQ ");
     if (from_if == 1) {
       print_func("RES_IF_%d ", else_if_num);
@@ -336,6 +371,14 @@ static void visit_binary_op(ifj17_visitor_t *self, ifj17_binary_op_node_t *node)
       !strcmp(ifj17_token_type_string(node->op), "and") ||
       !strcmp(ifj17_token_type_string(node->op), "or")) {
 
+    // print_func("TYPE TF@temp_bool_1 ");
+    // visit(node->left);
+    // print_func("\n");
+    // print_func("TYPE TF@temp_bool_2 ");
+    // visit(node->right);
+    // print_func("\n");
+    // print_func("JUMPIFNEQ ENF_IF_0 TF@temp_bool_1 TF@temp_bool_2\n");
+
     if (bin_op == 1) {
       emit_op(self, node);
       return;
@@ -361,14 +404,22 @@ static void visit_binary_op(ifj17_visitor_t *self, ifj17_binary_op_node_t *node)
 
   else if (!strcmp(ifj17_token_type_string(node->op), ">") ||
            !strcmp(ifj17_token_type_string(node->op), "<")) {
-    printf("CREATEFRAME\n");
-    printf("DEFVAR TF@temp_bool\n");
-    printf("GT TF@temp_bool ");
+
+    print_func("TYPE TF@temp_bool_1 ");
+    visit(node->left);
+    print_func("\n");
+    print_func("TYPE TF@temp_bool_2 ");
+    visit(node->right);
+    print_func("\n");
+    print_func("JUMPIFNEQ END_IF_0 TF@temp_bool_1 TF@temp_bool_2\n");
+
+    printf("DEFVAR TF@temp_bool_rel\n");
+    printf("GT TF@temp_bool_rel ");
     visit(node->left);
     printf(" ");
     visit(node->right);
     printf("\n");
-    printf("JUMPIFEQ RES_IF_%d TF@temp_bool ", else_if_num);
+    printf("JUMPIFEQ RES_IF_%d TF@temp_bool_rel ", else_if_num);
     printf("bool@true");
     print_func("\n");
     return;
@@ -474,9 +525,12 @@ static void visit_call(ifj17_visitor_t *self, ifj17_call_node_t *node) {
 static void visit_scope(ifj17_visitor_t *self, ifj17_scope_node_t *node) {
 
   print_func("LABEL Scope\n");
+  print_func("CREATEFRAME\n");
+  print_func("DEFVAR TF@temp_bool_1\nDEFVAR TF@temp_bool_2\n");
   scope++;
   visit((ifj17_node_t *)node->block);
   scope--;
+  print_func("LABEL END_IF_0\n");
 }
 
 /*
