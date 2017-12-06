@@ -395,6 +395,18 @@ static void visit_print(ifj17_visitor_t *self, ifj17_print_node_t *node) {
 }
 
 /*
+ * Visit input `node`.
+ */
+
+static void visit_input(ifj17_visitor_t *self, ifj17_input_node_t *node) {
+  print_func("(input");
+  ++indents;
+  visit((ifj17_node_t *)node->param);
+  --indents;
+  print_func(")");
+}
+
+/*
  * Visit `type` node.
  */
 
@@ -504,6 +516,7 @@ void ifj17_prettyprint(ifj17_node_t *node) {
                              .visit_function = visit_function,
                              .visit_scope = visit_scope,
                              .visit_print = visit_print,
+                             .visit_input = visit_input,
                              .visit_unary_op = visit_unary_op,
                              .visit_binary_op = visit_binary_op,
                              .visit_subscript = visit_subscript,

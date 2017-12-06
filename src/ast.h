@@ -42,6 +42,7 @@
   n(DECLARE) \
   n(SCOPE) \
   n(PRINT) \
+  n(INPUT) \
   n(TYPE) \
   n(SLOT) \
   n(SUBSCRIPT)
@@ -301,6 +302,14 @@ typedef struct {
   ifj17_vec_t *params;
 } ifj17_print_node_t;
 
+/*
+ * IFJ17 input built-in node.
+ */
+
+typedef struct {
+  ifj17_node_t base;
+  ifj17_node_t *param;
+} ifj17_input_node_t;
 
 // protos
 
@@ -367,5 +376,7 @@ ifj17_args_node_t *ifj17_args_node_new(int lineno);
 ifj17_type_node_t *ifj17_type_node_new(const char *name, int lineno);
 
 ifj17_print_node_t *ifj17_print_node_new(ifj17_vec_t *params, int lineno);
+
+ifj17_input_node_t *ifj17_input_node_new(ifj17_node_t *param, int lineno);
 
 #endif /* IFJ17_AST_H */
