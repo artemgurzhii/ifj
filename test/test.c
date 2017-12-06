@@ -379,8 +379,8 @@ static void _test_parser(const char *base_path) {
   ifj17_prettyprint((ifj17_node_t *)root);
 
   // DEBUG
-  printf("%s\n", print_buf);
-  printf("%s\n", expected);
+  // printf("%s\n", print_buf);
+  // printf("%s\n", expected);
 
   size_t ln = strlen(print_buf) - 1;
   if (*print_buf && print_buf[ln] == '\n') {
@@ -821,13 +821,13 @@ int main(int argc, const char **argv) {
   unit_test(case_insensitive_string);
 
   // NOTE: Build in tests
-  unit_test(built_in_print_single_int);
-  unit_test(built_in_print_single_string);
-  unit_test(built_in_print_single_variable);
-  unit_test(built_in_print_multiple_of_int);
-  unit_test(built_in_print_multiple_of_string);
-  unit_test(built_in_print_multiple_of_variable);
-  unit_test(built_in_print_multiple_of_random_types);
+  // unit_test(built_in_print_single_int);
+  // unit_test(built_in_print_single_string);
+  // unit_test(built_in_print_single_variable);
+  // unit_test(built_in_print_multiple_of_int);
+  // unit_test(built_in_print_multiple_of_string);
+  // unit_test(built_in_print_multiple_of_variable);
+  // unit_test(built_in_print_multiple_of_random_types);
 
   type("INTEGRATION TESTS");
 

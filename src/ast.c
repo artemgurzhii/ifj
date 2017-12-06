@@ -494,7 +494,10 @@ ifj17_return_node_t *ifj17_return_node_new(ifj17_node_t *expr, int lineno) {
   return self;
 }
 
-// TODO: Add comments
+/*
+ * Alloc and initialize a new print node with the given `params`.
+ */
+
 ifj17_print_node_t *ifj17_print_node_new(ifj17_vec_t *params, int lineno) {
   ifj17_print_node_t *self = malloc(sizeof(ifj17_print_node_t));
   if (unlikely(!self)) {
