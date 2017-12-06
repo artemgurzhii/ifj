@@ -1,0 +1,11 @@
+Scope
+dim a as integer
+dim b as float
+dim c as integer
+
+a = 5
+b = 2.2
+
+c = a / b
+
+End Scope

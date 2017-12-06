@@ -640,6 +640,11 @@ static void acceptance_test_unary_minus() {
                 "test/acceptance/unary_operators/minus.out");
 }
 
+static void acceptance_test_division() {
+  _test_codegen("test/acceptance/binary_operators/division.ifj17",
+                "test/acceptance/binary_operators/division.out");
+}
+
 // DECLARATION OF VARIABLES
 
 static void acceptance_test_assignment_vars() {
@@ -868,6 +873,7 @@ int main(int argc, const char **argv) {
   acceptance_test(boolean_operators);
   acceptance_test(unary_minus);
   acceptance_test(relation_operators);
+  acceptance_test(division);
 
   suite("types_control");
   acceptance_test(types_control_arithmetic);

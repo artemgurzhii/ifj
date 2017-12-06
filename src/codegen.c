@@ -49,6 +49,8 @@ static int mem_loop_num = 0;
 static int not = 0;
 static int from_minus = 0;
 static int from_dim = 0;
+static int label_cont = 0;
+static int int2float = 0;
 
 // print function
 
@@ -96,6 +98,40 @@ static void emit_op(ifj17_visitor_t *self, ifj17_binary_op_node_t *node) {
     print_func("MUL ");
     break;
   case IFJ17_TOKEN_OP_DIV:
+    print_func("TYPE TF@temp_bool_1 ");
+    visit(node->left);
+    print_func("\n");
+    print_func("TYPE TF@temp_bool_2 float@1.5\n");
+    int2float++;
+    print_func("JUMPIFNEQ RES_IF_int2float_%d TF@temp_bool_1 TF@temp_bool_2\n",
+               int2float);
+    label_cont++;
+    print_func("JUMP CONT_%d\n", label_cont);
+    print_func("LABEL RES_IF_int2float_%d\n", int2float);
+    print_func("INT2FLOAT ");
+    visit(node->left);
+    print_func(" ");
+    visit(node->left);
+    print_func("\n");
+    print_func("LABEL CONT_%d\n", label_cont);
+
+    print_func("TYPE TF@temp_bool_1 ");
+    visit(node->right);
+    print_func("\n");
+    print_func("TYPE TF@temp_bool_2 float@1.5\n");
+    int2float++;
+    print_func("JUMPIFNEQ RES_IF_int2float_%d TF@temp_bool_1 TF@temp_bool_2\n",
+               int2float);
+    label_cont++;
+    print_func("JUMP CONT_%d\n", label_cont);
+    print_func("LABEL RES_IF_int2float_%d\n", label_cont);
+    print_func("INT2FLOAT ");
+    visit(node->right);
+    print_func(" ");
+    visit(node->right);
+    print_func("\n");
+    print_func("LABEL CONT_%d\n", label_cont);
+
     print_func("DIV ");
     break;
   case IFJ17_TOKEN_OP_EQ:
@@ -370,14 +406,6 @@ static void visit_binary_op(ifj17_visitor_t *self, ifj17_binary_op_node_t *node)
       !strcmp(ifj17_token_type_string(node->op), "/") ||
       !strcmp(ifj17_token_type_string(node->op), "and") ||
       !strcmp(ifj17_token_type_string(node->op), "or")) {
-
-    // print_func("TYPE TF@temp_bool_1 ");
-    // visit(node->left);
-    // print_func("\n");
-    // print_func("TYPE TF@temp_bool_2 ");
-    // visit(node->right);
-    // print_func("\n");
-    // print_func("JUMPIFNEQ ENF_IF_0 TF@temp_bool_1 TF@temp_bool_2\n");
 
     if (bin_op == 1) {
       emit_op(self, node);
