@@ -252,7 +252,7 @@ static ifj17_node_t *decl_expr(ifj17_parser_t *self) {
   }
 
   if (!accept(AS)) {
-    return error("expecting 'as'", SYNTAX_ERROR);
+    error("expecting 'as'", SYNTAX_ERROR);
   }
 
   ifj17_node_t *type = type_expr(self);
