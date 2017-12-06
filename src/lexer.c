@@ -448,6 +448,8 @@ scan:
     default:
       return undo, token(OP_GT);
     }
+  case '\\':
+    return token(OP_DIV_ASSIGN);
   case '\'':
     if ((c = next) == '/') {
       goto scan;
