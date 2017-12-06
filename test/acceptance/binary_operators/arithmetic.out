@@ -1,0 +1,37 @@
+.IFJcode17
+JUMP Scope
+LABEL Scope
+CREATEFRAME
+DEFVAR TF@temp_bool_1
+DEFVAR TF@temp_bool_2
+DEFVAR GF@a
+DEFVAR GF@b
+DEFVAR GF@c
+TYPE TF@temp_bool_1 GF@a
+TYPE TF@temp_bool_2 GF@b
+JUMPIFNEQ END_IF_0 TF@temp_bool_1 TF@temp_bool_2
+ADD GF@c GF@a GF@b
+TYPE TF@temp_bool_1 GF@a
+TYPE TF@temp_bool_2 GF@b
+JUMPIFNEQ END_IF_0 TF@temp_bool_1 TF@temp_bool_2
+SUB GF@c GF@a GF@b
+TYPE TF@temp_bool_1 GF@a
+TYPE TF@temp_bool_2 GF@b
+JUMPIFNEQ END_IF_0 TF@temp_bool_1 TF@temp_bool_2
+MUL GF@c GF@a GF@b
+TYPE TF@temp_bool_1 GF@a
+TYPE TF@temp_bool_2 float@1.5
+JUMPIFNEQ RES_IF_int2float_1 TF@temp_bool_1 TF@temp_bool_2
+JUMP CONT_1
+LABEL RES_IF_int2float_1
+INT2FLOAT GF@a GF@a
+LABEL CONT_1
+TYPE TF@temp_bool_1 GF@b
+TYPE TF@temp_bool_2 float@1.5
+JUMPIFNEQ RES_IF_int2float_2 TF@temp_bool_1 TF@temp_bool_2
+JUMP CONT_2
+LABEL RES_IF_int2float_2
+INT2FLOAT GF@b GF@b
+LABEL CONT_2
+DIV GF@c GF@a GF@b
+LABEL END_IF_0

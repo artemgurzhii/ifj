@@ -106,6 +106,8 @@ static int scan_ident(ifj17_lexer_t *self, int c) {
   case 2:
     if (strcmp("if", buf) == 0)
       return token(IF);
+    if (strcmp("or", buf) == 0)
+      return token(OP_BIT_OR);
     if (strcmp("as", buf) == 0)
       return token(AS);
     if (strcmp("do", buf) == 0)

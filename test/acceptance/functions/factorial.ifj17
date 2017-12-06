@@ -1,0 +1,21 @@
+Function recursive (n As Integer) As Integer
+dim answer as integer
+dim decremented_n as integer
+
+if (n == 1) then
+  return 1
+else
+decremented_n = n - 1
+answer = recursive(decremented_n)
+answer = answer * n
+end if
+
+return answer
+End Function
+
+
+Scope
+dim a as integer
+a = 2
+a = recursive(a)
+End Scope
