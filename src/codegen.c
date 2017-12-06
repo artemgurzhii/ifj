@@ -46,6 +46,11 @@ static int from_loop = 0;
 static int loop_num = 0;
 static int mem_loop_num = 0;
 
+static int not = 0;
+static int from_minus = 0;
+
+
+
 
 // print function
 
@@ -159,6 +164,10 @@ static void visit_int(ifj17_visitor_t *self, ifj17_int_node_t *node) {
     print_func("int@%d", node->val);
     from_return--;
   }
+  else if (from_minus == 1){
+    print_func("int@-%d", node->val);
+    from_minus--;
+  }
   else {
     print_func("int@%d", node->val);
   }
@@ -169,7 +178,15 @@ static void visit_int(ifj17_visitor_t *self, ifj17_int_node_t *node) {
  */
 
 static void visit_double(ifj17_visitor_t *self, ifj17_double_node_t *node) {
-  ifj17_vm_t *vm = (ifj17_vm_t *)self->data;
+  //ifj17_vm_t *vm = (ifj17_vm_t *)self->data;
+  if (from_minus == 1){
+    print_func("float@-%g", node->val);
+    from_minus--;
+  }
+  else {
+    print_func("float@%g", node->val);
+  }
+
 }
 
 /*
@@ -180,6 +197,8 @@ static void visit_id(ifj17_visitor_t *self, ifj17_id_node_t *node) {
   //printf("from_return= %d && from_func= %d\n", from_return, from_func);
 //printf("from_func= %d && from_return= %d\n", from_func, from_return);
 //printf("from_call= %d\n", from_call);
+emit_op(self, node);
+
   if (from_call == 1) {
     print_func("%s", node->val);
     from_call--;
@@ -190,7 +209,6 @@ static void visit_id(ifj17_visitor_t *self, ifj17_id_node_t *node) {
         printf("\n");
       }
   }
-
   else if(from_return == 1) {
     printf("PUSHS ");
     print_func("TF@%s", node->val);
@@ -215,7 +233,7 @@ static void visit_decl(ifj17_visitor_t *self, ifj17_decl_node_t *node) {
 
   // printf("I AM IN DECL\n");
   // if (from_func == 1) {
-  //   print_func("CREATEFRAME\n");
+
   // }
   ifj17_vec_each(node->vec, {
 
@@ -236,10 +254,6 @@ static void visit_decl(ifj17_visitor_t *self, ifj17_decl_node_t *node) {
     }
   });
 
-  // if (node->type) {
-  //   visit(node->type);
-  // }
-
   // printf("GOING OUT OF DECL\n");
 }
 
@@ -256,9 +270,35 @@ static void visit_string(ifj17_visitor_t *self, ifj17_string_node_t *node) {
  */
 
 static void visit_unary_op(ifj17_visitor_t *self, ifj17_unary_op_node_t *node) {
-  ifj17_vm_t *vm = (ifj17_vm_t *)self->data;
-  visit(node->expr);
-  emit(NEGATE, 0, 0, 0);
+  // ifj17_vm_t *vm = (ifj17_vm_t *)self->data;
+  // visit(node->expr);
+  // emit(NEGATE, 0, 0, 0);
+  if (!strcmp(ifj17_token_type_string(node->op), "not")) {
+
+      if (not == 0) {
+      not++;
+      emit_op(self, node);
+      return;
+    }
+    else if (not == 2) {
+      visit(node->expr);
+      not = 0;
+      return;
+    }
+  }
+  else if (!strcmp(ifj17_token_type_string(node->op), "-")) {
+    if (not == 0) {
+      not++;
+      printf("MOVE ");
+      return;
+    }
+    else if (not == 2) {
+      from_minus++;
+      visit(node->expr);
+      not = 0;
+      return;
+    }
+  }
 }
 
 /*
@@ -289,6 +329,7 @@ static void visit_binary_op(ifj17_visitor_t *self, ifj17_binary_op_node_t *node)
       if (node->right->type != IFJ17_NODE_BINARY_OP) {
 
         if (node->right->type == IFJ17_NODE_CALL) {
+
             visit(node->right);
             print_func("\n");
             print_func("POPS ");
@@ -298,7 +339,9 @@ static void visit_binary_op(ifj17_visitor_t *self, ifj17_binary_op_node_t *node)
           }
 
         else if (node->right->type == IFJ17_NODE_UNARY_OP) {
-            print_func("NOT ");
+
+            visit(node->right);
+            not++;
             visit(node->left);
             print_func(" ");
             visit(node->right);
@@ -457,10 +500,10 @@ static void visit_slot(ifj17_visitor_t *self, ifj17_slot_node_t *node) {
 
 static void visit_call(ifj17_visitor_t *self, ifj17_call_node_t *node) {
 
-
   args = ifj17_vec_length(node->args->vec);
 
-  if (ifj17_vec_length(node->args->vec)) {
+
+  if(ifj17_vec_length(node->args->vec)) {
     print_func("PUSHS ");
 
     ifj17_vec_each(node->args->vec, {
@@ -470,9 +513,12 @@ static void visit_call(ifj17_visitor_t *self, ifj17_call_node_t *node) {
   if (scope != 1) {
     printf("PUSHFRAME\n");
   }
-  print_func("CALL ");
-  from_call++;
-  visit((ifj17_node_t *)node->expr);
+
+  else {
+    print_func("CALL ");
+    from_call++;
+    visit((ifj17_node_t *)node->expr);
+  }
 
   if (scope != 1) {
     printf("\nPOPFRAME");
@@ -497,6 +543,7 @@ static void visit_scope(ifj17_visitor_t *self, ifj17_scope_node_t *node) {
   // visit((ifj17_node_t *)node->block);
   // --indents;
   // print_func(")");
+
 }
 
 /*

@@ -642,6 +642,11 @@ static void acceptance_test_relation_operators(){
                 "test/acceptance/binary_operators/relations.out");
 }
 
+static void acceptance_test_unary_minus(){
+  _test_codegen("test/acceptance/unary_operators/minus.ifj17",
+                "test/acceptance/unary_operators/minus.out");
+}
+
 // LOOPS
 
  static void acceptance_test_do_while_whithout_body() {
@@ -846,7 +851,8 @@ int main(int argc, const char **argv) {
   suite("operations");
   acceptance_test(arithmetic_operators);
   acceptance_test(boolean_operators);
-  //acceptance_test(relation_operators);
+  acceptance_test(unary_minus);
+  acceptance_test(relation_operators);
 
 
   suite("conditions");
