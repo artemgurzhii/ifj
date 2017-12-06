@@ -1,4 +1,5 @@
 
+#include "codegen.h"
 #include "errors.h"
 #include "hash.h"
 #include "khash.h"
@@ -10,7 +11,6 @@
 #include "utils.h"
 #include "vec.h"
 #include "vm.h"
-#include "codegen.h"
 #include <assert.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -33,7 +33,7 @@
   printf("    \e[92m✓ \e[90m%s\e[0m\n", #fn);                                       \
   integration_test_##fn();
 
-#define acceptance_test(fn)                                                        \
+#define acceptance_test(fn)                                                         \
   printf("    \e[92m✓ \e[90m%s\e[0m\n", #fn);                                       \
   acceptance_test_##fn();
 
@@ -405,7 +405,6 @@ static void _test_codegen(const char *source_path, const char *out_path) {
   print_buf = buf;
   ifj17_vm_t *vm = ifj17_gen((ifj17_node_t *)root);
 
-
   // ifj17_object_t *obj = ifj17_eval(vm);
   //
   // ifj17_object_inspect(obj);
@@ -413,22 +412,16 @@ static void _test_codegen(const char *source_path, const char *out_path) {
   ifj17_vm_free(vm);
 
   // DEBUG
-   printf("%s\n", print_buf);
-   printf("%s\n", expected);
+  printf("%s\n", print_buf);
+  printf("%s\n", expected);
 
   size_t ln = strlen(print_buf) - 1;
-  if (
-    *print_buf &&
-    print_buf[ln] == '\n' &&
-    print_buf[ln - 1] == '\n'
-  )
-  {
+  if (*print_buf && print_buf[ln] == '\n' && print_buf[ln - 1] == '\n') {
     strcat(expected, "\n");
   }
 
   assert(strcmp(expected, print_buf) == 0);
 }
-
 
 // NOTE: UNIT TESTS
 
@@ -627,120 +620,126 @@ static void unit_test_do_while_with_body() {
 
 // OPERATIONS
 
-static void acceptance_test_arithmetic_operators(){
+static void acceptance_test_arithmetic_operators() {
   _test_codegen("test/acceptance/binary_operators/arithmetic.ifj17",
                 "test/acceptance/binary_operators/arithmetic.out");
 }
 
-static void acceptance_test_boolean_operators(){
+static void acceptance_test_boolean_operators() {
   _test_codegen("test/acceptance/binary_operators/boolean.ifj17",
                 "test/acceptance/binary_operators/boolean.out");
 }
 
-static void acceptance_test_relation_operators(){
+static void acceptance_test_relation_operators() {
   _test_codegen("test/acceptance/binary_operators/relations.ifj17",
                 "test/acceptance/binary_operators/relations.out");
 }
 
-static void acceptance_test_unary_minus(){
+static void acceptance_test_unary_minus() {
   _test_codegen("test/acceptance/unary_operators/minus.ifj17",
                 "test/acceptance/unary_operators/minus.out");
 }
 
+// DECLARATION OF VARIABLES
+
+static void acceptance_test_assignment_vars() {
+  _test_codegen("test/acceptance/decl_vars/assignment.ifj17",
+                "test/acceptance/decl_vars/assignment.out");
+}
+
 // LOOPS
 
- static void acceptance_test_do_while_whithout_body() {
-   _test_codegen("test/acceptance/loops/while/without-body.ifj17",
-                 "test/acceptance/loops/while/without-body.out");
- }
+static void acceptance_test_do_while_whithout_body() {
+  _test_codegen("test/acceptance/loops/while/without-body.ifj17",
+                "test/acceptance/loops/while/without-body.out");
+}
 
- static void acceptance_test_do_while_with_body() {
-   _test_codegen("test/acceptance/loops/while/with-body.ifj17",
-                 "test/acceptance/loops/while/with-body.out");
- }
+static void acceptance_test_do_while_with_body() {
+  _test_codegen("test/acceptance/loops/while/with-body.ifj17",
+                "test/acceptance/loops/while/with-body.out");
+}
 
- static void acceptance_test_do_while_nested() {
-   _test_codegen("test/acceptance/loops/while/nested-loop.ifj17",
-                 "test/acceptance/loops/while/nested-loop.out");
- }
+static void acceptance_test_do_while_nested() {
+  _test_codegen("test/acceptance/loops/while/nested-loop.ifj17",
+                "test/acceptance/loops/while/nested-loop.out");
+}
 
- static void acceptance_test_do_while_empty2x() {
-   _test_codegen("test/acceptance/loops/while/without-body2x.ifj17",
-                 "test/acceptance/loops/while/without-body2x.out");
- }
+static void acceptance_test_do_while_empty2x() {
+  _test_codegen("test/acceptance/loops/while/without-body2x.ifj17",
+                "test/acceptance/loops/while/without-body2x.out");
+}
 
- static void acceptance_test_do_while_with_body2x() {
-   _test_codegen("test/acceptance/loops/while/with-body2x.ifj17",
-                 "test/acceptance/loops/while/with-body2x.out");
- }
+static void acceptance_test_do_while_with_body2x() {
+  _test_codegen("test/acceptance/loops/while/with-body2x.ifj17",
+                "test/acceptance/loops/while/with-body2x.out");
+}
 
- static void acceptance_test_do_while_nested2x() {
-   _test_codegen("test/acceptance/loops/while/nested-loop2x.ifj17",
-                 "test/acceptance/loops/while/nested-loop2x.out");
- }
+static void acceptance_test_do_while_nested2x() {
+  _test_codegen("test/acceptance/loops/while/nested-loop2x.ifj17",
+                "test/acceptance/loops/while/nested-loop2x.out");
+}
 
 // CONDITIONS
-static void acceptance_test_if_single(){
+static void acceptance_test_if_single() {
   _test_codegen("test/acceptance/conditions/if-single.ifj17",
                 "test/acceptance/conditions/if-single.out");
 }
 
-static void acceptance_test_if_else(){
+static void acceptance_test_if_else() {
   _test_codegen("test/acceptance/conditions/if-else.ifj17",
                 "test/acceptance/conditions/if-else.out");
 }
 
-static void acceptance_test_if_elseif(){
+static void acceptance_test_if_elseif() {
   _test_codegen("test/acceptance/conditions/if-elseif.ifj17",
                 "test/acceptance/conditions/if-elseif.out");
 }
 
-static void acceptance_test_if_elseif_else(){
+static void acceptance_test_if_elseif_else() {
   _test_codegen("test/acceptance/conditions/if-elseif-else.ifj17",
                 "test/acceptance/conditions/if-elseif-else.out");
 }
 
-static void acceptance_test_if_single2x(){
+static void acceptance_test_if_single2x() {
   _test_codegen("test/acceptance/conditions/if-single2x.ifj17",
                 "test/acceptance/conditions/if-single2x.out");
 }
 
-static void acceptance_test_if_else2x(){
+static void acceptance_test_if_else2x() {
   _test_codegen("test/acceptance/conditions/if-else2x.ifj17",
                 "test/acceptance/conditions/if-else2x.out");
 }
 
-static void acceptance_test_if_elseif2x(){
+static void acceptance_test_if_elseif2x() {
   _test_codegen("test/acceptance/conditions/if-elseif2x.ifj17",
                 "test/acceptance/conditions/if-elseif2x.out");
 }
 
-static void acceptance_test_if_elseif_else2x(){
+static void acceptance_test_if_elseif_else2x() {
   _test_codegen("test/acceptance/conditions/if-elseif-else2x.ifj17",
                 "test/acceptance/conditions/if-elseif-else2x.out");
 }
 
 // FUNCTIONS
-static void acceptance_test_function_simple(){
+static void acceptance_test_function_simple() {
   _test_codegen("test/acceptance/functions/function-simple.ifj17",
                 "test/acceptance/functions/function-simple.out");
 }
 
-static void acceptance_test_function_simple_with_args(){
+static void acceptance_test_function_simple_with_args() {
   _test_codegen("test/acceptance/functions/function-simple-with-args.ifj17",
                 "test/acceptance/functions/function-simple-with-args.out");
 }
 
-static void acceptance_test_function_local_vars(){
+static void acceptance_test_function_local_vars() {
   _test_codegen("test/acceptance/functions/function-local-vars.ifj17",
                 "test/acceptance/functions/function-local-vars.out");
 }
 
-static void acceptance_test_factorial(){
+static void acceptance_test_factorial() {
   _test_codegen("test/acceptance/functions/function-factorial.ifj17",
                 "test/acceptance/functions/function-factorial.out");
 }
-
 
 // NOTE: INTEGRATION TESTS
 static void integration_test_factorial() {
@@ -854,6 +853,8 @@ int main(int argc, const char **argv) {
   acceptance_test(unary_minus);
   acceptance_test(relation_operators);
 
+  suite("assignment");
+  acceptance_test(assignment_vars);
 
   suite("conditions");
   acceptance_test(if_single);
@@ -878,7 +879,6 @@ int main(int argc, const char **argv) {
   acceptance_test(function_simple_with_args);
   acceptance_test(function_local_vars);
   acceptance_test(factorial);
-
 
   printf("\n");
   printf("  \e[90mcompleted in \e[32m%.5fs\e[0m\n",
