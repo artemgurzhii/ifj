@@ -1,0 +1,6 @@
+JUMP Scope
+LABEL Scope
+DEFVAR GF@a
+DEFVAR GF@b
+MOVE GF@a int@-3
+MOVE GF@b int@-8.7

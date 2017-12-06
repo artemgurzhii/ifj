@@ -1,0 +1,8 @@
+Scope
+dim a as integer
+dim b as integer
+
+a = -3
+b = -8.7
+
+End Scope

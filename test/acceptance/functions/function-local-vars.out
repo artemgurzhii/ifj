@@ -1,0 +1,12 @@
+.IFJcode17
+JUMP Scope
+LABEL function_simple
+CREATEFRAME
+DEFVAR TF@b
+MOVE TF@b int@24
+PUSHS TF@b
+RETURN
+LABEL Scope
+DEFVAR GF@a
+CALL function_simple
+POPS GF@a
