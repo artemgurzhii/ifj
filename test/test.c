@@ -1,4 +1,3 @@
-
 #include "codegen.h"
 #include "errors.h"
 #include "hash.h"
@@ -444,6 +443,7 @@ static void _test_codegen(const char *base_path) {
 // NOTE: UNIT TESTS
 
 // PARSER
+
 // VARIABLES
 static void unit_test_variable_declaration() {
   _test_parser("test/unit/parser/variables/declaration");
@@ -529,45 +529,9 @@ static void unit_test_operation_plus() {
   _test_parser("test/unit/parser/operations/plus");
 }
 
-static void unit_test_operation_minus() {
-  _test_parser("test/unit/parser/operations/minus");
-}
-
-static void unit_test_operation_multiplication() {
-  _test_parser("test/unit/parser/operations/multiplication");
-}
-
-static void unit_test_operation_division() {
-  _test_parser("test/unit/parser/operations/division");
-}
-
-static void unit_test_operation_equal() {
-  _test_parser("test/unit/parser/operations/equal");
-}
-
-static void unit_test_operation_not_equal() {
-  _test_parser("test/unit/parser/operations/not-equal");
-}
-
-static void unit_test_operation_greater_then() {
-  _test_parser("test/unit/parser/operations/greater-then");
-}
-
-static void unit_test_operation_less_then() {
-  _test_parser("test/unit/parser/operations/less-then");
-}
-
-static void unit_test_operation_greater_then_or_equal() {
-  _test_parser("test/unit/parser/operations/greater-then-or-equal");
-}
-
-static void unit_test_operation_less_then_or_equal() {
-  _test_parser("test/unit/parser/operations/less-then-or-equal");
-}
-
 // CONDITIONS
 static void unit_test_if_single() {
-  _test_parser("test/unit/parser/conditions/if-single");
+  _test_parser("test/unit/parser/conditions/if-singles");
 }
 
 static void unit_test_if_else() {
@@ -580,14 +544,6 @@ static void unit_test_if_elseif() {
 
 static void unit_test_if_elseif_else() {
   _test_parser("test/unit/parser/conditions/if-elseif-else");
-}
-
-static void unit_test_if_nested() {
-  _test_parser("test/unit/parser/conditions/if-nested");
-}
-
-static void unit_test_if_else_if_nested() {
-  _test_parser("test/unit/parser/conditions/if-else-if-nested");
 }
 
 // STRINGS
@@ -620,6 +576,7 @@ static void unit_test_escape_line_break() {
 }
 
 // CASE insensitive
+
 static void unit_test_case_insensitive_variable_declaration() {
   _test_parser("test/unit/parser/case-insensitive/variable-declaration");
 }
@@ -647,6 +604,57 @@ static void unit_test_do_while_empty() {
 
 static void unit_test_do_while_with_body() {
   _test_parser("test/unit/parser/loops/with-body");
+}
+
+// CODEGEN
+// OPERATIONS
+static void acceptance_test_arithmetic_operators() {
+  _test_codegen("test/acceptance/binary_operators/arithmetic");
+}
+
+static void acceptance_test_boolean_operators() {
+  _test_codegen("test/acceptance/binary_operators/boolean");
+}
+
+static void acceptance_test_relation_operators() {
+  _test_codegen("test/acceptance/binary_operators/relations");
+}
+
+static void acceptance_test_unary_minus() {
+  _test_codegen("test/acceptance/unary_operators/minus");
+}
+
+static void acceptance_test_division() {
+  _test_codegen("test/acceptance/binary_operators/division");
+}
+
+// DECLARATION OF VARIABLES
+
+static void acceptance_test_assignment_vars() {
+  _test_codegen("test/acceptance/assignment_vars/assignment");
+}
+
+// TYPES CONTROL
+static void acceptance_test_types_control_arithmetic() {
+  _test_codegen("test/acceptance/types_control/add_sub_mul");
+}
+
+static void acceptance_test_types_control_relation() {
+  _test_codegen("test/acceptance/types_control/relation_op");
+}
+
+static void acceptance_test_types_control_jump_if() {
+  _test_codegen("test/acceptance/types_control/jump_if");
+}
+
+// LOOPS
+
+static void acceptance_test_do_while_whithout_body() {
+  _test_codegen("test/acceptance/loops/while/without-body");
+}
+
+static void acceptance_test_do_while_with_body() {
+  _test_codegen("test/acceptance/loops/while/with-body");
 }
 
 // BUILT-IN METHODS
@@ -687,10 +695,23 @@ static void integration_test_case_insensitive_factorial() {
   _test_parser("test/integration/parser/case-insensitive-factorial");
 }
 
-// NOTE: ACCEPTANCE TESTS
+static void acceptance_test_do_while_nested() {
+  _test_codegen("test/acceptance/loops/while/nested-loo");
+}
 
-// CODEGEN
-// OPERATIONS
+static void acceptance_test_do_while_empty2x() {
+  _test_codegen("test/acceptance/loops/while/without-body2x");
+}
+
+static void acceptance_test_do_while_with_body2x() {
+  _test_codegen("test/acceptance/loops/while/with-body2x");
+}
+
+static void acceptance_test_do_while_nested2x() {
+  _test_codegen("test/acceptance/loops/while/nested-loop2x");
+}
+
+// CONDITIONS
 static void acceptance_test_if_single() {
   _test_codegen("test/acceptance/conditions/if-single");
 }
@@ -721,6 +742,23 @@ static void acceptance_test_if_elseif2x() {
 
 static void acceptance_test_if_elseif_else2x() {
   _test_codegen("test/acceptance/conditions/if-elseif-else2x");
+}
+
+// FUNCTIONS
+static void acceptance_test_function_simple() {
+  _test_codegen("test/acceptance/functions/function-simple");
+}
+
+static void acceptance_test_function_simple_with_args() {
+  _test_codegen("test/acceptance/functions/function-simple-with-args");
+}
+
+static void acceptance_test_function_local_vars() {
+  _test_codegen("test/acceptance/functions/function-local-vars");
+}
+
+static void acceptance_test_factorial() {
+  _test_codegen("test/acceptance/functions/factorial");
 }
 
 /*
@@ -755,8 +793,8 @@ int main(int argc, const char **argv) {
 
   suite("parser");
 
-  // NOTE: Comment tests
-  unit_test(comments_only_comments);
+  // NOTE:
+  // Comment tests unit_test(comments_only_comments);
   unit_test(comments_multiline_only_comments);
   unit_test(comments_inline);
   unit_test(comments_without_spaces);
@@ -768,18 +806,6 @@ int main(int argc, const char **argv) {
   unit_test(variable_declaration_and_assignment);
   unit_test(variable_assign);
   unit_test(variable_assign_chain);
-
-  // NOTE: Operations tests
-  unit_test(operation_plus);
-  unit_test(operation_minus);
-  unit_test(operation_multiplication);
-  unit_test(operation_division);
-  unit_test(operation_equal);
-  unit_test(operation_not_equal);
-  unit_test(operation_greater_then);
-  unit_test(operation_less_then);
-  unit_test(operation_greater_then_or_equal);
-  unit_test(operation_less_then_or_equal);
 
   // NOTE: Function tests
   // Declaration
@@ -802,8 +828,6 @@ int main(int argc, const char **argv) {
   unit_test(if_else);
   unit_test(if_elseif);
   unit_test(if_elseif_else);
-  unit_test(if_nested);
-  // unit_test(if_else_if_nested);
 
   // NOTE: Loop tests
   unit_test(do_while_empty);
@@ -842,15 +866,44 @@ int main(int argc, const char **argv) {
 
   type("ACCEPTANCE TESTS");
 
+  suite("operations");
+  acceptance_test(arithmetic_operators);
+  acceptance_test(boolean_operators);
+  // acceptance_test(unary_minus);
+  // acceptance_test(relation_operators);
+  acceptance_test(division);
+
+  suite("types_control");
+  acceptance_test(types_control_arithmetic);
+  // acceptance_test(types_control_relation);
+  acceptance_test(types_control_jump_if);
+
+  suite("assignment");
+  // acceptance_test(assignment_vars);
+
   suite("conditions");
-  acceptance_test(if_single);
-  acceptance_test(if_else);
-  acceptance_test(if_elseif);
-  acceptance_test(if_elseif_else);
-  acceptance_test(if_single2x);
-  acceptance_test(if_else2x);
-  acceptance_test(if_elseif2x);
-  acceptance_test(if_elseif_else2x);
+  // acceptance_test(if_single);
+  // acceptance_test(if_else);
+  // acceptance_test(if_elseif);
+  // acceptance_test(if_elseif_else);
+  // acceptance_test(if_single2x);
+  // acceptance_test(if_else2x);
+  // acceptance_test(if_elseif2x);
+  // acceptance_test(if_elseif_else2x);
+
+  suite("loops");
+  // acceptance_test(do_while_whithout_body);
+  // acceptance_test(do_while_with_body);
+  // acceptance_test(do_while_nested);
+  // acceptance_test(do_while_empty2x);
+  // acceptance_test(do_while_with_body2x);
+  // acceptance_test(do_while_nested2x);
+
+  suite("functions");
+  // acceptance_test(function_simple);
+  // acceptance_test(function_simple_with_args);
+  // acceptance_test(function_local_vars);
+  // acceptance_test(factorial);
 
   printf("\n");
   printf("  \e[90mcompleted in \e[32m%.5fs\e[0m\n",

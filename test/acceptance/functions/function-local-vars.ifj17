@@ -1,0 +1,10 @@
+Function function_simple () As Integer
+dim b as integer
+b = 24
+return b
+End Function
+
+Scope
+dim a as integer
+a = function_simple()
+End Scope

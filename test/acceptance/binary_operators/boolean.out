@@ -1,0 +1,13 @@
+.IFJcode17
+JUMP Scope
+LABEL Scope
+CREATEFRAME
+DEFVAR TF@temp_bool_1
+DEFVAR TF@temp_bool_2
+DEFVAR GF@a
+DEFVAR GF@b
+DEFVAR GF@c
+AND GF@c GF@a GF@b
+OR GF@c GF@a GF@b
+NOT GF@c GF@a
+LABEL END_IF_0
