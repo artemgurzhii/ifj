@@ -531,7 +531,7 @@ static void unit_test_operation_plus() {
 
 // CONDITIONS
 static void unit_test_if_single() {
-  _test_parser("test/unit/parser/conditions/if-singles");
+  _test_parser("test/unit/parser/conditions/if-single");
 }
 
 static void unit_test_if_else() {
