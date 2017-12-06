@@ -1,18 +1,28 @@
 .IFJcode17
 JUMP Scope
 LABEL Scope
+CREATEFRAME
+DEFVAR TF@temp_bool_1
+DEFVAR TF@temp_bool_2
 DEFVAR GF@a
 DEFVAR GF@res
 MOVE GF@a int@1
+TYPE TF@temp_bool_1 GF@a
+TYPE TF@temp_bool_2 int@1
+JUMPIFNEQ END_IF_0 TF@temp_bool_1 TF@temp_bool_2
 JUMPIFEQ RES_IF_11 GF@a int@1
 JUMP END_IF_5
 LABEL RES_IF_11
 MOVE GF@res int@42
 JUMP END_IF_5
 LABEL END_IF_5
+TYPE TF@temp_bool_1 GF@a
+TYPE TF@temp_bool_2 int@1
+JUMPIFNEQ END_IF_0 TF@temp_bool_1 TF@temp_bool_2
 JUMPIFEQ RES_IF_12 GF@a int@1
 JUMP END_IF_6
 LABEL RES_IF_12
 MOVE GF@res int@42
 JUMP END_IF_6
 LABEL END_IF_6
+LABEL END_IF_0

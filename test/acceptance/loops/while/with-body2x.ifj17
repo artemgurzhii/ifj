@@ -2,11 +2,11 @@ Scope
 dim a as integer
 dim res as integer
 a = 1
-while a != 1
+do while a <> 1
   res = 42
 loop
 
-while a != 1
+do while a <> 1
   res = 42
 loop
 End Scope

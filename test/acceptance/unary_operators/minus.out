@@ -1,6 +1,11 @@
+.IFJcode17
 JUMP Scope
 LABEL Scope
+CREATEFRAME
+DEFVAR TF@temp_bool_1
+DEFVAR TF@temp_bool_2
 DEFVAR GF@a
 DEFVAR GF@b
 MOVE GF@a int@-3
-MOVE GF@b int@-8.7
+MOVE GF@b float@-8.7
+LABEL END_IF_0

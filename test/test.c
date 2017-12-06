@@ -412,8 +412,8 @@ static void _test_codegen(const char *source_path, const char *out_path) {
   ifj17_vm_free(vm);
 
   // DEBUG
-  printf("%s\n", print_buf);
-  printf("%s\n", expected);
+  // printf("%s\n", print_buf);
+  // printf("%s\n", expected);
 
   size_t ln = strlen(print_buf) - 1;
   if (*print_buf && print_buf[ln] == '\n' && print_buf[ln - 1] == '\n') {
@@ -648,8 +648,8 @@ static void acceptance_test_division() {
 // DECLARATION OF VARIABLES
 
 static void acceptance_test_assignment_vars() {
-  _test_codegen("test/acceptance/decl_vars/assignment.ifj17",
-                "test/acceptance/decl_vars/assignment.out");
+  _test_codegen("test/acceptance/assignment_vars/assignment.ifj17",
+                "test/acceptance/assignment_vars/assignment.out");
 }
 
 // TYPES CONTROL
@@ -758,8 +758,8 @@ static void acceptance_test_function_local_vars() {
 }
 
 static void acceptance_test_factorial() {
-  _test_codegen("test/acceptance/functions/function-factorial.ifj17",
-                "test/acceptance/functions/function-factorial.out");
+  _test_codegen("test/acceptance/functions/factorial.ifj17",
+                "test/acceptance/functions/factorial.out");
 }
 
 // NOTE: INTEGRATION TESTS
@@ -805,60 +805,60 @@ int main(int argc, const char **argv) {
 
   suite("parser");
 
-  // NOTE: Comment tests
-  // unit_test(comments_only_comments);
-  // unit_test(comments_multiline_only_comments);
-  // unit_test(comments_inline);
-  // unit_test(comments_without_spaces);
-  // unit_test(comments_multiline_with_code);
-  //
-  // // NOTE: Variable tests
-  // unit_test(variable_declaration);
-  // unit_test(variable_declaration_and_assignment);
-  // unit_test(variable_assign);
-  // unit_test(variable_assign_chain);
-  //
-  // // NOTE: Function tests
-  // // Declaration
-  // unit_test(function_declaration_without_arguments);
-  // unit_test(function_declaration_with_argument);
-  // unit_test(function_declaration_with_arguments);
-  //
-  // // Initialization
-  // unit_test(function_initialization_without_arguments);
-  // unit_test(function_initialization_with_argument);
-  // unit_test(function_initialization_with_arguments);
-  // unit_test(function_initialization_with_body);
-  //
-  // // NOTE: Scope tests
-  // unit_test(scope_empty_declaration);
-  // unit_test(scope_with_body);
-  //
-  // // NOTE: Conditions test
-  // unit_test(if_single);
-  // unit_test(if_else);
-  // unit_test(if_elseif);
-  // unit_test(if_elseif_else);
-  //
-  // // NOTE: Loop tests
-  // unit_test(do_while_empty);
-  // unit_test(do_while_with_body);
-  //
-  // // NOTE: String test
-  // unit_test(empty_string);
-  // unit_test(escape_new_line);
-  // unit_test(escape_quote);
-  // unit_test(escape_sequence);
-  // // unit_test(long_string);
-  // unit_test(simple_string);
-  // unit_test(escape_line_break);
-  //
-  // // NOTE: Case insensitive tests
-  // unit_test(case_insensitive_variable_declaration);
-  // unit_test(case_insensitive_if_elseif_else);
-  // unit_test(case_insensitive_function_initialization_with_body);
-  // unit_test(case_insensitive_scope_with_body);
-  // unit_test(case_insensitive_string);
+  // NOTE:
+  // Comment tests unit_test(comments_only_comments);
+  unit_test(comments_multiline_only_comments);
+  unit_test(comments_inline);
+  unit_test(comments_without_spaces);
+  unit_test(comments_multiline_with_code);
+
+  // NOTE: Variable tests
+  unit_test(variable_declaration);
+  unit_test(variable_declaration_and_assignment);
+  unit_test(variable_assign);
+  unit_test(variable_assign_chain);
+
+  // NOTE: Function tests
+  // Declaration
+  unit_test(function_declaration_without_arguments);
+  unit_test(function_declaration_with_argument);
+  unit_test(function_declaration_with_arguments);
+
+  // Initialization
+  unit_test(function_initialization_without_arguments);
+  unit_test(function_initialization_with_argument);
+  unit_test(function_initialization_with_arguments);
+  unit_test(function_initialization_with_body);
+
+  // NOTE: Scope tests
+  unit_test(scope_empty_declaration);
+  unit_test(scope_with_body);
+
+  // NOTE: Conditions test
+  unit_test(if_single);
+  unit_test(if_else);
+  unit_test(if_elseif);
+  unit_test(if_elseif_else);
+
+  // NOTE: Loop tests
+  unit_test(do_while_empty);
+  unit_test(do_while_with_body);
+
+  // NOTE: String test
+  unit_test(empty_string);
+  unit_test(escape_new_line);
+  unit_test(escape_quote);
+  unit_test(escape_sequence);
+  // unit_test(long_string);
+  unit_test(simple_string);
+  unit_test(escape_line_break);
+
+  // NOTE: Case insensitive tests
+  unit_test(case_insensitive_variable_declaration);
+  unit_test(case_insensitive_if_elseif_else);
+  unit_test(case_insensitive_function_initialization_with_body);
+  unit_test(case_insensitive_scope_with_body);
+  unit_test(case_insensitive_string);
 
   type("INTEGRATION TESTS");
 
@@ -871,41 +871,41 @@ int main(int argc, const char **argv) {
   suite("operations");
   acceptance_test(arithmetic_operators);
   acceptance_test(boolean_operators);
-  acceptance_test(unary_minus);
-  acceptance_test(relation_operators);
+  // acceptance_test(unary_minus);
+  // acceptance_test(relation_operators);
   acceptance_test(division);
 
   suite("types_control");
   acceptance_test(types_control_arithmetic);
-  acceptance_test(types_control_relation);
+  // acceptance_test(types_control_relation);
   acceptance_test(types_control_jump_if);
 
   suite("assignment");
-  acceptance_test(assignment_vars);
+  // acceptance_test(assignment_vars);
 
   suite("conditions");
-  acceptance_test(if_single);
-  acceptance_test(if_else);
-  acceptance_test(if_elseif);
-  acceptance_test(if_elseif_else);
-  acceptance_test(if_single2x);
-  acceptance_test(if_else2x);
-  acceptance_test(if_elseif2x);
-  acceptance_test(if_elseif_else2x);
+  // acceptance_test(if_single);
+  // acceptance_test(if_else);
+  // acceptance_test(if_elseif);
+  // acceptance_test(if_elseif_else);
+  // acceptance_test(if_single2x);
+  // acceptance_test(if_else2x);
+  // acceptance_test(if_elseif2x);
+  // acceptance_test(if_elseif_else2x);
 
   suite("loops");
-  acceptance_test(do_while_whithout_body);
-  acceptance_test(do_while_with_body);
-  acceptance_test(do_while_nested);
-  acceptance_test(do_while_empty2x);
-  acceptance_test(do_while_with_body2x);
-  acceptance_test(do_while_nested2x);
+  // acceptance_test(do_while_whithout_body);
+  // acceptance_test(do_while_with_body);
+  // acceptance_test(do_while_nested);
+  // acceptance_test(do_while_empty2x);
+  // acceptance_test(do_while_with_body2x);
+  // acceptance_test(do_while_nested2x);
 
   suite("functions");
-  acceptance_test(function_simple);
-  acceptance_test(function_simple_with_args);
-  acceptance_test(function_local_vars);
-  acceptance_test(factorial);
+  // acceptance_test(function_simple);
+  // acceptance_test(function_simple_with_args);
+  // acceptance_test(function_local_vars);
+  // acceptance_test(factorial);
 
   printf("\n");
   printf("  \e[90mcompleted in \e[32m%.5fs\e[0m\n",

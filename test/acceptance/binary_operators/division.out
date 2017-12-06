@@ -7,7 +7,6 @@ DEFVAR TF@temp_bool_2
 DEFVAR GF@a
 DEFVAR GF@b
 DEFVAR GF@c
-MOVE GF@c int@4
 MOVE GF@a int@5
 MOVE GF@b float@2.2
 TYPE TF@temp_bool_1 GF@a
@@ -25,5 +24,4 @@ LABEL RES_IF_int2float_2
 INT2FLOAT GF@b GF@b
 LABEL CONT_2
 DIV GF@c GF@a GF@b
-BREAK
 LABEL END_IF_0

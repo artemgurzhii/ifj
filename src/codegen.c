@@ -99,6 +99,8 @@ static void emit_op(ifj17_visitor_t *self, ifj17_binary_op_node_t *node) {
     print_func("MUL ");
     break;
   case IFJ17_TOKEN_OP_DIV:
+    int2float = 0;
+    label_cont = 0;
     print_func("TYPE TF@temp_bool_1 ");
     visit(node->left);
     print_func("\n");
