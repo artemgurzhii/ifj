@@ -1035,12 +1035,12 @@ static ifj17_node_t *func_declare(ifj17_parser_t *self) {
   context("function declaration");
   // 'function'
   if (!accept(FUNCTION)) {
-    return error("expecting 'function'");
+    return error("expecting 'function'", SYNTAX_ERROR);
   }
 
   // id
   if (!is(ID)) {
-    return error("missing function name");
+    return error("missing function name", SYNTAX_ERROR);
   }
 
   const char *name = self->tok->value.as_string;
@@ -1055,7 +1055,7 @@ static ifj17_node_t *func_declare(ifj17_parser_t *self) {
     // ')'
     context("function declaration");
     if (!accept(RPAREN)) {
-      return error("missing closing ')'");
+      return error("missing closing ')'", SYNTAX_ERROR);
     }
   } else {
     params = ifj17_vec_new();
@@ -1068,7 +1068,7 @@ static ifj17_node_t *func_declare(ifj17_parser_t *self) {
     type = type_expr(self);
 
     if (!type) {
-      return error("missing type after ':'");
+      return error("missing type after ':'", SYNTAX_ERROR);
     }
   }
 
@@ -1166,7 +1166,7 @@ static ifj17_node_t *if_stmt(ifj17_parser_t *self) {
   }
 
   if (!accept(THEN)) {
-    return error("missing 'then'");
+    return error("missing 'then'", SYNTAX_ERROR);
   }
 
   // block
@@ -1195,7 +1195,7 @@ loop:
     }
 
     if (!accept(THEN)) {
-      return error("missing 'then'");
+      return error("missing 'then'", SYNTAX_ERROR);
     }
 
     // block
@@ -1228,7 +1228,7 @@ static ifj17_node_t *while_stmt(ifj17_parser_t *self) {
   }
 
   if (!accept(WHILE)) {
-    return error("missing 'while'");
+    return error("missing 'while'", SYNTAX_ERROR);
   }
 
   context("while statement condition");
@@ -1343,7 +1343,7 @@ static ifj17_block_node_t *block(ifj17_parser_t *self) {
     // if `END` then after we can see `FUNCTION/SCOPE/IF`
     if (accept(END)) {
       if (!accept(FUNCTION) && !accept(SCOPE) && !accept(IF)) {
-        return error("expecting closing statement");
+        return error("expecting closing statement,", SYNTAX_ERROR);
       }
 
       break;
