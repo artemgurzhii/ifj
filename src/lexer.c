@@ -176,7 +176,7 @@ static int hex_literal(ifj17_lexer_t *self) {
   int b = hex(next);
   if (a > -1 && b > -1)
     return a << 4 | b;
-  return error("string hex literal \\x contains invalid digits", LEXICAL_ERROR);
+  error("string hex literal \\x contains invalid digits", LEXICAL_ERROR);
 }
 
 /*
@@ -257,7 +257,7 @@ scan_hex:
   switch (c = next) {
   case 'x':
     if (!isxdigit(c = next)) {
-      return error("hex literal expects one or more digits", LEXICAL_ERROR);
+       error("hex literal expects one or more digits", LEXICAL_ERROR);
     } else {
       do
         n = n << 4 | hex(c);
@@ -466,6 +466,6 @@ scan:
     if (isdigit(c) || '.' == c)
       return scan_number(self, c);
     token(ILLEGAL);
-    return error("illegal character", LEXICAL_ERROR);
+    error("illegal character", LEXICAL_ERROR);
   }
 }
