@@ -538,7 +538,7 @@ static ifj17_node_t *bitswise_or_expr(ifj17_parser_t *self) {
   if (!(node = bitwise_xor_expr(self)))
     return NULL;
   while (accept(OP_BIT_OR)) {
-    context("| operation");
+    context("or operation");
     if (right = bitwise_xor_expr(self)) {
       node = (ifj17_node_t *)ifj17_binary_op_node_new(IFJ17_TOKEN_OP_BIT_OR, node,
                                                       right, line);

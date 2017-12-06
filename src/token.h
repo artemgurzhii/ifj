@@ -74,7 +74,7 @@
   t(OP_AND_ASSIGN, "&&=") \
   t(OP_OR_ASSIGN, "||=") \
   t(OP_BIT_AND, "and") \
-  t(OP_BIT_OR, "|") \
+  t(OP_BIT_OR, "or") \
   t(OP_BIT_XOR, "^") \
   t(OP_BIT_NOT, "~") \
   t(OP_BIT_SHL, "<<") \

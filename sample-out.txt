@@ -1,17 +1,13 @@
 .IFJcode17
 JUMP Scope
-LABEL function_simple
-CREATEFRAME
-DEFVAR TF@n
-POPS TF@n
-ADD TF@n TF@n int@5
-PUSHS TF@n
-RETURN
 LABEL Scope
+CREATEFRAME
+DEFVAR TF@temp_bool_1
+DEFVAR TF@temp_bool_2
 DEFVAR GF@a
 DEFVAR GF@b
-MOVE GF@b int@3
-PUSHS GF@b
-CALL function_simple
-POPS GF@a
-WRITE GF@a
+MOVE GF@a string@Hello
+PUSHS GF@a
+CALL length
+POPS GF@b
+LABEL END_IF_0
