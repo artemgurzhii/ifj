@@ -140,6 +140,8 @@ static int scan_ident(ifj17_lexer_t *self, int c) {
       return token(SCOPE);
     if (strcmp("print", buf) == 0)
       return token(PRINT);
+    if (strcmp("input", buf) == 0)
+      return token(INPUT);
     break;
   case 6:
     if (strcmp("elseif", buf) == 0)
@@ -399,10 +401,10 @@ scan:
   case '/':
     if ('\'' == next) {
       while ((c = next) != '\'' && c)
-      ;
+        ;
       undo;
       goto scan;
-     }
+    }
     return '=' == next ? token(OP_DIV_ASSIGN) : (undo, token(OP_DIV));
   case '!':
     if ('"' == next) {

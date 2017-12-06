@@ -19,6 +19,7 @@
   t(ID, "id") \
   t(INT, "int") \
   t(PRINT, "print") \
+  t(INPUT, "input") \
   t(DOUBLE, "double") \
   t(STRING, "string") \
   t(DECLARE, "declare") \

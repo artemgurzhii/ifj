@@ -40,6 +40,7 @@ typedef struct ifj17_visitor {
   void (* visit_decl)(struct ifj17_visitor *self, ifj17_decl_node_t *node);
   void (* visit_if)(struct ifj17_visitor *self, ifj17_if_node_t *node);
   void (* visit_print)(struct ifj17_visitor *self, ifj17_print_node_t *node);
+  void (* visit_input)(struct ifj17_visitor *self, ifj17_input_node_t *node);
 
   // TODO: discover why the program crashes if i put this somewhere else
   void (* visit_subscript)(struct ifj17_visitor *self, ifj17_subscript_node_t *node);

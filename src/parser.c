@@ -1235,6 +1235,10 @@ static ifj17_node_t *return_stmt(ifj17_parser_t *self) {
   return (ifj17_node_t *)ifj17_return_node_new(node, line);
 }
 
+/**
+ * 'print' expr
+ */
+
 static ifj17_node_t *print_stmt(ifj17_parser_t *self) {
   int line = lineno;
 
@@ -1261,6 +1265,31 @@ static ifj17_node_t *print_stmt(ifj17_parser_t *self) {
   return (ifj17_node_t *)ifj17_print_node_new(params, line);
 }
 
+/**
+ * 'input' expr
+ */
+
+static ifj17_node_t *input_stmt(ifj17_parser_t *self) {
+  int line = lineno;
+
+  debug("input");
+  context("input statement");
+
+  // 'input'
+  if (!accept(INPUT)) {
+    return NULL;
+  }
+
+  ifj17_node_t *param;
+  if (!(param = expr(self))) {
+    error("Expected variable");
+  }
+
+  accept(SEMICOLON);
+
+  return (ifj17_node_t *)ifj17_input_node_new(param, line);
+}
+
 /*
  *   if_stmt
  * | while_stmt
@@ -1277,6 +1306,10 @@ static ifj17_node_t *stmt(ifj17_parser_t *self) {
 
   if (is(PRINT)) {
     return print_stmt(self);
+  }
+
+  if (is(INPUT)) {
+    return input_stmt(self);
   }
 
   if (is(IF)) {
