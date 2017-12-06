@@ -690,6 +690,7 @@ static ifj17_node_t *slot_access_expr(ifj17_parser_t *self, ifj17_node_t *left) 
       return NULL;
   }
 
+  // TODO: Remove this, array
   // subscript
   if (accept(LBRACK)) {
     ifj17_node_t *right;
@@ -702,53 +703,6 @@ static ifj17_node_t *slot_access_expr(ifj17_parser_t *self, ifj17_node_t *left) 
       return error("missing closing ']'");
     left = (ifj17_node_t *)ifj17_subscript_node_new(left, right, line);
     return call_expr(self, left);
-  }
-
-  // slot
-  while (accept(OP_DOT)) {
-    context("slot access");
-    if (!is(ID))
-      return error("expecting identifier");
-    ifj17_node_t *id =
-        (ifj17_node_t *)ifj17_id_node_new(self->tok->value.as_string, lineno);
-    next;
-
-    if (is(LPAREN)) {
-      ifj17_call_node_t *call;
-      ifj17_vec_t *args_vec;
-      ifj17_object_t *prev = NULL;
-
-      call = (ifj17_call_node_t *)call_expr(self, id);
-      if (ifj17_vec_length(call->args->vec) > 0) {
-
-        // re-organize call arguments (issue #47)
-        args_vec = ifj17_vec_new();
-        ifj17_vec_each(call->args->vec, {
-          if (i == 0) {
-            ifj17_vec_push(args_vec, ifj17_node(left));
-          } else {
-            ifj17_vec_push(args_vec, prev);
-          }
-
-          prev = val;
-        });
-      } else {
-        prev = ifj17_node(left);
-        args_vec = call->args->vec;
-      }
-
-      // add last argument
-      ifj17_vec_push(args_vec, prev);
-
-      // TODO: free the old arguments vector
-      call->args->vec = args_vec;
-      left = (ifj17_node_t *)call;
-
-    } else {
-      left = (ifj17_node_t *)ifj17_slot_node_new(left, id, line);
-    }
-
-    left = call_expr(self, left);
   }
 
   return left;
@@ -944,8 +898,11 @@ static ifj17_node_t *not_expr(ifj17_parser_t *self) {
 static ifj17_node_t *expr(ifj17_parser_t *self) {
   ifj17_node_t *node;
   debug("expr");
-  if (!(node = not_expr(self)))
+
+  if (!(node = not_expr(self))) {
     return NULL;
+  }
+
   return node;
 }
 
@@ -1278,6 +1235,32 @@ static ifj17_node_t *return_stmt(ifj17_parser_t *self) {
   return (ifj17_node_t *)ifj17_return_node_new(node, line);
 }
 
+static ifj17_node_t *print_stmt(ifj17_parser_t *self) {
+  int line = lineno;
+
+  debug("print");
+  context("print statement");
+
+  // 'print'
+  if (!accept(PRINT)) {
+    return NULL;
+  }
+
+  // 'print' expr
+  ifj17_node_t *param;
+  ifj17_vec_t *params = ifj17_vec_new();
+
+  do {
+    if (!(param = expr(self))) {
+      break;
+    }
+
+    ifj17_vec_push(params, ifj17_node(param));
+  } while (accept(SEMICOLON));
+
+  return (ifj17_node_t *)ifj17_print_node_new(params, line);
+}
+
 /*
  *   if_stmt
  * | while_stmt
@@ -1291,6 +1274,11 @@ static ifj17_node_t *return_stmt(ifj17_parser_t *self) {
 static ifj17_node_t *stmt(ifj17_parser_t *self) {
   debug("stmt");
   context("statement");
+
+  if (is(PRINT)) {
+    return print_stmt(self);
+  }
+
   if (is(IF)) {
     return if_stmt(self);
   }

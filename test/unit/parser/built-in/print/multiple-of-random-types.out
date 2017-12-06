@@ -1,0 +1,4 @@
+(print
+  (int 42)
+  (string 'foo')
+  (id bar))

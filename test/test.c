@@ -649,6 +649,35 @@ static void unit_test_do_while_with_body() {
   _test_parser("test/unit/parser/loops/with-body");
 }
 
+// BUILT-IN METHODS
+static void unit_test_built_in_print_multiple_of_int() {
+  _test_parser("test/unit/parser/built-in/print/multiple-of-int");
+}
+
+static void unit_test_built_in_print_multiple_of_string() {
+  _test_parser("test/unit/parser/built-in/print/multiple-of-string");
+}
+
+static void unit_test_built_in_print_multiple_of_variable() {
+  _test_parser("test/unit/parser/built-in/print/multiple-of-variable");
+}
+
+static void unit_test_built_in_print_multiple_of_random_types() {
+  _test_parser("test/unit/parser/built-in/print/multiple-of-random-types");
+}
+
+static void unit_test_built_in_print_single_int() {
+  _test_parser("test/unit/parser/built-in/print/single-int");
+}
+
+static void unit_test_built_in_print_single_string() {
+  _test_parser("test/unit/parser/built-in/print/single-string");
+}
+
+static void unit_test_built_in_print_single_variable() {
+  _test_parser("test/unit/parser/built-in/print/single-variable");
+}
+
 // NOTE: INTEGRATION TESTS
 static void integration_test_factorial() {
   _test_parser("test/integration/parser/factorial");
@@ -795,6 +824,15 @@ int main(int argc, const char **argv) {
   unit_test(case_insensitive_function_initialization_with_body);
   unit_test(case_insensitive_scope_with_body);
   unit_test(case_insensitive_string);
+
+  // NOTE: Build in tests
+  unit_test(built_in_print_single_int);
+  unit_test(built_in_print_single_string);
+  unit_test(built_in_print_single_variable);
+  unit_test(built_in_print_multiple_of_int);
+  unit_test(built_in_print_multiple_of_string);
+  unit_test(built_in_print_multiple_of_variable);
+  unit_test(built_in_print_multiple_of_random_types);
 
   type("INTEGRATION TESTS");
 
