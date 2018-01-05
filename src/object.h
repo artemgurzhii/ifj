@@ -26,7 +26,7 @@
 #define ifj17_is_string(val) ifj17_object_is(val, STRING)
 #define ifj17_is_double(val) ifj17_object_is(val, DOUBLE)
 #define ifj17_is_int(val) ifj17_object_is(val, INT)
-#define ifj17_is_bool(val) ifj17_object_is(val, BOOL)
+#define ifj17_is_boolean(val) ifj17_object_is(val, BOOLEAN)
 #define ifj17_is_null(val) ifj17_object_is(val, NULL)
 
 /*
@@ -36,7 +36,7 @@
 typedef enum {
   IFJ17_TYPE_NULL,
   IFJ17_TYPE_NODE,
-  IFJ17_TYPE_BOOL,
+  IFJ17_TYPE_BOOLEAN,
   IFJ17_TYPE_INT,
   IFJ17_TYPE_DOUBLE,
   IFJ17_TYPE_STRING,
@@ -73,7 +73,7 @@ ifj17_object_t *
 ifj17_double_new(double val);
 
 ifj17_object_t *
-ifj17_bool_new(bool val);
+ifj17_boolean_new(bool val);
 
 ifj17_object_t *
 ifj17_string_new(const char *val);

@@ -4,8 +4,8 @@
 // Copyright (c) 2017 Hurzhii Artem, Demicev Alexandr, Denisov Artem, Chufarov Evgeny
 //
 
-#include "object.h"
 #include "internal.h"
+#include "object.h"
 #include <assert.h>
 #include <stdio.h>
 
@@ -21,7 +21,7 @@ void ifj17_object_inspect(ifj17_object_t *self) {
   case IFJ17_TYPE_INT:
     printf("%d\n", self->value.as_int);
     break;
-  case IFJ17_TYPE_BOOL:
+  case IFJ17_TYPE_BOOLEAN:
     printf("%s\n", self->value.as_int ? "true" : "false");
     break;
   case IFJ17_TYPE_STRING:
@@ -72,8 +72,8 @@ ifj17_object_t *ifj17_double_new(double val) {
  * Allocate a new bool object with the given `val`.
  */
 
-ifj17_object_t *ifj17_bool_new(bool val) {
-  ifj17_object_t *self = alloc_object(IFJ17_TYPE_BOOL);
+ifj17_object_t *ifj17_boolean_new(bool val) {
+  ifj17_object_t *self = alloc_object(IFJ17_TYPE_BOOLEAN);
   if (unlikely(!self))
     return NULL;
   self->value.as_int = val;

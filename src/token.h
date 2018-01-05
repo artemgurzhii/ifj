@@ -21,6 +21,7 @@
   t(PRINT, "print") \
   t(INPUT, "input") \
   t(DOUBLE, "double") \
+  t(BOOLEAN, "boolean") \
   t(STRING, "string") \
   t(DECLARE, "declare") \
   t(FUNCTION, "function") \

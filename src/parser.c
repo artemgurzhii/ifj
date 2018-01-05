@@ -274,6 +274,9 @@ static ifj17_node_t *primary_expr(ifj17_parser_t *self) {
   ifj17_node_t *ret = NULL;
   ifj17_token_t *tok = self->tok;
   switch (tok->type) {
+  case IFJ17_TOKEN_BOOLEAN:
+    ret = (ifj17_node_t *)ifj17_boolean_node_new(tok->value.as_int, lineno);
+    break;
   case IFJ17_TOKEN_ID:
     ret = (ifj17_node_t *)ifj17_id_node_new(tok->value.as_string, lineno);
     break;
